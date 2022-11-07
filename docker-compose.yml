@@ -1,0 +1,55 @@
+version: "3"
+
+services:
+  db:
+    image: postgres:11.17-bullseye
+    container_name: pg.metrics.rciam.11
+    user: root
+    privileged: true
+    volumes:
+      - ./pg-init-scripts:/docker-entrypoint-initdb.d
+      - ./pgdata:/var/lib/postgresql/data:rw
+    environment:
+      - POSTGRES_MULTIPLE_DATABASES=metrics_dev,metrics_test
+      - POSTGRES_USER=rciam
+      - POSTGRES_PASSWORD=secret
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    ports:
+      - "65432:5432"
+    tty: true # this is used to prevent container from exiting if the entrypoint is /bin/bash
+    stdin_open: true
+
+  web:
+    depends_on:
+      - db
+    build: .
+    image: metricsrciam:latest
+    container_name: metrcis.rciam.fastapi
+    environment:
+      - PATH=$PATH:.local/bin
+      - DATABASE_URL=postgresql+psycopg2://rciam:secret@db/metrics_dev
+    command: uvicorn app.main:app --reload --workers 1 --host 0.0.0.0 --port 8000
+    ports:
+      - "8004:8000"
+      - "3004:3000"
+    volumes:
+      - .:/app
+    tty: true
+
+  api:
+    depends_on:
+      - db
+      - web
+    image: metricsrciam:latest
+    container_name: metrics.rciam.reactjs
+    command: bash -c "npm start"
+    ports:
+      - "3300:3000"
+    volumes:
+      - ./javascript:/app
+    tty: true
+
+volumes:
+  pgdata:
+
+
