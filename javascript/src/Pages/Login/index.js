@@ -18,9 +18,9 @@ const Login = () => {
     if (stored_user != undefined && Object.keys(stored_user).length !== 0) {
       setCurrentUser(stored_user)
     }
-    // Check if my user exists
+
     if (Object.keys(currentUser).length !== 0) {
-      navigate("/");
+      navigate("/communities");
     }
   }, [])
 
@@ -66,7 +66,7 @@ const Login = () => {
   return (
     <div className="app">
       <form method="post" onSubmit={handleSubmit(onSubmit)}>
-        <h1 className="reg-log">Login</h1>
+        <h1 className="reg-log">Login 33</h1>
 
         {/* Email */}
         <div key="register-email-3" className="formInput">

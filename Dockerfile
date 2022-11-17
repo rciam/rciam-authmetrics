@@ -34,6 +34,7 @@ ENV ENVIRONMENT dev
 ENV TESTING 0
 
 #COPY requirements* $APP_HOME
+RUN echo "fs.inotify.max_user_watches=524288" >> /etc/sysctl.conf
 
 USER app:app
 

@@ -29,6 +29,17 @@ export const getCommunities = async ({queryKey}) => {
     const response = await apiClient.get('/communities')
     return response.data
 }
+
+// GET Communities
+export const getCommunitiesGroupBy = async ({queryKey}) => {
+    const [_, params] = queryKey
+    console.log("sktat")
+    console.log(params.interval)
+    const response = await apiClient.get('/communities_groupby/' + params.groupBy,
+       { params: { interval : params.interval, count_interval: params.count_interval }})
+    console.log(response)
+    return response.data
+}
 // GET Community
 export const getCommunity = async({queryKey}) => {
     const [_, params] = queryKey
