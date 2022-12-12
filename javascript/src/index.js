@@ -4,13 +4,19 @@ import App from './App';
 import 'react-toastify/dist/ReactToastify.css';
 import {ToastContainer} from 'react-toastify';
 import {UserProvider} from "./Context/UserProvider";
-import CommunitiesDataTable from './Pages/Metrics/communitiesDataTable';
-import CommunitiesChart from './Pages/Metrics/communitiesChart';
+
+import {BrowserRouter as Router, Route, Link, Routes} from "react-router-dom";
+import Communities from './Pages/Communities';
 
 const container = document.getElementById('root')
 const root = ReactDOM.createRoot(container)
 
 root.render(
+    <div className="app">
+            <App/>
+    </div>
+)
+
 //   <React.StrictMode>
 //     <UserProvider>
 //       <App/>
@@ -23,6 +29,3 @@ root.render(
 //       />
 //     </UserProvider>
 //   </React.StrictMode>
-    <CommunitiesDataTable></CommunitiesDataTable>
-    
-)

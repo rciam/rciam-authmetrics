@@ -47,7 +47,7 @@ services:
       - "3300:3000"
     volumes:
       - ./javascript:/app
-      - ./javascript/node_modules
+      # - ./javascript/node_modules
     tty: true
 
 volumes:

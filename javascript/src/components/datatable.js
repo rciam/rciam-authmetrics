@@ -2,86 +2,146 @@ import { useState, useContext, useEffect, Component } from "react";
 import "jquery/dist/jquery.min.js";
 import "datatables.net-dt/js/dataTables.dataTables";
 import "datatables.net-dt/css/jquery.dataTables.min.css";
+import "datatables.net-buttons-dt/css/buttons.dataTables.min.css"
 import "datatables.net-buttons/js/dataTables.buttons.js";
 import "datatables.net-buttons/js/buttons.colVis.js";
 import "datatables.net-buttons/js/buttons.flash.js";
 import "datatables.net-buttons/js/buttons.html5.js";
 import "datatables.net-buttons/js/buttons.print.js";
+import pdfMake from "pdfmake/build/pdfmake";
+import pdfFonts from "pdfmake/build/vfs_fonts";
+
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
 import $ from "jquery";
 
-
+var table;
+const title='';
 class Datatable extends Component {
-
-    componentDidMount() {
+   
+    componentDidUpdate(prevProps, prevState) {
+        console.log(this.props.items)
+        if (prevProps.items !== this.props.items) {   
+            this.setState({
+                items: this.props.items
+            }) 
         if (!$.fn.DataTable.isDataTable("#myTable")) {
-            $(document).ready(function () {
-                setTimeout(function () {
-                    $("#table").DataTable({
-                        pagingType: "full_numbers",
-                        pageLength: 20,
-                        processing: true,
-                        dom: "Bfrtip",
-                        select: {
-                            style: "single",
-                        },
-
+            setTimeout(function () {
+            
+            table = $("#table").DataTable({
+                pagingType: "full_numbers",
+                pageLength: 10,
+                //processing: true,
+                dom: "Bfrtip",
+                // select: {
+                //     style: "single",
+                // },
+                
+                buttons: [
+                    {
+                        extend: 'collection',
+                        text: 'Export',
                         buttons: [
                             {
-                                extend: "pageLength",
-                                className: "btn btn-secondary bg-secondary",
+                                extend:'copy',
+                                exportOptions: {
+                                    stripHtml: false,
+                                    format: {
+                                        body: function (data, row, column, node) {
+                                            if (column === 3)
+                                                return data.replace(/<li>/g, "").replace(/<\/li>/g, ",").replace(/<ul>/g, "").replace(/<\/ul>/g, "")
+                                            else
+                                                return data.replace(/(<([^>]+)>)/ig, "");
+                                        }
+                                    }
+                                }
                             },
                             {
-                                extend: "copy",
-                                className: "btn btn-secondary bg-secondary",
+                                extend: 'excel',
+                                title: title,
+                                exportOptions: {
+                                    stripHtml: false,
+                                    format: {
+                                        body: function (data, row, column, node) {
+                                            if (column === 3)
+                                                return data.replace("<li>","").replace(/<li>/g, ", ").replace(/<\/li>/g, "").replace(/<ul>/g, "").replace(/<\/ul>/g, "")
+                                            else
+                                                return data.replace(/(<([^>]+)>)/ig, "");
+                                        }
+                                    }
+                                }
                             },
                             {
-                                extend: "csv",
-                                className: "btn btn-secondary bg-secondary",
+                                extend: 'csv',
+                                title: title,
+                                exportOptions: {
+                                    stripHtml: false,
+                                    format: {
+                                        body: function (data, row, column, node) {
+                                            if (column === 3)
+                                                return data.replace("<li>","").replace(/<li>/g, ", ").replace(/<\/li>/g, "").replace(/<ul>/g, "").replace(/<\/ul>/g, "")
+                                            else
+                                                return data.replace(/(<([^>]+)>)/ig, "");
+                                        }
+                                    }
+                                }
                             },
                             {
-                                extend: "print",
-                                customize: function (win) {
-                                    $(win.document.body).css("font-size", "10pt");
-                                    $(win.document.body)
-                                        .find("table")
-                                        .addClass("compact")
-                                        .css("font-size", "inherit");
-                                },
-                                className: "btn btn-secondary bg-secondary",
+                                extend: 'pdfHtml5',
+                                title: title,
+                                exportOptions: {
+                                    stripHtml: false,
+                                    format: {
+                                        body: function (data, row, column, node) {
+                                            if (column === 3)
+                                                return data.replace(/<li>/g, "• ").replace(/<\/li>/g, "\n").replace(/<ul>/g, "").replace(/<\/ul>/g, "")
+                                            else
+                                                return data.replace(/(<([^>]+)>)/ig, "");
+                                        }
+                                    }
+                                }
                             },
-                        ],
+                            {
+                                extend: 'print',
+                                title: title
+                            }                       
+                        ]
+                    }
+                ],
+                "autoWidth": false,
+                // fnRowCallback: function (
+                //     nRow,
+                //     aData,
+                //     iDisplayIndex,
+                //     iDisplayIndexFull
+                // ) {
+                //     var index = iDisplayIndexFull + 1;
+                //     $("td:first", nRow).html(index);
+                //     return nRow;
+                // },
 
-                        fnRowCallback: function (
-                            nRow,
-                            aData,
-                            iDisplayIndex,
-                            iDisplayIndexFull
-                        ) {
-                            var index = iDisplayIndexFull + 1;
-                            $("td:first", nRow).html(index);
-                            return nRow;
-                        },
-
-                        lengthMenu: [
-                            [10, 20, 30, 50, -1],
-                            [10, 20, 30, 50, "All"],
-                        ],
-                        columnDefs: [
-                            {
-                                targets: 0,
-                                render: function (data, type, row, meta) {
-                                    return type === "export" ? meta.row + 1 : data;
-                                },
-                            },
-                        ],
-                    });
-                }, 1000);
+                // lengthMenu: [
+                //     [10, 20, 30, 50, -1],
+                //     [10, 20, 30, 50, "All"],
+                // ],
+                // columnDefs: [
+                //     {
+                //         targets: 0,
+                //         render: function (data, type, row, meta) {
+                //             return type === "export" ? meta.row + 1 : data;
+                //         },
+                //     },
+                // ],
             });
+            }, 1000)
         }
+        }
+    }
+    componentDidMount() {
+        
     }
 
     listNames = (names, key) => {
-        if (key == "Names" && typeof names === 'string') {
+        if (this.props.columnSep && key == this.props.columnSep && typeof names === 'string') {
             return (
                 <ul>
                     {  
@@ -125,6 +185,7 @@ class Datatable extends Component {
         // } catch (e) {
         //     //alert(e.message);
         // }
+        
     };
 
     showColumns = (items) => {
@@ -146,7 +207,7 @@ class Datatable extends Component {
         }
     }
     render() {
-        //console.log(items)
+        
         return (
             <div className="container py-4">
                 <div className="table-responsive p-0 pb-2">
