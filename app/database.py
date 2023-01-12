@@ -1,9 +1,11 @@
 import os
-
+import sys
+from app.utils import configParser
 from sqlmodel import create_engine, SQLModel, Session
 
 # Initialize
-url = os.getenv('DATABASE_URL')
+# VOSINFOTABLE = configParser.getConfig('database_parameters')['database_url']  
+url = configParser.getConfig('database_parameters')['database_url']
 engine = create_engine(url)
 
 def get_session():

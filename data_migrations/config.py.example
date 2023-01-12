@@ -1,0 +1,35 @@
+[source_database]
+
+host=localhost
+database=db_name
+user=db_user
+password=db_password
+
+[source_tables]
+
+ip_table=statistics_ip
+vos_comanage=cm_cous
+
+[destination_database]
+
+host=localhost
+database=db_name
+user=db_user
+password=db_password
+
+[destination_tables]
+
+country_table=statistics_country
+country_hashed_table=statistics_country_hashed
+user_country_table=statistics_user_country
+vos=communities
+
+[logging]
+
+level = INFO
+folder = log
+file = metricsMigrate.log
+
+[database_file]
+
+db_filename = GeoLite2-Country.mmdb

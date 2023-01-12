@@ -1,0 +1,324 @@
+2022-11-09 12:09:14,465 - migrateData - INFO - No new data found
+2022-11-09 12:09:14,511 - migrateData - INFO - Vo name worsica.vo.incd.pt with id 19
+2022-11-09 12:09:14,512 - migrateData - INFO - Vo name WP5-all with id 5
+2022-11-09 12:09:14,512 - migrateData - INFO - Vo name WP5 with id 6
+2022-11-09 12:09:14,512 - migrateData - INFO - Vo name WP5 with id 6
+2022-11-09 12:09:14,513 - migrateData - INFO - Vo name service-integration.aai.egi.eu with id 12
+2022-11-09 12:09:14,513 - migrateData - INFO - Vo name goc.egi.eu with id 23
+2022-11-09 12:09:14,513 - migrateData - INFO - Vo name AMB with id 9
+2022-11-09 12:09:14,514 - migrateData - INFO - Vo name WP5-all with id 5
+2022-11-09 12:09:14,514 - migrateData - INFO - Vo name checkin-integration with id 3
+2022-11-09 12:09:14,514 - migrateData - INFO - Vo name training.egi.eu with id 4
+2022-11-09 12:09:14,514 - migrateData - INFO - Vo name training.egi.eu with id 4
+2022-11-09 12:09:14,514 - migrateData - INFO - Vo name vo.geoss.eu with id 1
+2022-11-09 12:09:14,515 - migrateData - INFO - Vo name checkin-integration with id 3
+2022-11-09 12:09:14,515 - migrateData - INFO - Vo name onboarding.egi.eu with id 27
+2022-11-09 12:09:14,516 - migrateData - INFO - Vo name vo.example.org with id 22
+2022-11-09 12:09:14,516 - migrateData - INFO - Vo name training.egi.eu with id 4
+2022-11-09 12:09:14,517 - migrateData - INFO - Vo name training.egi.eu with id 4
+2022-11-09 12:09:14,517 - migrateData - INFO - Vo name vo.example.org with id 22
+2022-11-09 12:09:14,518 - migrateData - INFO - Vo name vo.access.egi.eu with id 26
+2022-11-09 12:09:14,518 - migrateData - INFO - Vo name training.egi.eu with id 4
+2022-11-09 12:09:14,519 - migrateData - INFO - Vo name training.egi.eu with id 4
+2022-11-09 12:09:14,519 - migrateData - INFO - Vo name training.egi.eu with id 4
+2022-11-09 12:09:14,519 - migrateData - INFO - Vo name service-integration.aai.egi.eu with id 12
+2022-11-09 12:09:14,520 - migrateData - INFO - Vo name checkin-integration with id 3
+2022-11-09 12:09:14,520 - migrateData - INFO - Vo name vo.dariah.eu with id 2
+2022-11-09 12:09:14,520 - migrateData - INFO - Vo name training.egi.eu with id 4
+2022-11-09 12:09:14,521 - migrateData - INFO - Vo name rcauth.eu with id 15
+2022-11-09 12:09:14,521 - migrateData - INFO - Vo name vo.example.org with id 22
+2022-11-09 12:09:14,522 - migrateData - INFO - Vo name eiscat.se with id 24
+2022-11-09 12:09:14,523 - migrateData - INFO - Vo name WP5-all with id 5
+2022-11-09 12:09:14,523 - migrateData - INFO - Vo name vo.geoss.eu with id 1
+2022-11-09 12:09:14,524 - migrateData - INFO - Vo name test-sso-confluence with id 11
+2022-11-09 12:09:14,524 - migrateData - INFO - Vo name test-sso-mailman with id 10
+2022-11-09 12:09:14,525 - migrateData - INFO - Vo name test-sso-confluence with id 11
+2022-11-09 12:09:14,525 - migrateData - INFO - Vo name test-sso-mailman with id 10
+2022-11-09 12:09:14,526 - migrateData - INFO - Vo name checkin-integration with id 3
+2022-11-09 12:09:14,526 - migrateData - INFO - Vo name rcauth.eu with id 15
+2022-11-09 12:09:14,527 - migrateData - INFO - Vo name vo.geoss.eu with id 1
+2022-11-09 12:09:14,527 - migrateData - INFO - Vo name vo.example.org with id 22
+2022-11-09 12:09:14,528 - migrateData - INFO - Vo name cloud.grnet.gr with id 13
+2022-11-09 12:09:14,528 - migrateData - INFO - Vo name service-integration.aai.egi.eu with id 12
+2022-11-09 12:09:14,529 - migrateData - INFO - Vo name cloud.grnet.gr with id 13
+2022-11-09 12:09:14,529 - migrateData - INFO - Vo name ggus-supporters.egi.eu with id 14
+2022-11-09 12:09:14,529 - migrateData - INFO - Vo name AMB with id 9
+2022-11-09 12:09:14,530 - migrateData - INFO - Vo name goc.egi.eu with id 23
+2022-11-09 12:09:14,530 - migrateData - INFO - Vo name vo.parent.example.eu with id 16
+2022-11-09 12:09:14,531 - migrateData - INFO - Vo name vo.example.org with id 22
+2022-11-09 12:09:14,531 - migrateData - INFO - Vo name vo.geoss.eu with id 1
+2022-11-09 12:09:14,531 - migrateData - INFO - Vo name training.egi.eu with id 4
+2022-11-09 12:09:14,532 - migrateData - INFO - Vo name vo.example.org with id 22
+2022-11-09 12:09:14,532 - migrateData - INFO - Vo name vo.dariah.eu with id 2
+2022-11-09 12:09:14,533 - migrateData - INFO - Vo name checkin-integration with id 3
+2022-11-09 12:09:14,534 - migrateData - INFO - Vo name vo.dariah.eu with id 2
+2022-11-09 12:09:14,534 - migrateData - INFO - Vo name vo.example.org with id 22
+2022-11-09 12:09:14,535 - migrateData - INFO - Vo name vo.geoss.eu with id 1
+2022-11-09 12:09:14,536 - migrateData - INFO - Vo name vo.example.org with id 22
+2022-11-09 12:09:14,536 - migrateData - INFO - Vo name vo.example.org with id 22
+2022-11-09 12:09:14,537 - migrateData - INFO - Vo name ggus-supporters.egi.eu with id 14
+2022-11-09 12:09:14,538 - migrateData - INFO - Vo name radio-observatory with id 21
+2022-11-09 12:09:14,539 - migrateData - INFO - Vo name radio-observatory with id 21
+2022-11-09 12:09:14,540 - migrateData - INFO - Vo name radio-observatory with id 21
+2022-11-09 12:09:14,541 - migrateData - INFO - Vo name radio-observatory with id 21
+2022-11-09 12:09:14,541 - migrateData - INFO - Vo name checkin-integration with id 3
+2022-11-09 12:09:14,543 - migrateData - INFO - Vo name radio-observatory with id 21
+2022-11-09 12:09:14,543 - migrateData - INFO - Vo name radio-observatory with id 21
+2022-11-09 12:09:14,546 - migrateData - INFO - Vo name radio-observatory with id 21
+2022-11-09 12:09:14,546 - migrateData - INFO - Vo name radio-observatory with id 21
+2022-11-09 12:09:14,550 - migrateData - INFO - Vo name radio-observatory with id 21
+2022-11-09 12:09:14,551 - migrateData - INFO - Vo name radio-observatory with id 21
+2022-11-09 12:09:14,552 - migrateData - INFO - Vo name vo.example.org with id 22
+2022-11-09 12:09:14,552 - migrateData - INFO - Vo name vo.example.org with id 22
+2022-11-09 12:09:14,552 - migrateData - INFO - Vo name vo.example.org with id 22
+2022-11-09 12:09:14,552 - migrateData - INFO - Vo name vo.example.org with id 22
+2022-11-09 12:09:14,553 - migrateData - INFO - Vo name vo.example.org with id 22
+2022-11-09 12:09:14,553 - migrateData - INFO - Vo name vo.dariah.eu with id 2
+2022-11-09 12:09:14,553 - migrateData - INFO - Vo name vo.example.org with id 22
+2022-11-09 12:09:14,553 - migrateData - INFO - Vo name goc.egi.eu with id 23
+2022-11-09 12:09:14,553 - migrateData - INFO - Vo name vo.example.org with id 22
+2022-11-09 12:09:14,554 - migrateData - INFO - Vo name training.egi.eu with id 4
+2022-11-09 12:09:14,554 - migrateData - INFO - Vo name vo.example.org with id 22
+2022-11-09 12:09:14,555 - migrateData - INFO - Vo name vo.example.org with id 22
+2022-11-09 12:09:14,555 - migrateData - INFO - Vo name vo.example.org with id 22
+2022-11-09 12:09:14,557 - migrateData - INFO - Vo name cloud.grnet.gr with id 13
+2022-11-09 12:09:14,558 - migrateData - INFO - Vo name vo.operas-eu.org with id 25
+2022-11-09 12:09:14,558 - migrateData - INFO - Vo name worsica.vo.incd.pt with id 19
+2022-11-09 12:09:14,559 - migrateData - INFO - Vo name worsica.vo.incd.pt with id 19
+2022-11-09 12:09:14,559 - migrateData - INFO - Vo name service-integration.aai.egi.eu with id 12
+2022-11-09 12:09:14,560 - migrateData - INFO - Vo name checkin-integration with id 3
+2022-11-09 12:09:14,560 - migrateData - INFO - Vo name service-integration.aai.egi.eu with id 12
+2022-11-09 12:09:14,560 - migrateData - INFO - Vo name vo.example.org with id 22
+2022-11-09 12:09:14,561 - migrateData - INFO - Vo name test-TRIPLE with id 17
+2022-11-09 12:09:14,561 - migrateData - INFO - Vo name openEO_test with id 28
+2022-11-09 12:09:14,561 - migrateData - INFO - Vo name stats-viewers.aai.egi.eu with id 18
+2022-11-09 12:09:14,562 - migrateData - INFO - Vo name checkin-integration with id 3
+2022-11-09 12:09:14,562 - migrateData - INFO - Vo name vo.example.org with id 22
+2022-11-09 12:09:14,562 - migrateData - INFO - Vo name checkin-integration with id 3
+2022-11-09 12:09:14,562 - migrateData - INFO - Vo name vo.example.org with id 22
+2022-11-09 12:09:14,563 - migrateData - INFO - Vo name vo.example.org with id 22
+2022-11-09 12:09:14,563 - migrateData - INFO - Vo name vo.example.org with id 22
+2022-11-09 12:09:14,563 - migrateData - INFO - Vo name vo.example.org with id 22
+2022-11-09 12:09:14,563 - migrateData - INFO - Vo name eosc-synergy.eu with id 20
+2022-11-09 12:09:14,564 - migrateData - INFO - Vo name worsica.vo.incd.pt with id 19
+2022-11-09 12:09:14,564 - migrateData - INFO - Vo name worsica.vo.incd.pt with id 19
+2022-11-09 12:09:14,564 - migrateData - INFO - Vo name vo.example.org with id 22
+2022-11-09 12:09:14,564 - migrateData - INFO - Vo name vo.example.org with id 22
+2022-11-09 12:09:14,565 - migrateData - INFO - Vo name vo.access.egi.eu with id 26
+2022-11-09 12:09:14,565 - migrateData - INFO - Vo name vo.access.egi.eu with id 26
+2022-11-09 12:09:14,565 - migrateData - INFO - Vo name vo.access.egi.eu with id 26
+2022-11-09 12:09:14,566 - migrateData - INFO - Vo name vo.example.org with id 22
+2022-11-09 12:09:14,566 - migrateData - INFO - Vo name goc.egi.eu with id 23
+2022-11-09 12:09:14,566 - migrateData - INFO - Vo name AMB with id 9
+2022-11-09 12:09:14,567 - migrateData - INFO - Vo name goc.egi.eu with id 23
+2022-11-09 12:09:14,567 - migrateData - INFO - Vo name service-integration.aai.egi.eu with id 12
+2022-11-09 12:09:14,567 - migrateData - INFO - Vo name service-integration.aai.egi.eu with id 12
+2022-11-09 12:09:14,567 - migrateData - INFO - Vo name vo.example.org with id 22
+2022-11-09 12:09:14,568 - migrateData - INFO - Vo name vo.example.org with id 22
+2022-11-09 12:09:14,569 - migrateData - INFO - Vo name vo.example.org with id 22
+2022-11-09 12:09:14,570 - migrateData - INFO - Vo name vo.example.org with id 22
+2022-11-09 12:09:14,570 - migrateData - INFO - Vo name vo.operas-eu.org with id 25
+2022-11-09 12:09:14,571 - migrateData - INFO - Vo name vo.operas-eu.org with id 25
+2022-11-09 12:09:14,571 - migrateData - INFO - Vo name vo.operas-eu.org with id 25
+2022-11-09 12:09:14,573 - migrateData - INFO - Vo name vo.operas-eu.org with id 25
+2022-11-09 12:09:14,573 - migrateData - INFO - Vo name service-integration.aai.egi.eu with id 12
+2022-11-09 12:09:14,574 - migrateData - INFO - Vo name vo.operas-eu.org with id 25
+2022-11-09 12:09:14,574 - migrateData - INFO - Vo name goc.egi.eu with id 23
+2022-11-09 12:09:14,575 - migrateData - INFO - Vo name vo.operas-eu.org with id 25
+2022-11-09 12:09:14,576 - migrateData - INFO - Vo name vo.operas-eu.org with id 25
+2022-11-09 12:09:14,577 - migrateData - INFO - Vo name vo.example.org with id 22
+2022-11-09 12:09:14,577 - migrateData - INFO - Vo name openEO_test with id 28
+2022-11-09 12:09:14,578 - migrateData - INFO - Vo name vo.example.org with id 22
+2022-11-09 12:09:14,578 - migrateData - INFO - Vo name openEO_test with id 28
+2022-11-09 12:09:14,578 - migrateData - INFO - Vo name vo.example.org with id 22
+2022-11-09 12:09:14,579 - migrateData - INFO - Vo name openEO_test with id 28
+2022-11-09 12:13:36,294 - pgConnector - INFO - 1
+2022-11-09 12:13:36,294 - migrateData - INFO - 1 item
+2022-11-09 12:13:36,297 - pgConnector - INFO - 2
+2022-11-09 12:13:36,297 - migrateData - INFO - 2 item
+2022-11-09 12:13:36,309 - pgConnector - INFO - 3
+2022-11-09 12:13:36,310 - migrateData - INFO - 3 item
+2022-11-09 12:13:36,314 - pgConnector - INFO - 4
+2022-11-09 12:13:36,314 - migrateData - INFO - 4 item
+2022-11-09 12:13:36,316 - pgConnector - INFO - 5
+2022-11-09 12:13:36,317 - migrateData - INFO - 5 item
+2022-11-09 12:13:36,322 - pgConnector - INFO - 6
+2022-11-09 12:13:36,323 - migrateData - INFO - 6 item
+2022-11-09 12:13:36,326 - pgConnector - INFO - 7
+2022-11-09 12:13:36,326 - migrateData - INFO - 7 item
+2022-11-09 12:13:36,329 - pgConnector - INFO - 8
+2022-11-09 12:13:36,329 - migrateData - INFO - 8 item
+2022-11-09 12:13:36,332 - pgConnector - INFO - 9
+2022-11-09 12:13:36,335 - migrateData - INFO - 9 item
+2022-11-09 12:13:36,337 - pgConnector - INFO - 10
+2022-11-09 12:13:36,338 - migrateData - INFO - 10 item
+2022-11-09 12:13:36,341 - pgConnector - INFO - 11
+2022-11-09 12:13:36,343 - migrateData - INFO - 11 item
+2022-11-09 12:13:36,347 - pgConnector - INFO - 12
+2022-11-09 12:13:36,348 - migrateData - INFO - 12 item
+2022-11-09 12:13:36,352 - pgConnector - INFO - 13
+2022-11-09 12:13:36,352 - migrateData - INFO - 13 item
+2022-11-09 12:13:36,355 - pgConnector - INFO - 14
+2022-11-09 12:13:36,356 - migrateData - INFO - 14 item
+2022-11-09 12:13:36,361 - pgConnector - INFO - 15
+2022-11-09 12:13:36,362 - migrateData - INFO - 15 item
+2022-11-09 12:13:36,366 - pgConnector - INFO - 16
+2022-11-09 12:13:36,367 - migrateData - INFO - 16 item
+2022-11-09 12:13:36,370 - pgConnector - INFO - 17
+2022-11-09 12:13:36,372 - migrateData - INFO - 17 item
+2022-11-09 12:13:36,375 - pgConnector - INFO - 18
+2022-11-09 12:13:36,385 - migrateData - INFO - 18 item
+2022-11-09 12:13:36,389 - pgConnector - INFO - 19
+2022-11-09 12:13:36,390 - migrateData - INFO - 19 item
+2022-11-09 12:13:36,392 - pgConnector - INFO - 20
+2022-11-09 12:13:36,393 - migrateData - INFO - 20 item
+2022-11-09 12:13:36,398 - pgConnector - INFO - 21
+2022-11-09 12:13:36,399 - migrateData - INFO - 21 item
+2022-11-09 12:13:36,402 - pgConnector - INFO - 22
+2022-11-09 12:13:36,404 - migrateData - INFO - 22 item
+2022-11-09 12:13:36,407 - pgConnector - INFO - 23
+2022-11-09 12:13:36,408 - migrateData - INFO - 23 item
+2022-11-09 12:13:36,412 - pgConnector - INFO - 24
+2022-11-09 12:13:36,414 - migrateData - INFO - 24 item
+2022-11-09 12:13:36,417 - pgConnector - INFO - 25
+2022-11-09 12:13:36,418 - migrateData - INFO - 25 item
+2022-11-09 12:13:36,420 - pgConnector - INFO - 26
+2022-11-09 12:13:36,422 - migrateData - INFO - 26 item
+2022-11-09 12:13:36,424 - pgConnector - INFO - 27
+2022-11-09 12:13:36,425 - migrateData - INFO - 27 item
+2022-11-09 12:13:36,429 - pgConnector - INFO - 28
+2022-11-09 12:13:36,431 - migrateData - INFO - 28 item
+2022-11-09 12:13:36,433 - migrateData - INFO - 28 vos created
+2022-11-09 12:13:36,442 - migrateData - INFO - Vo name worsica.vo.incd.pt with id 19
+2022-11-09 12:13:36,444 - migrateData - INFO - Vo name WP5-all with id 5
+2022-11-09 12:13:36,445 - migrateData - INFO - Vo name WP5 with id 6
+2022-11-09 12:13:36,450 - migrateData - INFO - Vo name WP5 with id 6
+2022-11-09 12:13:36,452 - migrateData - INFO - Vo name service-integration.aai.egi.eu with id 12
+2022-11-09 12:13:36,458 - migrateData - INFO - Vo name goc.egi.eu with id 23
+2022-11-09 12:13:36,462 - migrateData - INFO - Vo name AMB with id 9
+2022-11-09 12:13:36,463 - migrateData - INFO - Vo name WP5-all with id 5
+2022-11-09 12:13:36,463 - migrateData - INFO - Vo name checkin-integration with id 3
+2022-11-09 12:13:36,464 - migrateData - INFO - Vo name training.egi.eu with id 4
+2022-11-09 12:13:36,464 - migrateData - INFO - Vo name training.egi.eu with id 4
+2022-11-09 12:13:36,464 - migrateData - INFO - Vo name vo.geoss.eu with id 1
+2022-11-09 12:13:36,465 - migrateData - INFO - Vo name checkin-integration with id 3
+2022-11-09 12:13:36,466 - migrateData - INFO - Vo name onboarding.egi.eu with id 27
+2022-11-09 12:13:36,466 - migrateData - INFO - Vo name vo.example.org with id 22
+2022-11-09 12:13:36,466 - migrateData - INFO - Vo name training.egi.eu with id 4
+2022-11-09 12:13:36,467 - migrateData - INFO - Vo name training.egi.eu with id 4
+2022-11-09 12:13:36,467 - migrateData - INFO - Vo name vo.example.org with id 22
+2022-11-09 12:13:36,467 - migrateData - INFO - Vo name vo.access.egi.eu with id 26
+2022-11-09 12:13:36,468 - migrateData - INFO - Vo name training.egi.eu with id 4
+2022-11-09 12:13:36,469 - migrateData - INFO - Vo name training.egi.eu with id 4
+2022-11-09 12:13:36,469 - migrateData - INFO - Vo name training.egi.eu with id 4
+2022-11-09 12:13:36,471 - migrateData - INFO - Vo name service-integration.aai.egi.eu with id 12
+2022-11-09 12:13:36,471 - migrateData - INFO - Vo name checkin-integration with id 3
+2022-11-09 12:13:36,473 - migrateData - INFO - Vo name vo.dariah.eu with id 2
+2022-11-09 12:13:36,474 - migrateData - INFO - Vo name training.egi.eu with id 4
+2022-11-09 12:13:36,475 - migrateData - INFO - Vo name rcauth.eu with id 15
+2022-11-09 12:13:36,476 - migrateData - INFO - Vo name vo.example.org with id 22
+2022-11-09 12:13:36,477 - migrateData - INFO - Vo name eiscat.se with id 24
+2022-11-09 12:13:36,479 - migrateData - INFO - Vo name WP5-all with id 5
+2022-11-09 12:13:36,480 - migrateData - INFO - Vo name vo.geoss.eu with id 1
+2022-11-09 12:13:36,482 - migrateData - INFO - Vo name test-sso-confluence with id 11
+2022-11-09 12:13:36,483 - migrateData - INFO - Vo name test-sso-mailman with id 10
+2022-11-09 12:13:36,485 - migrateData - INFO - Vo name test-sso-confluence with id 11
+2022-11-09 12:13:36,487 - migrateData - INFO - Vo name test-sso-mailman with id 10
+2022-11-09 12:13:36,488 - migrateData - INFO - Vo name checkin-integration with id 3
+2022-11-09 12:13:36,490 - migrateData - INFO - Vo name rcauth.eu with id 15
+2022-11-09 12:13:36,493 - migrateData - INFO - Vo name vo.geoss.eu with id 1
+2022-11-09 12:13:36,493 - migrateData - INFO - Vo name vo.example.org with id 22
+2022-11-09 12:13:36,494 - migrateData - INFO - Vo name cloud.grnet.gr with id 13
+2022-11-09 12:13:36,495 - migrateData - INFO - Vo name service-integration.aai.egi.eu with id 12
+2022-11-09 12:13:36,496 - migrateData - INFO - Vo name cloud.grnet.gr with id 13
+2022-11-09 12:13:36,497 - migrateData - INFO - Vo name ggus-supporters.egi.eu with id 14
+2022-11-09 12:13:36,498 - migrateData - INFO - Vo name AMB with id 9
+2022-11-09 12:13:36,499 - migrateData - INFO - Vo name goc.egi.eu with id 23
+2022-11-09 12:13:36,500 - migrateData - INFO - Vo name vo.parent.example.eu with id 16
+2022-11-09 12:13:36,501 - migrateData - INFO - Vo name vo.example.org with id 22
+2022-11-09 12:13:36,502 - migrateData - INFO - Vo name vo.geoss.eu with id 1
+2022-11-09 12:13:36,503 - migrateData - INFO - Vo name training.egi.eu with id 4
+2022-11-09 12:13:36,503 - migrateData - INFO - Vo name vo.example.org with id 22
+2022-11-09 12:13:36,503 - migrateData - INFO - Vo name vo.dariah.eu with id 2
+2022-11-09 12:13:36,504 - migrateData - INFO - Vo name checkin-integration with id 3
+2022-11-09 12:13:36,504 - migrateData - INFO - Vo name vo.dariah.eu with id 2
+2022-11-09 12:13:36,504 - migrateData - INFO - Vo name vo.example.org with id 22
+2022-11-09 12:13:36,504 - migrateData - INFO - Vo name vo.geoss.eu with id 1
+2022-11-09 12:13:36,504 - migrateData - INFO - Vo name vo.example.org with id 22
+2022-11-09 12:13:36,505 - migrateData - INFO - Vo name vo.example.org with id 22
+2022-11-09 12:13:36,505 - migrateData - INFO - Vo name ggus-supporters.egi.eu with id 14
+2022-11-09 12:13:36,505 - migrateData - INFO - Vo name radio-observatory with id 21
+2022-11-09 12:13:36,505 - migrateData - INFO - Vo name radio-observatory with id 21
+2022-11-09 12:13:36,506 - migrateData - INFO - Vo name radio-observatory with id 21
+2022-11-09 12:13:36,506 - migrateData - INFO - Vo name radio-observatory with id 21
+2022-11-09 12:13:36,507 - migrateData - INFO - Vo name checkin-integration with id 3
+2022-11-09 12:13:36,507 - migrateData - INFO - Vo name radio-observatory with id 21
+2022-11-09 12:13:36,507 - migrateData - INFO - Vo name radio-observatory with id 21
+2022-11-09 12:13:36,508 - migrateData - INFO - Vo name radio-observatory with id 21
+2022-11-09 12:13:36,508 - migrateData - INFO - Vo name radio-observatory with id 21
+2022-11-09 12:13:36,508 - migrateData - INFO - Vo name radio-observatory with id 21
+2022-11-09 12:13:36,509 - migrateData - INFO - Vo name radio-observatory with id 21
+2022-11-09 12:13:36,509 - migrateData - INFO - Vo name vo.example.org with id 22
+2022-11-09 12:13:36,509 - migrateData - INFO - Vo name vo.example.org with id 22
+2022-11-09 12:13:36,509 - migrateData - INFO - Vo name vo.example.org with id 22
+2022-11-09 12:13:36,510 - migrateData - INFO - Vo name vo.example.org with id 22
+2022-11-09 12:13:36,511 - migrateData - INFO - Vo name vo.example.org with id 22
+2022-11-09 12:13:36,513 - migrateData - INFO - Vo name vo.dariah.eu with id 2
+2022-11-09 12:13:36,514 - migrateData - INFO - Vo name vo.example.org with id 22
+2022-11-09 12:13:36,514 - migrateData - INFO - Vo name goc.egi.eu with id 23
+2022-11-09 12:13:36,515 - migrateData - INFO - Vo name vo.example.org with id 22
+2022-11-09 12:13:36,516 - migrateData - INFO - Vo name training.egi.eu with id 4
+2022-11-09 12:13:36,516 - migrateData - INFO - Vo name vo.example.org with id 22
+2022-11-09 12:13:36,519 - migrateData - INFO - Vo name vo.example.org with id 22
+2022-11-09 12:13:36,520 - migrateData - INFO - Vo name vo.example.org with id 22
+2022-11-09 12:13:36,521 - migrateData - INFO - Vo name cloud.grnet.gr with id 13
+2022-11-09 12:13:36,522 - migrateData - INFO - Vo name vo.operas-eu.org with id 25
+2022-11-09 12:13:36,523 - migrateData - INFO - Vo name worsica.vo.incd.pt with id 19
+2022-11-09 12:13:36,524 - migrateData - INFO - Vo name worsica.vo.incd.pt with id 19
+2022-11-09 12:13:36,524 - migrateData - INFO - Vo name service-integration.aai.egi.eu with id 12
+2022-11-09 12:13:36,525 - migrateData - INFO - Vo name checkin-integration with id 3
+2022-11-09 12:13:36,526 - migrateData - INFO - Vo name service-integration.aai.egi.eu with id 12
+2022-11-09 12:13:36,526 - migrateData - INFO - Vo name vo.example.org with id 22
+2022-11-09 12:13:36,527 - migrateData - INFO - Vo name test-TRIPLE with id 17
+2022-11-09 12:13:36,528 - migrateData - INFO - Vo name openEO_test with id 28
+2022-11-09 12:13:36,528 - migrateData - INFO - Vo name stats-viewers.aai.egi.eu with id 18
+2022-11-09 12:13:36,529 - migrateData - INFO - Vo name checkin-integration with id 3
+2022-11-09 12:13:36,529 - migrateData - INFO - Vo name vo.example.org with id 22
+2022-11-09 12:13:36,529 - migrateData - INFO - Vo name checkin-integration with id 3
+2022-11-09 12:13:36,530 - migrateData - INFO - Vo name vo.example.org with id 22
+2022-11-09 12:13:36,530 - migrateData - INFO - Vo name vo.example.org with id 22
+2022-11-09 12:13:36,531 - migrateData - INFO - Vo name vo.example.org with id 22
+2022-11-09 12:13:36,531 - migrateData - INFO - Vo name vo.example.org with id 22
+2022-11-09 12:13:36,531 - migrateData - INFO - Vo name eosc-synergy.eu with id 20
+2022-11-09 12:13:36,532 - migrateData - INFO - Vo name worsica.vo.incd.pt with id 19
+2022-11-09 12:13:36,532 - migrateData - INFO - Vo name worsica.vo.incd.pt with id 19
+2022-11-09 12:13:36,533 - migrateData - INFO - Vo name vo.example.org with id 22
+2022-11-09 12:13:36,533 - migrateData - INFO - Vo name vo.example.org with id 22
+2022-11-09 12:13:36,533 - migrateData - INFO - Vo name vo.access.egi.eu with id 26
+2022-11-09 12:13:36,534 - migrateData - INFO - Vo name vo.access.egi.eu with id 26
+2022-11-09 12:13:36,534 - migrateData - INFO - Vo name vo.access.egi.eu with id 26
+2022-11-09 12:13:36,535 - migrateData - INFO - Vo name vo.example.org with id 22
+2022-11-09 12:13:36,535 - migrateData - INFO - Vo name goc.egi.eu with id 23
+2022-11-09 12:13:36,536 - migrateData - INFO - Vo name AMB with id 9
+2022-11-09 12:13:36,537 - migrateData - INFO - Vo name goc.egi.eu with id 23
+2022-11-09 12:13:36,537 - migrateData - INFO - Vo name service-integration.aai.egi.eu with id 12
+2022-11-09 12:13:36,537 - migrateData - INFO - Vo name service-integration.aai.egi.eu with id 12
+2022-11-09 12:13:36,538 - migrateData - INFO - Vo name vo.example.org with id 22
+2022-11-09 12:13:36,538 - migrateData - INFO - Vo name vo.example.org with id 22
+2022-11-09 12:13:36,539 - migrateData - INFO - Vo name vo.example.org with id 22
+2022-11-09 12:13:36,539 - migrateData - INFO - Vo name vo.example.org with id 22
+2022-11-09 12:13:36,540 - migrateData - INFO - Vo name vo.operas-eu.org with id 25
+2022-11-09 12:13:36,540 - migrateData - INFO - Vo name vo.operas-eu.org with id 25
+2022-11-09 12:13:36,541 - migrateData - INFO - Vo name vo.operas-eu.org with id 25
+2022-11-09 12:13:36,542 - migrateData - INFO - Vo name vo.operas-eu.org with id 25
+2022-11-09 12:13:36,543 - migrateData - INFO - Vo name service-integration.aai.egi.eu with id 12
+2022-11-09 12:13:36,544 - migrateData - INFO - Vo name vo.operas-eu.org with id 25
+2022-11-09 12:13:36,544 - migrateData - INFO - Vo name goc.egi.eu with id 23
+2022-11-09 12:13:36,545 - migrateData - INFO - Vo name vo.operas-eu.org with id 25
+2022-11-09 12:13:36,546 - migrateData - INFO - Vo name vo.operas-eu.org with id 25
+2022-11-09 12:13:36,546 - migrateData - INFO - Vo name vo.example.org with id 22
+2022-11-09 12:13:36,547 - migrateData - INFO - Vo name openEO_test with id 28
+2022-11-09 12:13:36,547 - migrateData - INFO - Vo name vo.example.org with id 22
+2022-11-09 12:13:36,547 - migrateData - INFO - Vo name openEO_test with id 28
+2022-11-09 12:13:36,548 - migrateData - INFO - Vo name vo.example.org with id 22
+2022-11-09 12:13:36,549 - migrateData - INFO - Vo name openEO_test with id 28
