@@ -1,18 +1,16 @@
 import { useState, useContext, useEffect } from "react";
+
 import { Chart } from "react-google-charts";
 import "../../app.css";
 import { client } from '../../utils/api';
-import { communitiesGroupBy } from "../../utils/queryKeys";
-import { getCommunitiesGroupBy } from "../../utils/queries";
-import dateFormat from 'dateformat';
-import { useQuery } from "react-query";
 import Select from 'react-select';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import ListCommunities from "../listCommunities";
+import ListCommunities from "./listCommunities";
 import { convertDateByGroup, getWeekNumber } from "../Common/utils";
+
 
 export const options = {
     year: {
@@ -46,7 +44,7 @@ const options_group_by = [
     { value: 'week', label: 'weekly' },
 ];
 
-const CommunitiesChart = () => {
+const CommunitiesChart = (parameters) => {
 
     const [selected, setSelected] = useState(options_group_by[0].value);
     const [communities, setCommunities] = useState();
@@ -54,16 +52,24 @@ const CommunitiesChart = () => {
     var communitiesArray = [["Date", "Communities"]];
     var communitiesListArray = [];
     const [global_options, setGlobalOptions] = useState();
+    
 
     useEffect(() => {
-
+        console.log(parameters["tenantId"])
         var hticksArray = [];
         var fValues = [['Date', 'Count', { 'type': 'string', 'role': 'tooltip', 'p': { 'html': true } }]]
         // Get data for the last 4 years
         // TODO: change it to last 1 year
         console.log(selected)
         console.log(options[selected])
-        client.get("communities_groupby/" + selected, { params: { 'interval': selected, 'count_interval': options[selected]["count_interval"] } }).
+        client.get("communities_groupby/" + selected, 
+        { 
+            params: 
+            { 'interval': selected, 
+              'count_interval': options[selected]["count_interval"], 
+              'tenant_id': parameters["tenantId"], 
+            } 
+        }).
             then(response => {
                 console.log(response);
 
@@ -141,7 +147,7 @@ const CommunitiesChart = () => {
 
             })
 
-    }, [selected])
+    }, [selected, parameters])
 
     
 
@@ -150,6 +156,7 @@ const CommunitiesChart = () => {
         setSelected(event.value);
     };
 
+    
     return <Row>
                 <Col lg={9}>
                     <Chart chartType="ColumnChart" width="100%" height="400px" data={communities}

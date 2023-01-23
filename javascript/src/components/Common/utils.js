@@ -66,3 +66,76 @@ export function convertToList(data, seperator) {
     })
     return lis
 }
+
+// Calculate Legends Area for Map
+export function calculateLegends(maxSum) {
+    // Set Number of Legends
+    var numLegends = maxSum < 5 ? maxSum : 5;
+    var spaces = Math.round(maxSum / numLegends);
+    var legends = [];
+    var fill = ["#09EBEE", "#19CEEB", "#28ACEA", "#388EE9", "#3D76E0"];
+    for(var i = 0; i < numLegends; i++) {
+        var maxValue = ((i + 1) != numLegends ? ((i + 1) * spaces) : maxSum);
+        var legend = {
+            min: i * spaces,
+            max: maxValue,
+            attrs: {
+                fill: fill[i]
+            },
+            label: i * spaces + "-" + maxValue
+        }
+        legends.push(legend)
+    }
+    return legends;
+}
+
+export  function setMapConfiguration() {
+   return {
+        name: "world_countries_mercator",
+        zoom: {
+            enabled: true,
+            maxLevel: 15,
+            init: {
+                latitude: 38.938048,
+                longitude: -2.924315,
+                level: 5
+            }
+        },
+        defaultArea: {
+            attrs: {
+                fill: "#ccc", // my function for color i want to define
+                stroke: "#5d5d5d",
+                "stroke-width": 0.2,
+                "stroke-linejoin": "round",
+
+            },
+            attrsHover: {
+                fill: "#E98300",
+                animDuration: 300
+            },
+
+        },
+    }
+}
+
+export function setLegend (legendLabel, legends) {
+    return {
+        area: {
+            title: legendLabel,
+            titleAttrs: { "font": "unset", "font-size": "12px", "font-weight": "bold" },
+            slices: legends
+        }
+    }
+}
+
+// Find the min and max values at an Array
+export function calculateMinMax(dataArray) {
+    let min = dataArray[0][0]['min'], max = dataArray[0][0]['max'] 
+    for (let i = 1; i < dataArray.length; i++) {
+        let minValue = dataArray[i][0]['min']
+        let maxValue = dataArray[i][0]['max']
+        min = (minValue < min) ? minValue : min
+        max = (maxValue > max) ? maxValue : max
+      }
+    return [min, max]
+}

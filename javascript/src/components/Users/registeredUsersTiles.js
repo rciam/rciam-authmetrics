@@ -8,17 +8,18 @@ import Col from 'react-bootstrap/Col';
 import { convertDateByGroup, getWeekNumber } from "../Common/utils";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-const RegisteredUsersTiles = () => {
+const RegisteredUsersTiles = (parameters) => {
     const [tiles, setTiles] = useState({});
     useEffect(() => {
         Promise.all([
-            client.get("registered_users_countby"),
             client.get("registered_users_countby",
-                { params: { 'interval': 'year', 'count_interval': '1' } }),
+            { params: { 'tenant_id': parameters['tenantId'] } }),
             client.get("registered_users_countby",
-                { params: { 'interval': 'days', 'count_interval': '30' } }),
+                { params: { 'interval': 'year', 'count_interval': '1', 'tenant_id': parameters['tenantId'] } }),
             client.get("registered_users_countby",
-                { params: { 'interval': 'days', 'count_interval': '7' } })
+                { params: { 'interval': 'days', 'count_interval': '30', 'tenant_id': parameters['tenantId'] } }),
+            client.get("registered_users_countby",
+                { params: { 'interval': 'days', 'count_interval': '7', 'tenant_id': parameters['tenantId'] } })
         ]).then(function (responses) {
             // Get a JSON object from each of the responses
             return Promise.all(responses.map(function (response) {
@@ -30,8 +31,8 @@ const RegisteredUsersTiles = () => {
             console.log(data);
             var tilesArray = {}
             data.forEach(element => {
-
-                if (element["config"]["params"]) {
+                console.log(element)
+                if (element["config"]["params"]["interval"]) {
                     var name = element["config"]["params"]["interval"] + "_" + element["config"]["params"]["count_interval"]
                     tilesArray[[name]] = element["data"][0]["count"]
                 }

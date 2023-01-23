@@ -36,7 +36,7 @@ const options_group_by = [
     { value: 'week', label: 'weekly' },
 ];
 
-const RegisteredUsersChart = () => {
+const RegisteredUsersChart = (parameters) => {
     const [selected, setSelected] = useState(options_group_by[0].value);
     const [registeredUsers, setRegisteredUsers] = useState();
     var registeredUsersArray = [["Date", "Registered Users"]];
@@ -48,7 +48,14 @@ const RegisteredUsersChart = () => {
         var fValues = [['Date', 'Count', { 'type': 'string', 'role': 'tooltip', 'p': { 'html': true } }]]
         // Get data for the last 4 years
         // TODO: change it to last 1 year
-        client.get("registered_users_groupby/" + selected, { params: { 'interval': 'year', 'count_interval': '8' } }).
+        client.get("registered_users_groupby/" + selected, 
+        { 
+            params: { 
+                'interval': 'year', 
+                'count_interval': '8',
+                'tenant_id': parameters['tenantId'] 
+            }
+        }).
             then(response => {
                
                 response["data"].forEach(element => {

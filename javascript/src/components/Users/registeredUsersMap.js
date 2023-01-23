@@ -9,10 +9,17 @@ import 'jquery-mapael';
 import 'jquery-mapael/js/maps/world_countries_mercator.js';
 
 
-const RegisteredUsersMap = ({startDate, endDate}) => {
+const RegisteredUsersMap = ({startDate, endDate, tenantId}) => {
       
     useEffect(() => {
-        client.get("registered_users_country", {params: {'startDate':startDate, 'endDate':endDate}}).then(response => {
+        client.get("registered_users_country", 
+            {
+                params: {
+                    'startDate':startDate, 
+                    'endDate':endDate,
+                    'tenant_id':tenantId
+                }
+            }).then(response => {
             createMap("usersMap", response["data"])
         })
     }, [startDate, endDate])

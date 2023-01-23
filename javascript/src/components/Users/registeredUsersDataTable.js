@@ -23,24 +23,33 @@ const dropdownOptions = [
     { value: 'year', label: 'Yearly Basis' },
 ]
 
-const RegisteredUsersDataTable =() => {
+const RegisteredUsersDataTable =({startDateHandler, endDateHandler, tenantId}) => {
     const [usersPerCountryPerPeriod, setusersPerCountryPerPeriod] = useState();
     var usersPerCountryPerPeriodArray = [];
+    const [minDate, setMinDate] = useState("");
     const [startDate, setStartDate] = useState();
     const [endDate, setEndDate] = useState();
     useEffect(() => {
-        client.get("registered_users_country_group_by/month").
+        client.get("registered_users_country_group_by/month", { 
+            params: { 
+                'tenant_id': tenantId 
+            }
+        }).
         then(response => {
             console.log(response);
+            var minDateFromData = ""
             response["data"].forEach(element => {     
                 //var community = {"created":element.created, "name":element.community_info.name}
                 
                 var range_date = new Date(element.range_date);
-                
+                if (minDateFromData == "") {
+                    minDateFromData = new Date(element.min_date)
+                }
                 var perPeriod = { "Date": dateFormat(range_date, "yyyy-mm"), "Number of Registered Users": element.count, "Registered Users per country": element.countries}
                 usersPerCountryPerPeriodArray.push(perPeriod)
                 
             });
+            setMinDate(minDateFromData)
             setusersPerCountryPerPeriod(usersPerCountryPerPeriodArray)
           })
         // 
@@ -63,7 +72,18 @@ const RegisteredUsersDataTable =() => {
                 });
             return
         }
-        client.get("registered_users_country_group_by/"+event.value, {params: {'startDate':startDate, 'endDate':endDate}}).
+        // set parent states
+        startDateHandler(startDate)
+        endDateHandler(endDate)
+        client.get("registered_users_country_group_by/" + event.value, 
+            {
+                params: 
+                {
+                    'startDate':startDate, 
+                    'endDate':endDate,
+                    'tenant_id':tenantId
+                }
+            }).
         then(response => {
             //console.log(response);
             response["data"].forEach(element => {     
@@ -77,8 +97,7 @@ const RegisteredUsersDataTable =() => {
             // This is essential: We must destroy the datatable in order to be refreshed with the new data
             $("#table").DataTable().destroy()
             setusersPerCountryPerPeriod(usersPerCountryPerPeriodArray)
-            
-            
+
           })
         //setSelected(event.value);
     };
@@ -86,8 +105,8 @@ const RegisteredUsersDataTable =() => {
     return <Row>
             <Col lg={12} className="range_inputs">
                 
-                From: <DatePicker selected={startDate} onChange={(date:Date) => setStartDate(date)}></DatePicker>
-                To: <DatePicker selected={endDate} onChange={(date:Date) => setEndDate(date)}></DatePicker>
+                From: <DatePicker selected={startDate} minDate={minDate} dateFormat="dd/MM/yyyy" onChange={(date:Date) => setStartDate(date)}></DatePicker>
+                To: <DatePicker selected={endDate} minDate={minDate} dateFormat="dd/MM/yyyy" onChange={(date:Date) => setEndDate(date)}></DatePicker>
                 <Dropdown placeholder='Filter' options={dropdownOptions} onChange={handleChange}/>
                 <ToastContainer position="top-center"
                     autoClose={5000}
@@ -101,7 +120,7 @@ const RegisteredUsersDataTable =() => {
                     theme="dark" />
             </Col>
             <Col lg={12}>
-                <Datatable items={usersPerCountryPerPeriod} columnSep="Registered Users per country"></Datatable>
+                <Datatable dataTableId="table" items={usersPerCountryPerPeriod} columnSep="Registered Users per country"></Datatable>
             </Col>
         </Row>
 

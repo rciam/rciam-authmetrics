@@ -89,7 +89,11 @@ button.reg-form {
 .react-datepicker__tab-loop {
     position: absolute!important;
 }
-/* Map Style*/
+/* Datatable */
+.table-responsive {
+    overflow-x: unset!important;
+}
+/* Map Style */
 .communityMembersByCountry {
     min-height: 20em;
     align-content: baseline;

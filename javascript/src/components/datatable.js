@@ -20,14 +20,17 @@ class Datatable extends Component {
    
     componentDidUpdate(prevProps, prevState) {
         console.log(this.props.items)
+        var dataTableId = this.props.dataTableId
         if (prevProps.items !== this.props.items) {   
+            
             this.setState({
-                items: this.props.items
+                items: this.props.items,
+                dataTableId: this.props.dataTableId
             }) 
         if (!$.fn.DataTable.isDataTable("#myTable")) {
             setTimeout(function () {
-            
-            table = $("#table").DataTable({
+            console.log(dataTableId)
+            table = $("#" + dataTableId).DataTable({
                 pagingType: "full_numbers",
                 pageLength: 10,
                 //processing: true,
@@ -160,7 +163,7 @@ class Datatable extends Component {
     }
 
     showTable = (items) => {
-        if(!items) return
+        if(!items || items.length==0) return (<tr><td></td><td>No data available in the table</td></tr>)
         // try {
             return items.map((item, index) => {       
                 
@@ -194,10 +197,12 @@ class Datatable extends Component {
                 <tr>
                     <th className="text-uppercase text-secondary text-sm font-weight-bolder opacity-7 ps-2">S/N</th>
                     {
-
+                        items && items.length>0 ?
                         Object.keys(items[0]).map((key, keyIndex) => (
                             <th className="text-uppercase text-secondary text-sm font-weight-bolder opacity-7 ps-2">{key}</th>
                         ))
+                        : 
+                        <th className="text-uppercase text-secondary text-sm font-weight-bolder opacity-7 ps-2">Data</th>
                     }
                 </tr>
             )
@@ -211,7 +216,7 @@ class Datatable extends Component {
         return (
             <div className="container py-4">
                 <div className="table-responsive p-0 pb-2">
-                    <table id="table" className="table align-items-center justify-content-center mb-0">
+                    <table id={this.props.dataTableId} className="table align-items-center justify-content-center mb-0">
                         <thead>
                             {this.showColumns(this.props.items)}
                         </thead>

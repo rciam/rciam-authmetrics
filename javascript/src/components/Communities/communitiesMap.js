@@ -6,9 +6,10 @@ import { client } from '../../utils/api';
 import $, { map } from "jquery";
 import 'jquery-mapael';
 import 'jquery-mapael/js/maps/world_countries_mercator.js';
+import { calculateLegends, setMapConfiguration, setLegend } from "../Common/utils";
 
 
-const CommunitiesMap = () => {
+const CommunitiesMap = (parameters) => {
     const StatusEnumeration =  {
         'A' : 'Active',
         'GP': 'Grace Period',
@@ -20,7 +21,13 @@ const CommunitiesMap = () => {
     const [membersStatus, setMembersStatus] = useState([]);
     var communitiesArray = [];
     useEffect(() => {
-        client.get("communities").then(response => {
+        client.get("communities", 
+        { 
+            params: 
+            { 
+              'tenant_id': parameters["tenantId"], 
+            } 
+        }).then(response => {
 
             response["data"].forEach(element => {
                 var community = { label: element.community_info.name, value: element.community_id }
@@ -65,58 +72,12 @@ const CommunitiesMap = () => {
             }
             i++;
         })
-        // Set Number of Legends
-        var numLegends = maxSum < 5 ? maxSum : 5;
-        var spaces = Math.round(maxSum / numLegends);
-        var legends = [];
-        var fill = ["#09EBEE", "#19CEEB", "#28ACEA", "#388EE9", "#3D76E0"];
-        for(i = 0; i < numLegends; i++) {
-            var maxValue = ((i + 1) != numLegends ? ((i + 1) * spaces) : maxSum);
-            var legend = {
-                min: i * spaces,
-                max: maxValue,
-                attrs: {
-                    fill: fill[i]
-                },
-                label: i * spaces + "-" + maxValue
-            }
-            legends.push(legend)
-        }
+        // Calculate Legends
+        var legends = calculateLegends(maxSum)
         $(".areaLegend").show()
         $("#" + id).mapael({
-            map: {
-                name: "world_countries_mercator",
-                zoom: {
-                    enabled: true,
-                    maxLevel: 15,
-                    init: {
-                        latitude: 40.717079,
-                        longitude: -74.00116,
-                        level: 5
-                    }
-                },
-                defaultArea: {
-                    attrs: {
-                        fill: "#ccc", // my function for color i want to define
-                        stroke: "#5d5d5d",
-                        "stroke-width": 0.2,
-                        "stroke-linejoin": "round",
-    
-                    },
-                    attrsHover: {
-                        fill: "#E98300",
-                        animDuration: 300
-                    },
-    
-                },
-            },
-            legend: {
-                area: {
-                    title: legendLabel,
-                    titleAttrs: { "font": "unset", "font-size": "12px", "font-weight": "bold" },
-                    slices: legends
-                }
-            },
+            map: setMapConfiguration(),
+            legend: setLegend(legendLabel, legends),
             areas: areas
         })
        
@@ -127,7 +88,7 @@ const CommunitiesMap = () => {
 
         var community_id = event.value;
         console.log(community_id)
-        client.get("members_bystatus", { params: { 'community_id': community_id } }).then(response => {
+        client.get("members_bystatus", { params: { 'community_id': community_id, 'tenant_id': parameters['tenantId'] } }).then(response => {
             var statuses = { 'A': 0, 'GP': 0, 'O': 0 }
             //console.log(response["data"][0])
             response["data"].forEach(function (memberStatus, index) {
@@ -141,15 +102,24 @@ const CommunitiesMap = () => {
             })
             setMembersStatus(statuses)
         })
-        client.get("communities/" + community_id).then(result => {
-            //console.log(result)
+        client.get("communities/" + community_id, 
+        { 
+            params: { 
+              'tenant_id': parameters["tenantId"], 
+            } 
+        }).then(result => {
+            console.log(result)
             var community = result["data"]
-            setSelectedCommunity({ "name": community["community_info"]["name"], "description": community["community_info"]["description"] })
-            
-
+            setSelectedCommunity({ "name": community[0]["name"], "description": community[0]["description"] })
         }
         )
-        client.get("country_stats_by_vo/" + community_id).then(result => {
+        client.get("country_stats_by_vo/" + community_id, 
+        { 
+            params: 
+            { 
+              'tenant_id': parameters["tenantId"], 
+            } 
+        }).then(result => {
             console.log(result)
             var stats = result["data"]
             createMap("communitiesMap", stats)

@@ -6,7 +6,9 @@ import ErrorPage from "./Pages/Error";
 import {QueryClient, QueryClientProvider} from 'react-query'
 import Communities from "./Pages/Communities";
 import Users from "./Pages/Users";
-import RegisteredUsers from "./Pages/RegisteredUsers";
+import Dashboard from "./Pages/Dashboard";
+import Idps from "./Pages/Idps";
+import Sps from "./Pages/Sps";
 
 function App() {
     // const queryClient = new QueryClient()
@@ -19,9 +21,16 @@ function App() {
                     {/* <Route path="/register" element={<Register/>}/> */}
                     {/* <Route path="/" element={<Login/>}/> */}
                     {/* <Route path="*" element={<ErrorPage/>}/> */}
-                    <Route path="/" element={<Communities/>}/> 
+                    {/* <Route path="/" element={<Dashboard/>}/> 
                     <Route path="/communities" element={<Communities/>}/>
                     <Route path="/users" element={<Users/>}/>
+                    
+                    <Route path="/sps" element={<Sps/>}/> */}
+                    <Route path="/:project/:environment" element={<Dashboard/>}/>
+                    <Route path="/:project/:environment/communities" element={<Communities/>}/>
+                    <Route path="/:project/:environment/users" element={<Users/>}/>
+                    <Route path="/:project/:environment/idps" element={<Idps/>}/>
+                    <Route path="/:project/:environment/sps" element={<Sps/>}/>
                 </Routes>
             {/* </QueryClientProvider> */}
         </Router>
