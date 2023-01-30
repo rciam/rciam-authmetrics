@@ -2,13 +2,13 @@ import { useState, useContext, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { client } from '../../utils/api';
 import Container from "react-bootstrap/Container";
-import LoginDataTable from "../../components/Dashboard/loginDataTable";
-import LoginIdpPieChart from "../../components/Dashboard/loginIdpPieChart";
+// import LoginDataTable from "../../components/Dashboard/loginDataTable";
+// import LoginIdpPieChart from "../../components/Dashboard/loginIdpPieChart";
 import LoginLineChart from "../../components/Dashboard/loginLineChart";
-import LoginsMap from "../../components/Dashboard/loginsMap";
-import LoginSpPieChart from "../../components/Dashboard/loginSpPieChart";
+// import LoginsMap from "../../components/Dashboard/loginsMap";
+// import LoginSpPieChart from "../../components/Dashboard/loginSpPieChart";
 import LoginTiles from "../../components/Dashboard/loginTiles";
-import IdpModal from "../Idps/idpModal";
+// import IdpModal from "../Idps/idpModal";
 
 const Dashboard = () => {
     const [startDate, setStartDate] = useState("");
@@ -36,7 +36,7 @@ const Dashboard = () => {
         <LoginDataTable startDateHandler={setStartDate} endDateHandler={setEndDate} tenantId={tenantId}></LoginDataTable>
         <LoginsMap startDate={startDate} endDate={endDate} tenantId={tenantId}></LoginsMap> */}
 
-        <IdpModal tenantId={tenantId} showModal={showModal} setShowModalHandler={setShowModal}></IdpModal>
+        {/* <IdpModal tenantId={tenantId} showModal={showModal} setShowModalHandler={setShowModal}></IdpModal> */}
     </Container>)
 
 }
