@@ -34,9 +34,9 @@ jobs:
         with:
           name: react-github-actions-build
           path: | 
-            /home/runner/work/rciam-metrics-dev/rciam-metrics-dev/javascript/build
-            /home/runner/work/rciam-metrics-dev/rciam-metrics-dev/app
-            /home/runner/work/rciam-metrics-dev/rciam-metrics-dev/requirements.txt
+            ${{ github.workspace }}/javascript/build
+            ${{ github.workspace }}/app
+            ${{ github.workspace }}/requirements.txt
       - run: echo "🍏 This job's status is ${{ job.status }}."
   release:
     runs-on: ubuntu-latest
