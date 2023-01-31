@@ -76,3 +76,5 @@ jobs:
           artifacts: react-github-actions-release-build.zip
           body: Test release action
           token: ${{ secrets.GITHUB_TOKEN }}
+          tag: v.1
+          commit: devel
