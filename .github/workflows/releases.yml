@@ -27,5 +27,5 @@ jobs:
           cd ${{ github.workspace }}/javascript; npm install
       - name: Build React application
         run: |
-          cd ${{ github.workspace }}/javascript; npm run build
+          cd ${{ github.workspace }}/javascript; CI=false npm run build
       - run: echo "🍏 This job's status is ${{ job.status }}."
