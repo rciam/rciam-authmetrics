@@ -29,6 +29,12 @@ jobs:
         run: |
           cd ${{ github.workspace }}/javascript; CI=false npm run build
       # Share artifact inside workflow
+      - name: List files in the repository
+        run: |
+          ls ${{ github.workspace }}
+      - name: List files in the repository
+        run: |
+          ls ${{ github.workspace }}/javascript
       - name: Share artifact inside workflow
         uses: actions/upload-artifact@v3
         with:
