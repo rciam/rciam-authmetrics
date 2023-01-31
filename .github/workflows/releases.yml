@@ -56,8 +56,11 @@ jobs:
         with:
           name: react-github-actions-build
       # Zip the build using external action
+      - name: List files in the repository
+        run: |
+          ls ${{ github.workspace }}/rciam-metrics-dev
       - name: Zip artifact for deployment
-        run: zip react-github-actions-release-build.zip ${{ github.workspace }}/rciam-metrics-dev/react-github-actions-build -r
+        run: zip react-github-actions-release-build.zip ${{ github.workspace }}/rciam-metrics-dev -r
          
       # Upload as an artifact of the current workflow
       - name: Upload build zip artifact
