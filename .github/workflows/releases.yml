@@ -56,11 +56,9 @@ jobs:
         with:
           name: react-github-actions-build
       # Zip the build using external action
-      - name: Zip build
-        uses: thedoctor0/zip-release@master
-        with:
-          filename: react-github-actions-release-build.zip
-          path: react-github-actions-build
+      - name: Zip artifact for deployment
+        run: zip react-github-actions-release-build.zip react-github-actions-build -r
+         
       # Upload as an artifact of the current workflow
       - name: Upload build zip artifact
         uses: actions/upload-artifact@v1
