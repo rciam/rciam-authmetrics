@@ -30,7 +30,7 @@ jobs:
           cd ${{ github.workspace }}/javascript; CI=false npm run build
       # Share artifact inside workflow
       - name: Share artifact inside workflow
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v3
         with:
           name: react-github-actions-build
           path: | 
@@ -46,7 +46,7 @@ jobs:
     steps:
       # Download previously shared build
       - name: Get artifact
-        uses: actions/download-artifact@v1
+        uses: actions/download-artifact@v3
         with:
           name: react-github-actions-build
       # Zip the build using external action
