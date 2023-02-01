@@ -69,7 +69,6 @@ jobs:
         with:
           name: react-github-actions-release-build.zip
           path: react-github-actions-release-build.zip
-
       # Make official GitHub release which will trigger
       # sending the mail with link for access
       - name: Release
