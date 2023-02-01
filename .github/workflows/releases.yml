@@ -2,7 +2,7 @@ name: GitHub Actions Demo
 run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
 on: [push]
 env:
-  RELEASE_ID: rc-${{ github.run.id }} 
+  RELEASE_ID: rc-${{ github.run_id }} 
 jobs:
   deploy:  
     runs-on: ubuntu-latest
