@@ -78,15 +78,15 @@ jobs:
         with:
           name: react-github-actions-release-build.zip
           path: react-github-actions-release-build.zip
-      # Make official GitHub release which will trigger
-      # sending the mail with link for access
-      # - name: Release
-      #   uses: ncipollo/release-action@v1
-      #   with:
-      #     artifacts: react-github-actions-release-build.zip
-      #     body: Release ${{ github.ref }}
-      #     token: ${{ secrets.GITHUB_TOKEN }}
-      #     tag: rc-v1.1.0
+      Make official GitHub release which will trigger
+      sending the mail with link for access
+      - name: Release
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: react-github-actions-release-build.zip
+          body: Release for rc-$RELEASE_ID
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: rc-$RELEASE_ID
       - name: Create Release
         uses: marvinpinto/action-automatic-releases@latest
         with:
