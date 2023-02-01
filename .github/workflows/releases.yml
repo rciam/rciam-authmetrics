@@ -89,7 +89,7 @@ jobs:
         uses: marvinpinto/action-automatic-releases@latest
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          automatic_release_tag: "rc-${GITHUB_RUN_ID}"
+          automatic_release_tag: rc-${GITHUB_RUN_ID}
           prerelease: false
           files: |
             react-github-actions-release-build.zip
