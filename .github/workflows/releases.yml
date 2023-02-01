@@ -35,6 +35,14 @@ jobs:
       - name: List files in the repository
         run: |
           ls ${{ github.workspace }}/javascript
+      - name: Create release branch
+        run: git checkout -b devel-v1.1.0
+      - name: Initialize mandatory git config
+        run: |
+          git config user.name "GitHub Actions"  
+          git config user.email noreply@github.com
+      - name: Push new branch
+        run: git push origin devel-v1.1.0
       - name: Share artifact inside workflow
         uses: actions/upload-artifact@v3
         with:
@@ -77,6 +85,5 @@ jobs:
           artifacts: react-github-actions-release-build.zip
           body: Release ${{ github.ref }}
           token: ${{ secrets.GITHUB_TOKEN }}
-          name: devel
-          tag: ${{ github.ref }}
+          tag: devel-v1.1.0
           
