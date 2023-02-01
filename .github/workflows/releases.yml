@@ -60,8 +60,9 @@ jobs:
         run: |
           ls ${{ github.workspace }}
       - name: Zip artifact for deployment
-        run: zip react-github-actions-release-build.zip ${{ github.workspace }} -r
-         
+        run: zip -r -qq react-github-actions-release-build.zip .
+        working-directory: ${{ github.workspace }}
+ 
       # Upload as an artifact of the current workflow
       - name: Upload build zip artifact
         uses: actions/upload-artifact@v1
