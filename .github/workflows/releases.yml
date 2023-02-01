@@ -36,13 +36,13 @@ jobs:
         run: |
           ls ${{ github.workspace }}/javascript
       - name: Create release branch
-        run: git checkout -b devel-v1.1.0
+        run: git checkout -b rc-v1.1.0
       - name: Initialize mandatory git config
         run: |
           git config user.name "GitHub Actions"  
           git config user.email noreply@github.com
       - name: Push new branch
-        run: git push origin devel-v1.1.0
+        run: git push origin rc-v1.1.0
       - name: Share artifact inside workflow
         uses: actions/upload-artifact@v3
         with:
@@ -79,11 +79,19 @@ jobs:
           path: react-github-actions-release-build.zip
       # Make official GitHub release which will trigger
       # sending the mail with link for access
-      - name: Release
-        uses: ncipollo/release-action@v1
+      # - name: Release
+      #   uses: ncipollo/release-action@v1
+      #   with:
+      #     artifacts: react-github-actions-release-build.zip
+      #     body: Release ${{ github.ref }}
+      #     token: ${{ secrets.GITHUB_TOKEN }}
+      #     tag: rc-v1.1.0
+      - name: Create Release
+        uses: marvinpinto/action-automatic-releases@latest
         with:
-          artifacts: react-github-actions-release-build.zip
-          body: Release ${{ github.ref }}
-          token: ${{ secrets.GITHUB_TOKEN }}
-          tag: devel-v1.1.0
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          automatic_release_tag: "devel-latest"
+          prerelease: false
+          files: |
+            react-github-actions-release-build.zip
           
