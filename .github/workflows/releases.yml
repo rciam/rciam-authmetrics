@@ -2,7 +2,7 @@ name: GitHub Actions Demo
 run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
 on: [push]
 env:
-  RELEASE_ID: rc-${GITHUB_RUN_ID} 
+  RELEASE_ID: rc-${{ github.run.id }} 
 jobs:
   deploy:  
     runs-on: ubuntu-latest
@@ -84,14 +84,14 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           artifacts: react-github-actions-release-build.zip
-          body: Release for $RELEASE_ID
+          body: Release for ${{ env.RELEASE_ID }}
           token: ${{ secrets.GITHUB_TOKEN }}
-          tag: $RELEASE_ID
+          tag: ${{ env.RELEASE_ID }}
       - name: Create Release
         uses: marvinpinto/action-automatic-releases@latest
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          automatic_release_tag: $RELEASE_ID
+          automatic_release_tag: ${{ env.RELEASE_ID }}
           prerelease: false
           files: |
             react-github-actions-release-build.zip
