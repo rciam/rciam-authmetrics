@@ -69,9 +69,7 @@ jobs:
         with:
           name: react-github-actions-release-build.zip
           path: react-github-actions-release-build.zip
-      - run: |
-        export GIT_TAG=$(git describe --tags --abbrev=0)
-        echo "GIT_TAG=$GIT_TAG" >> $GITHUB_ENV
+
       # Make official GitHub release which will trigger
       # sending the mail with link for access
       - name: Release
