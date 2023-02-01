@@ -1,6 +1,8 @@
 name: GitHub Actions Demo
 run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
 on: [push]
+env:
+  RELEASE_ID: ${GITHUB_RUN_ID} 
 jobs:
   deploy:  
     runs-on: ubuntu-latest
@@ -89,7 +91,7 @@ jobs:
         uses: marvinpinto/action-automatic-releases@latest
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          automatic_release_tag: rc-${{ github.run.id }}
+          automatic_release_tag: rc-$RELEASE_ID
           prerelease: false
           files: |
             react-github-actions-release-build.zip
