@@ -123,6 +123,7 @@ jobs:
           playbook: metricsservers.yml
           # Optional, directory where playbooks live
           directory: ./roles
+          key: ${{ secrets.DEPLOY_READ_SECRET }}
           # Optional, encrypted vault password
           vault_password: ${{secrets.VAULT_PASSWORD}}
           options: |
