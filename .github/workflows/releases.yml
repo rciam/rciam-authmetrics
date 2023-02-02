@@ -116,5 +116,17 @@ jobs:
           ref: 'add_metrics_inv'
           ssh-key: ${{ secrets.DEPLOY_READ_SECRET }}
           path: 'inventory'
+      - name: Run playbook
+        uses: dawidd6/action-ansible-playbook@v2
+        with:
+          # Required, playbook filepath
+          playbook: metricsservers.yml
+          # Optional, directory where playbooks live
+          directory: ./roles
+          # Optional, encrypted vault password
+          vault_password: ${{secrets.VAULT_PASSWORD}}
+          options: |
+            --inventory inventory/rciam-metrics-dev/hosts.ini
+            --tags rciam-metrics:config-local
     
           
