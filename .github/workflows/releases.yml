@@ -126,7 +126,7 @@ jobs:
           # Optional, encrypted vault password
           vault_password: ${{secrets.VAULT_PASSWORD}}
           options: |
-            --inventory inventory/rciam-metrics-dev/hosts.ini
+            --inventory ${{ github.workspace }}/inventory/rciam-metrics-dev/hosts.ini
             --tags rciam-metrics:config-local
     
           
