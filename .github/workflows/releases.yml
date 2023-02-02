@@ -114,7 +114,7 @@ jobs:
           # Repository name with owner. For example, actions/checkout
           # Default: ${{ github.repository }}
           repository: 'lionick/rciam-deploy-inv'   
-          ref: 'rciam-metrics-role'
+          ref: 'add_metrics_inv'
           ssh-key: ${{ secrets.DEPLOY_READ_SECRET }}
     
           
