@@ -112,8 +112,6 @@ jobs:
       - name: Download inventory
         uses: actions/checkout@v3
         with:
-          # Repository name with owner. For example, actions/checkout
-          # Default: ${{ github.repository }}
           repository: 'lionick/rciam-deploy-inv'   
           ref: 'add_metrics_inv'
           ssh-key: ${{ secrets.DEPLOY_READ_SECRET }}
