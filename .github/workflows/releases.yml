@@ -129,5 +129,7 @@ jobs:
           options: |
             --inventory ${{ github.workspace }}/inventory/rciam-metrics-dev/hosts.ini
             --tags rciam-metrics:config-local
+            -u debian
+            
     
           
