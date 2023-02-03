@@ -144,9 +144,11 @@ jobs:
         id: compress
         with:
           command: c
-          cwd: ${{ github.workspace }}
+          cwd: ./
           files: |
-            ${{ github.workspace }}/.
+            ./app
+            ./javascript
+            ./requirements.txt
           outPath: react-github-actions-release-build.tar.gz
       # Upload as an artifact of the current workflow
       - name: Upload build zip artifact
