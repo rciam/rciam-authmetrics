@@ -121,49 +121,47 @@ jobs:
   #     - name: List files in the repository
   #       run: |
   #         ls ${{ github.workspace }}
-      
- 
-  # release:
-  #   runs-on: ubuntu-latest
-  #   # We specify that deploys needs to
-  #   # finish before we create a release
-  #   needs: build
-  #   steps:
-  #     # Download previously shared build
-  #     - name: Get artifact
-  #       uses: actions/download-artifact@v3
-  #       with:
-  #         name: react-github-actions-build
-  #     # Zip the build using external action
-  #     - name: List files in the repository
-  #       run: |
-  #         ls ${{ github.workspace }}
-  #     - name: Zip artifact for deployment
-  #       run: zip -r -qq react-github-actions-release-build.zip .
-  #       working-directory: ${{ github.workspace }}
-  #     # Upload as an artifact of the current workflow
-  #     - name: Upload build zip artifact
-  #       uses: actions/upload-artifact@v1
-  #       with:
-  #         name: react-github-actions-release-build.zip
-  #         path: react-github-actions-release-build.zip
-  #     #Make official GitHub release which will trigger
-  #     #sending the mail with link for access
-  #     - name: Release
-  #       uses: ncipollo/release-action@v1
-  #       with:
-  #         artifacts: react-github-actions-release-build.zip
-  #         body: Release for ${{ env.RELEASE_ID }}
-  #         token: ${{ secrets.GITHUB_TOKEN }}
-  #         tag: ${{ env.RELEASE_ID }}
-  #     - name: Create Release
-  #       uses: marvinpinto/action-automatic-releases@latest
-  #       with:
-  #         repo_token: ${{ secrets.GITHUB_TOKEN }}
-  #         automatic_release_tag: ${{ env.RELEASE_ID }}
-  #         prerelease: false
-  #         files: |
-  #           react-github-actions-release-build.zip
+  release:
+    runs-on: ubuntu-latest
+    # We specify that deploys needs to
+    # finish before we create a release
+    needs: checkout
+    steps:
+      # Download previously shared build
+      - name: Get artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: react-github-actions-build
+      # Zip the build using external action
+      - name: List files in the repository
+        run: |
+          ls ${{ github.workspace }}
+      - name: Zip artifact for deployment
+        run: zip -r -qq react-github-actions-release-build.zip .
+        working-directory: ${{ github.workspace }}
+      # Upload as an artifact of the current workflow
+      - name: Upload build zip artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: react-github-actions-release-build.zip
+          path: react-github-actions-release-build.zip
+      #Make official GitHub release which will trigger
+      #sending the mail with link for access
+      # - name: Release
+      #   uses: ncipollo/release-action@v1
+      #   with:
+      #     artifacts: react-github-actions-release-build.zip
+      #     body: Release for ${{ env.RELEASE_ID }}
+      #     token: ${{ secrets.GITHUB_TOKEN }}
+      #     tag: ${{ env.RELEASE_ID }}
+      - name: Create Release
+        uses: marvinpinto/action-automatic-releases@latest
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          automatic_release_tag: ${{ env.RELEASE_ID }}
+          prerelease: false
+          files: |
+            react-github-actions-release-build.zip
   # playbook:
   #   runs-on: ubuntu-latest
   #   # We specify that deploys needs to
