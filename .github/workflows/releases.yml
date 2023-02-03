@@ -133,6 +133,6 @@ jobs:
       - name: List files in the repository
         run: |
           ls ${{ github.workspace }}/inventory/rciam-metrics-dev/files
-          ls ${{ github.workspace }}/inventory/files
+          cat ${{ github.workspace }}/inventory/rciam-metrics-dev/files/config_react.json
     
           
