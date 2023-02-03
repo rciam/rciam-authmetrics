@@ -170,7 +170,7 @@ jobs:
           automatic_release_tag: ${{ env.RELEASE_ID }}
           prerelease: false
           files: |
-            react-github-actions-release-build.zip
+            react-github-actions-release-build.tar.gz
   # playbook:
   #   runs-on: ubuntu-latest
   #   # We specify that deploys needs to
