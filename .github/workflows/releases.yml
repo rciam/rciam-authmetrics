@@ -116,7 +116,7 @@ jobs:
           ref: 'add_metrics_inv'
           ssh-key: ${{ secrets.DEPLOY_READ_SECRET }}
           path: 'inventory'
-      - name: Run playbook
+      - name: Run playbook (create react_config file)
         uses: dawidd6/action-ansible-playbook@v2
         with:
           # Required, playbook filepath
@@ -130,6 +130,9 @@ jobs:
             --inventory ${{ github.workspace }}/inventory/rciam-metrics-dev/hosts.ini
             --tags rciam-metrics:config-local
             -u debian
-            
+        - name: List files in the repository
+          run: |
+            ls ${{ github.workspace }}/inventory/rciam-metrics-dev/files
+            ls ${{ github.workspace }}/inventory/files
     
           
