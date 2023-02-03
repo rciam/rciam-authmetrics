@@ -4,7 +4,7 @@ on: [push]
 env:
   RELEASE_ID: rc-${{ github.run_id }} 
 jobs:
-  deploy:  
+  checkout:  
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -55,82 +55,85 @@ jobs:
         run: |
           ls -la ${{ github.workspace }}/inventory/rciam-metrics-dev/files
           mv ${{ github.workspace }}/inventory/rciam-metrics-dev/files/config_react.json  ${{ github.workspace }}/metrics-app/javascript/src/.
-
-  #     - name: Use Node.js ${{ matrix.node-version }}
-  #       uses: actions/setup-node@v3
-  #       with:
-  #         node-version: ${{ matrix.node-version }}
-  #     - name: Install dependencies
-  #       run: |
-  #         cd ${{ github.workspace }}/javascript; npm install
-  #     - name: Build React application
-  #       run: |
-  #         cd ${{ github.workspace }}/javascript; CI=false npm run build
-  #     # Share artifact inside workflow
-  #     - name: List files in the repository
-  #       run: |
-  #         ls ${{ github.workspace }}
-  #     - name: List files in the repository
-  #       run: |
-  #         ls ${{ github.workspace }}/javascript
-  #     - name: Create release branch
-  #       run: git checkout -b rc-${GITHUB_RUN_ID}
-  #     - name: Initialize mandatory git config
-  #       run: |
-  #         git config user.name "GitHub Actions"  
-  #         git config user.email noreply@github.com
-  #     - name: Push new branch
-  #       run: git push origin rc-${GITHUB_RUN_ID}
-  #     - name: Share artifact inside workflow
-  #       uses: actions/upload-artifact@v3
-  #       with:
-  #         name: react-github-actions-build
-  #         path: | 
-  #           ${{ github.workspace }}/javascript/build
-  #           ${{ github.workspace }}/app
-  #           ${{ github.workspace }}/requirements.txt
-  #     - run: echo "🍏 This job's status is ${{ job.status }}."
-  # release:
-  #   runs-on: ubuntu-latest
-  #   # We specify that deploys needs to
-  #   # finish before we create a release
-  #   needs: deploy
-  #   steps:
-  #     # Download previously shared build
-  #     - name: Get artifact
-  #       uses: actions/download-artifact@v3
-  #       with:
-  #         name: react-github-actions-build
-  #     # Zip the build using external action
-  #     - name: List files in the repository
-  #       run: |
-  #         ls ${{ github.workspace }}
-  #     - name: Zip artifact for deployment
-  #       run: zip -r -qq react-github-actions-release-build.zip .
-  #       working-directory: ${{ github.workspace }}
-  #     # Upload as an artifact of the current workflow
-  #     - name: Upload build zip artifact
-  #       uses: actions/upload-artifact@v1
-  #       with:
-  #         name: react-github-actions-release-build.zip
-  #         path: react-github-actions-release-build.zip
-  #     #Make official GitHub release which will trigger
-  #     #sending the mail with link for access
-  #     - name: Release
-  #       uses: ncipollo/release-action@v1
-  #       with:
-  #         artifacts: react-github-actions-release-build.zip
-  #         body: Release for ${{ env.RELEASE_ID }}
-  #         token: ${{ secrets.GITHUB_TOKEN }}
-  #         tag: ${{ env.RELEASE_ID }}
-  #     - name: Create Release
-  #       uses: marvinpinto/action-automatic-releases@latest
-  #       with:
-  #         repo_token: ${{ secrets.GITHUB_TOKEN }}
-  #         automatic_release_tag: ${{ env.RELEASE_ID }}
-  #         prerelease: false
-  #         files: |
-  #           react-github-actions-release-build.zip
+  build:
+    runs-on: ubuntu-latest
+    # We specify that deploys needs to
+    # finish before we create a release
+    needs: checkout
+    steps:
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install dependencies
+        run: |
+          cd ${{ github.workspace }}/metrics-app/javascript; npm install
+      - name: Build React application
+        run: |
+          cd ${{ github.workspace }}/metrics-app/javascript; CI=false npm run build
+      # Share artifact inside workflow
+      - name: List files in the repository
+        run: |
+          ls ${{ github.workspace }}/metrics-app
+          ls ${{ github.workspace }}/metrics-app/javascript/src
+      - name: Create release branch
+        run: git checkout -b rc-${GITHUB_RUN_ID}
+      - name: Initialize mandatory git config
+        run: |
+          git config user.name "GitHub Actions"  
+          git config user.email noreply@github.com
+      - name: Push new branch
+        run: git push origin rc-${GITHUB_RUN_ID}
+      - name: Share artifact inside workflow
+        uses: actions/upload-artifact@v3
+        with:
+          name: react-github-actions-build
+          path: | 
+            ${{ github.workspace }}/metrics-app/javascript/build
+            ${{ github.workspace }}/metrics-app/app
+            ${{ github.workspace }}/metrics-app/requirements.txt
+      - run: echo "🍏 This job's status is ${{ job.status }}."
+  release:
+    runs-on: ubuntu-latest
+    # We specify that deploys needs to
+    # finish before we create a release
+    needs: build
+    steps:
+      # Download previously shared build
+      - name: Get artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: react-github-actions-build
+      # Zip the build using external action
+      - name: List files in the repository
+        run: |
+          ls ${{ github.workspace }}
+      - name: Zip artifact for deployment
+        run: zip -r -qq react-github-actions-release-build.zip .
+        working-directory: ${{ github.workspace }}
+      # Upload as an artifact of the current workflow
+      - name: Upload build zip artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: react-github-actions-release-build.zip
+          path: react-github-actions-release-build.zip
+      #Make official GitHub release which will trigger
+      #sending the mail with link for access
+      - name: Release
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: react-github-actions-release-build.zip
+          body: Release for ${{ env.RELEASE_ID }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ env.RELEASE_ID }}
+      - name: Create Release
+        uses: marvinpinto/action-automatic-releases@latest
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          automatic_release_tag: ${{ env.RELEASE_ID }}
+          prerelease: false
+          files: |
+            react-github-actions-release-build.zip
   # playbook:
   #   runs-on: ubuntu-latest
   #   # We specify that deploys needs to
