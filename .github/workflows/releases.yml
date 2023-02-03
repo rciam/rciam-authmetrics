@@ -22,6 +22,40 @@ jobs:
       - name: List files in the repository
         run: |
           ls ${{ github.workspace }}
+      - name: Download playbook
+        uses: actions/checkout@v3
+        with:
+          # Repository name with owner. For example, actions/checkout
+          # Default: ${{ github.repository }}
+          repository: 'lionick/rciam-deploy'   
+          ref: 'rciam-metrics-role'
+          path: 'roles'
+      - name: Download inventory
+        uses: actions/checkout@v3
+        with:
+          repository: 'lionick/rciam-deploy-inv'   
+          ref: 'add_metrics_inv'
+          ssh-key: ${{ secrets.DEPLOY_READ_SECRET }}
+          path: 'inventory'
+      - name: Run playbook (create react_config file)
+        uses: dawidd6/action-ansible-playbook@v2
+        with:
+          # Required, playbook filepath
+          playbook: metricsservers.yml
+          # Optional, directory where playbooks live
+          directory: ./roles
+          key: ${{ secrets.DEPLOY_READ_SECRET }}
+          # Optional, encrypted vault password
+          vault_password: ${{secrets.VAULT_PASSWORD}}
+          options: |
+            --inventory ${{ github.workspace }}/inventory/rciam-metrics-dev/hosts.ini
+            --tags rciam-metrics:config-local
+            -u debian
+      - name: List files in the repository
+        run: |
+          ls -la ${{ github.workspace }}/inventory/rciam-metrics-dev/files
+          mv ${{ github.workspace }}/inventory/rciam-metrics-dev/files/config_react.json  ${{ github.workspace }}/metrics-app/javascript/src/.
+
   #     - name: Use Node.js ${{ matrix.node-version }}
   #       uses: actions/setup-node@v3
   #       with:
@@ -97,44 +131,11 @@ jobs:
   #         prerelease: false
   #         files: |
   #           react-github-actions-release-build.zip
-  playbook:
-    runs-on: ubuntu-latest
-    # We specify that deploys needs to
-    # finish before we create a release
-    #needs: release
-    steps:
-      - name: Download playbook
-        uses: actions/checkout@v3
-        with:
-          # Repository name with owner. For example, actions/checkout
-          # Default: ${{ github.repository }}
-          repository: 'lionick/rciam-deploy'   
-          ref: 'rciam-metrics-role'
-          path: 'roles'
-      - name: Download inventory
-        uses: actions/checkout@v3
-        with:
-          repository: 'lionick/rciam-deploy-inv'   
-          ref: 'add_metrics_inv'
-          ssh-key: ${{ secrets.DEPLOY_READ_SECRET }}
-          path: 'inventory'
-      - name: Run playbook (create react_config file)
-        uses: dawidd6/action-ansible-playbook@v2
-        with:
-          # Required, playbook filepath
-          playbook: metricsservers.yml
-          # Optional, directory where playbooks live
-          directory: ./roles
-          key: ${{ secrets.DEPLOY_READ_SECRET }}
-          # Optional, encrypted vault password
-          vault_password: ${{secrets.VAULT_PASSWORD}}
-          options: |
-            --inventory ${{ github.workspace }}/inventory/rciam-metrics-dev/hosts.ini
-            --tags rciam-metrics:config-local
-            -u debian
-      - name: List files in the repository
-        run: |
-          ls -la ${{ github.workspace }}/inventory/rciam-metrics-dev/files
-          mv ${{ github.workspace }}/inventory/rciam-metrics-dev/files/config_react.json  ${{ github.workspace }}/metrics-app/javascript/src/.
+  # playbook:
+  #   runs-on: ubuntu-latest
+  #   # We specify that deploys needs to
+  #   # finish before we create a release
+  #   #needs: release
+  #   steps:
     
           
