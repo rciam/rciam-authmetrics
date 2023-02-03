@@ -16,7 +16,15 @@ from app.models.country_model import *
 from app.models.idp_model import *
 from app.models.country_hashed_user_model import *
 
-app = FastAPI(debug=True)
+import os, sys
+os.chdir("/srv/rciam-metrics-client/rciam-metrics")
+sys.path.insert(0, "/srv/rciam-metrics-client/rciam-metrics")
+
+app = FastAPI(root_path="/api/v1", root_path_in_servers=False, servers= [
+    {
+        "url": "/api/v1"
+    }
+])
 
 MembersReadWithCommunityInfo.update_forward_refs(
     Community_InfoRead=Community_InfoRead)
