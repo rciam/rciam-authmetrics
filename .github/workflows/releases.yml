@@ -78,9 +78,9 @@ jobs:
       - name: List files in the repository
         run: |
           ls ${{ github.workspace }}
-          ls ${{ github.workspace }}/metrics-app/javascript/src
+          
       - name: Create release branch
-        run: git checkout -b ${{ env.RELEASE_ID }}
+        run: cd ${{ github.workspace }}/metrics-app/; git checkout -b ${{ env.RELEASE_ID }}
   # build:
   #   runs-on: ubuntu-latest
   #   # We specify that deploys needs to
