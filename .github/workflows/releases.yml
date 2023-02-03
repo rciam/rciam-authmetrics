@@ -194,7 +194,7 @@ jobs:
           ref: 'add_metrics_inv'
           ssh-key: ${{ secrets.DEPLOY_READ_SECRET }}
           path: 'inventory'
-      - name: Run playbook (deploy rciam-metrics)
+      - name: Run playbook (deploy rciam-metrics) with release ${{ env.RELEASE_ID }}
         uses: dawidd6/action-ansible-playbook@v2
         with:
           # Required, playbook filepath
