@@ -81,15 +81,15 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: Install dependencies
         run: |
-          cd ${{ github.workspace }}/metrics-app/javascript; npm install
+          cd ${{ github.workspace }}/javascript; npm install
       - name: Build React application
         run: |
-          cd ${{ github.workspace }}/metrics-app/javascript; CI=false npm run build
+          cd ${{ github.workspace }}/javascript; CI=false npm run build
       # Share artifact inside workflow
       - name: List files in the repository
         run: |
-          ls ${{ github.workspace }}/metrics-app
-          ls ${{ github.workspace }}/metrics-app/javascript/src
+          ls ${{ github.workspace }}
+          ls ${{ github.workspace }}/javascript/src
       - name: Create release branch
         run: git checkout -b rc-${GITHUB_RUN_ID}
       - name: Initialize mandatory git config
@@ -103,9 +103,9 @@ jobs:
         with:
           name: react-github-actions-build
           path: | 
-            ${{ github.workspace }}/metrics-app/javascript/build
-            ${{ github.workspace }}/metrics-app/app
-            ${{ github.workspace }}/metrics-app/requirements.txt
+            ${{ github.workspace }}/javascript/build
+            ${{ github.workspace }}/app
+            ${{ github.workspace }}/requirements.txt
       - run: echo "🍏 This job's status is ${{ job.status }}."
   release:
     runs-on: ubuntu-latest
