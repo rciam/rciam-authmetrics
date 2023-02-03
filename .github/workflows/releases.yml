@@ -136,15 +136,24 @@ jobs:
       - name: List files in the repository
         run: |
           ls ${{ github.workspace }}
-      - name: Zip artifact for deployment
-        run: zip -r -qq react-github-actions-release-build.zip .
-        working-directory: ${{ github.workspace }}
+      # - name: Zip artifact for deployment
+      #   run: zip -r -qq react-github-actions-release-build.zip .
+      #   working-directory: ${{ github.workspace }}
+      - name: Compress action step
+        uses: a7ul/tar-action@v1.1.0
+        id: compress
+        with:
+          command: c
+          cwd: ${{ github.workspace }}
+          files: |
+            ./
+          outPath: react-github-actions-release-build.tar.gz
       # Upload as an artifact of the current workflow
       - name: Upload build zip artifact
         uses: actions/upload-artifact@v1
         with:
-          name: react-github-actions-release-build.zip
-          path: react-github-actions-release-build.zip
+          name: react-github-actions-release-build.tar.gz
+          path: react-github-actions-release-build.tar.gz
       #Make official GitHub release which will trigger
       #sending the mail with link for access
       # - name: Release
