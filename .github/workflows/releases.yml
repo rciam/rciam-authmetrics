@@ -87,10 +87,10 @@ jobs:
           git config user.email noreply@github.com
       - name: Push changes
         uses: ad-m/github-push-action@master
-        working-directory: ./metrics-app
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: ${{ env.RELEASE_ID }}
+          directory: ./metrics-app
       - name: Share artifact inside workflow
         uses: actions/upload-artifact@v3
         with:
