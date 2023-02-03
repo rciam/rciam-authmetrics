@@ -67,8 +67,11 @@ jobs:
     # finish before we create a release
     needs: checkout
     steps:
+      - name: Checkout code
+      - uses: actions/checkout@v3
       # Download previously shared build
       - name: Get artifact
+        id: download 
         uses: actions/download-artifact@v3
         with:
           name: react-application
