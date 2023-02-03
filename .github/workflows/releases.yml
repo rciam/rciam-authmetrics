@@ -78,9 +78,26 @@ jobs:
       - name: List files in the repository
         run: |
           ls ${{ github.workspace }}
-          
       - name: Create release branch
         run: cd ${{ github.workspace }}/metrics-app/; git checkout -b ${{ env.RELEASE_ID }}
+      - name: Initialize mandatory git config
+        run: |
+          git config user.name "GitHub Actions"  
+          git config user.email noreply@github.com
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ env.RELEASE_ID }}
+      - name: Share artifact inside workflow
+        uses: actions/upload-artifact@v3
+        with:
+          name: react-github-actions-build
+          path: | 
+            ${{ github.workspace }}/javascript/build
+            ${{ github.workspace }}/app
+            ${{ github.workspace }}/requirements.txt
+      - run: echo "🍏 This job's status is ${{ job.status }}."
   # build:
   #   runs-on: ubuntu-latest
   #   # We specify that deploys needs to
@@ -103,25 +120,7 @@ jobs:
   #       run: |
   #         ls ${{ github.workspace }}
       
-  #     - name: Initialize mandatory git config
-  #       run: |
-  #         git config user.name "GitHub Actions"  
-  #         git config user.email noreply@github.com
-  #         git push origin ${{ env.RELEASE_ID }}
-  #     - name: Push changes
-  #       uses: ad-m/github-push-action@master
-  #       with:
-  #         github_token: ${{ secrets.GITHUB_TOKEN }}
-  #         branch: ${{ env.RELEASE_ID }}
-  #     - name: Share artifact inside workflow
-  #       uses: actions/upload-artifact@v3
-  #       with:
-  #         name: react-github-actions-build
-  #         path: | 
-  #           ${{ github.workspace }}/javascript/build
-  #           ${{ github.workspace }}/app
-  #           ${{ github.workspace }}/requirements.txt
-  #     - run: echo "🍏 This job's status is ${{ job.status }}."
+ 
   # release:
   #   runs-on: ubuntu-latest
   #   # We specify that deploys needs to
