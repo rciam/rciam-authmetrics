@@ -4,22 +4,24 @@ on: [push]
 env:
   RELEASE_ID: rc-${{ github.run_id }} 
 jobs:
-  # deploy:  
-  #   runs-on: ubuntu-latest
-  #   strategy:
-  #     matrix:
-  #       node-version: [16.x]
-  #   steps:
-  #     - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
-  #     - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
-  #     - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
-  #     - name: Check out repository code
-  #       uses: actions/checkout@v3
-  #     - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
-  #     - run: echo "🖥️ The workflow is now ready to test your code on the runner."
-  #     - name: List files in the repository
-  #       run: |
-  #         ls ${{ github.workspace }}
+  deploy:  
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16.x]
+    steps:
+      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
+      - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
+      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
+      - name: Check out repository code
+        uses: actions/checkout@v3
+        with:
+          path: 'metrics-app'
+      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
+      - run: echo "🖥️ The workflow is now ready to test your code on the runner."
+      - name: List files in the repository
+        run: |
+          ls ${{ github.workspace }}
   #     - name: Use Node.js ${{ matrix.node-version }}
   #       uses: actions/setup-node@v3
   #       with:
@@ -132,7 +134,7 @@ jobs:
             -u debian
       - name: List files in the repository
         run: |
-          ls ${{ github.workspace }}/inventory/rciam-metrics-dev/files
-          cat ${{ github.workspace }}/inventory/rciam-metrics-dev/files/config_react.json
+          ls -la ${{ github.workspace }}/inventory/rciam-metrics-dev/files
+          mv ${{ github.workspace }}/inventory/rciam-metrics-dev/files/config_react.json  ${{ github.workspace }}/metrics-app/javascript/src/.
     
           
