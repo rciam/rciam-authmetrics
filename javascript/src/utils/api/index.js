@@ -1,7 +1,9 @@
 import axios from "axios"
-
+import config from "./../../config_react.json";
+const getConfig = key => config["configReact"][key]
+console.log(getConfig('apiUrl'))
 const client = axios.create({
-  baseURL: "http://localhost:8004/",
+  baseURL: getConfig('apiUrl'),
   headers: {
     "Access-Control-Allow-Origin": "*",
     "Content-type": "application/json",
