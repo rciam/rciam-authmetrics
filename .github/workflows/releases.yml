@@ -1,6 +1,9 @@
-name: GitHub Actions Demo
-run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
-on: [push]
+name: CI at Devel Branch
+run-name: ${{ github.actor }} is deploying at devel branch 🚀
+on: 
+  push:
+    branches:
+      - devel
 env:
   RELEASE_ID: rc-${{ github.run_id }} 
 jobs:
