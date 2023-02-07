@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - devel
+      - deploy_changes
 env:
   RELEASE_ID: rc-${{ github.run_id }} 
 jobs:
@@ -102,27 +103,6 @@ jobs:
             ${{ github.workspace }}/metrics-app/app
             ${{ github.workspace }}/metrics-app/requirements.txt
       - run: echo "🍏 This job's status is ${{ job.status }}."
-  # build:
-  #   runs-on: ubuntu-latest
-  #   # We specify that deploys needs to
-  #   # finish before we create a release
-  #   needs: checkout
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v3
-  #       with:
-  #         ref: 'deploy_changes'
-  #     - name: List files in the repository
-  #       run: |
-  #         ls ${{ github.workspace }}
-  #     # Download previously shared build
-  #     - name: Get artifact
-  #       uses: actions/download-artifact@v3
-  #       with:
-  #         name: react-application
-  #     - name: List files in the repository
-  #       run: |
-  #         ls ${{ github.workspace }}
   release:
     runs-on: ubuntu-latest
     # We specify that deploys needs to
@@ -134,13 +114,6 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: react-github-actions-build
-      # Zip the build using external action
-      - name: List files in the repository
-        run: |
-          ls ${{ github.workspace }}
-      # - name: Zip artifact for deployment
-      #   run: zip -r -qq react-github-actions-release-build.zip .
-      #   working-directory: ${{ github.workspace }}
       - name: Compress action step
         uses: a7ul/tar-action@v1.1.0
         id: compress
@@ -158,15 +131,6 @@ jobs:
         with:
           name: react-github-actions-release-build.tar.gz
           path: react-github-actions-release-build.tar.gz
-      #Make official GitHub release which will trigger
-      #sending the mail with link for access
-      # - name: Release
-      #   uses: ncipollo/release-action@v1
-      #   with:
-      #     artifacts: react-github-actions-release-build.zip
-      #     body: Release for ${{ env.RELEASE_ID }}
-      #     token: ${{ secrets.GITHUB_TOKEN }}
-      #     tag: ${{ env.RELEASE_ID }}
       - name: Create Release
         uses: marvinpinto/action-automatic-releases@latest
         with:

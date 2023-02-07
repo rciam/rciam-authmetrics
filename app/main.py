@@ -17,15 +17,14 @@ from app.models.idp_model import *
 from app.models.country_hashed_user_model import *
 
 import os, sys
-os.chdir("/srv/rciam-metrics-client/rciam-metrics")
-sys.path.insert(0, "/srv/rciam-metrics-client/rciam-metrics")
+sys.path.insert(0, os.path.realpath('__file__'))
 
 app = FastAPI(root_path="/api/v1", root_path_in_servers=False, servers= [
     {
         "url": "/api/v1"
     }
 ])
-
+# app = FastAPI()
 MembersReadWithCommunityInfo.update_forward_refs(
     Community_InfoRead=Community_InfoRead)
 CommunityReadwithInfo.update_forward_refs(
@@ -43,15 +42,15 @@ app.add_middleware(
 )
 
 
-@app.get("/communities/", response_model=List[CommunityReadwithInfo])
-def read_communities(
-    *,
-    session: Session = Depends(get_session),
-    offset: int = 0
-):
+# @app.get("/communities/", response_model=List[CommunityReadwithInfo])
+# def read_communities(
+#     *,
+#     session: Session = Depends(get_session),
+#     offset: int = 0
+# ):
 
-    communities = session.exec(select(Community).offset(offset)).all()
-    return communities
+#     communities = session.exec(select(Community).offset(offset)).all()
+#     return communities
 
 
 @app.get("/communities_groupby/{group_by}")
@@ -97,20 +96,23 @@ def read_communities(
     return communities
 
 
-@app.get("/communities/{community_id}")
+@app.get("/communities/")
 def read_community(
     *, 
     session: Session = Depends(get_session), 
-    community_id: int,
+    community_id: Union[None, int] = None,
     tenant_id: int):
+    sql_subquery = ''
+    if community_id:
+        sql_subquery = 'id={0} and'.format(community_id)
     community = session.exec("""
-        SELECT * FROM community_info WHERE id={0} and tenant_id={1}
-    """.format(community_id,tenant_id)).all()
+        SELECT * FROM community_info WHERE {0} tenant_id={1}
+    """.format(sql_subquery,tenant_id)).all()
     # statement = select(Community).options(selectinload(Community.community_info))
     # result = session.exec(statement)
     # community = result.one()
-    if not community:
-        raise HTTPException(status_code=404, detail="Community not found")
+    # if not community:
+    #     raise HTTPException(status_code=404, detail="Community not found")
     return community
 
 @app.get("/communities_info/", response_model=List[Community_InfoRead])

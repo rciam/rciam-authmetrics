@@ -11,7 +11,8 @@ def getConfig(section='source_database'):
   print(sys.argv[0])
   print(os.path.dirname(os.path.abspath(sys.argv[0])))
   # read config file
-  parser.read(os.path.join('/srv/rciam-metrics-client/rciam-metrics', CONFIG_FILE))
+  file_dir = os.path.dirname(os.path.realpath('__file__'))
+  parser.read(os.path.join(file_dir, CONFIG_FILE))
 
   # get section, default to source_database
   config = {}
