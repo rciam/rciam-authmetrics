@@ -30,7 +30,7 @@ const CommunitiesMap = (parameters) => {
         }).then(response => {
 
             response["data"].forEach(element => {
-                var community = { label: element.community_info.name, value: element.community_id }
+                var community = { label: element.name, value: element.id }
                 communitiesArray.push(community)
             })
             
