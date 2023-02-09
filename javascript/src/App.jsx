@@ -12,7 +12,6 @@ import "./app.css";
 
 function App() {
     // const queryClient = new QueryClient()
-
     return (
         <Router>
             {/* <QueryClientProvider client={queryClient}> */}
