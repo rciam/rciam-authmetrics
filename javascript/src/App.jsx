@@ -29,8 +29,8 @@ function App() {
                     <Route path="/:project/:environment" element={<Dashboard/>}/>
                     <Route path="/:project/:environment/communities" element={<Communities/>}/>
                     <Route path="/:project/:environment/users" element={<Users/>}/>
-                    <Route path="/:project/:environment/idps" element={<Idps/>}/>
-                    <Route path="/:project/:environment/sps" element={<Sps/>}/>
+                    {/* <Route path="/:project/:environment/idps" element={<Idps/>}/>
+                    <Route path="/:project/:environment/sps" element={<Sps/>}/> */}
                 </Routes>
             {/* </QueryClientProvider> */}
         </Router>
