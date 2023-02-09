@@ -6,8 +6,8 @@ import {QueryClient, QueryClientProvider} from 'react-query'
 import Communities from "./Pages/Communities";
 import Users from "./Pages/Users";
 import Dashboard from "./Pages/Dashboard";
-import Idps from "./Pages/Idps";
-import Sps from "./Pages/Sps";
+// import Idps from "./Pages/Idps";
+// import Sps from "./Pages/Sps";
 import "./app.css";
 
 function App() {
