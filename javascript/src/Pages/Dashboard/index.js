@@ -8,6 +8,8 @@ import LoginLineChart from "../../components/Dashboard/loginLineChart";
 // import LoginsMap from "../../components/Dashboard/loginsMap";
 // import LoginSpPieChart from "../../components/Dashboard/loginSpPieChart";
 import LoginTiles from "../../components/Dashboard/loginTiles";
+import Header from "../../components/Common/header";
+import Footer from "../../components/Common/footer";
 // import IdpModal from "../Idps/idpModal";
 
 const Dashboard = () => {
@@ -28,7 +30,8 @@ const Dashboard = () => {
         return
     else return (
     <Container>
-        <h1>Dashboard</h1>
+        <Header></Header>
+        <h2>Dashboard</h2>
         <LoginTiles tenantId={tenantId}></LoginTiles>
         <LoginLineChart tenantId={tenantId}></LoginLineChart>
         {/* <LoginIdpPieChart tenantId={tenantId} setShowModalHandler={setShowModal}></LoginIdpPieChart>
@@ -37,6 +40,7 @@ const Dashboard = () => {
         <LoginsMap startDate={startDate} endDate={endDate} tenantId={tenantId}></LoginsMap> */}
 
         {/* <IdpModal tenantId={tenantId} showModal={showModal} setShowModalHandler={setShowModal}></IdpModal> */}
+        <Footer></Footer>
     </Container>)
 
 }

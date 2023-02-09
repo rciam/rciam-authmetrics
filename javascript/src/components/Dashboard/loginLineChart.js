@@ -90,7 +90,7 @@ const LoginLineChart = ({ type, identifier, tenantId }) => {
         <Chart
             chartType="LineChart"
             width="100%"
-            height="400px"
+            height="100%"
             data={lineData}
             options={options}
             chartEvents={[
@@ -117,7 +117,7 @@ const LoginLineChart = ({ type, identifier, tenantId }) => {
                         ui: {
                             chartType: "LineChart",
                             chartOptions: {
-                                chartArea: { width: "95%", height: "40%" },
+                                chartArea: { width: "95%", height: "100%" },
                                 hAxis: { baselineColor: "none" },
                             },
                         },
