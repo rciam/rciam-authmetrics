@@ -5,7 +5,7 @@ import Image from 'react-bootstrap/Image';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Navbar from 'react-bootstrap/Navbar';
-import { faUser, faUserShield, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import Dropdown from 'react-bootstrap/Dropdown';
 import parse from 'html-react-parser';

@@ -4,6 +4,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Image from 'react-bootstrap/Image';
 import NavbarTop from 'react-bootstrap/Navbar';
 import { faUser, faUserShield, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import {faTimes} from '@fortawesome/free-solid-svg-icons';
+import parse from 'html-react-parser';
 import config from "./../../config_react.json";
 
 const Header = (props) => {
