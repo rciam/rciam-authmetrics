@@ -33,13 +33,14 @@ const Footer = (props) => {
                                 <Image className="ssp-footer__item__logo" src="https://vanilla-ui.aai-dev.grnet.gr/proxy/module.php/themevanilla/resources/images/grnet_logo_en.svg" alt="GRNET" />
                             </a>
                             <div className="ssp-footer__item__copyright">
-                                Copyright ©2023      </div>
+                                Copyright ©2023
+                            </div>
                         </div>
                     </Col>
                     <Col sm="3" className="ssp-footer__item">
                         <div className="footer_link_container">
                             <div className="ssp-footer__item__powered">
-                                <a href={"mailto: " + (getConfig("config") && getConfig("config")["contact"]) }>Contact us</a>
+                                <a href={"mailto: " + (getConfig("config") && getConfig("config")["contact"])}>Contact us</a>
                             </div>
                             <div className="ssp-footer__item__powered">
                                 <a href={'https://federation.rciam.grnet.gr/docs'}>Documentation</a>
