@@ -5,6 +5,8 @@ import Container from "react-bootstrap/Container";
 import CommunitiesChart from "../../components/Communities/communitiesChart";
 import CommunitiesDataTable from "../../components/Communities/communitiesDataTable";
 import CommunitiesMap from "../../components/Communities/communitiesMap";
+import Header from "../../components/Common/header";
+import Footer from "../../components/Common/footer";
 
 const Communities = () => {
     const {project, environment } = useParams();
@@ -21,10 +23,12 @@ const Communities = () => {
     if (tenantId == 0) return
     else return (
     <Container>
+        <Header></Header>
         <h1>Communities</h1>
         <CommunitiesChart tenantId={tenantId}></CommunitiesChart>
         <CommunitiesDataTable tenantId={tenantId}></CommunitiesDataTable>
         <CommunitiesMap tenantId={tenantId}></CommunitiesMap>
+        <Footer></Footer>
     </Container>)
 
 }

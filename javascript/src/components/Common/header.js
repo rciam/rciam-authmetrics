@@ -2,17 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Image from 'react-bootstrap/Image';
-import NavbarTop from 'react-bootstrap/Navbar';
 import { faUser, faUserShield, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import {faTimes} from '@fortawesome/free-solid-svg-icons';
 import parse from 'html-react-parser';
 import config from "./../../config_react.json";
+import NavbarTop from './navbarTop';
+
 
 const Header = (props) => {
 
     const [bannerAlertInfo, setBannerAlertInfo] = useState([]);
     const { project, environment } = useParams();
-    console.log(project)
     const getConfig = key => config[project + "_" + environment][key]
 
     console.log(getConfig("config")["logo_url"])
@@ -32,8 +32,8 @@ const Header = (props) => {
                     </button>
                 </div>
             }
-            {/* {<NavbarTop alertBar={bannerAlertInfo && bannerAlertInfo.length > 0} />} */}
-
+            <NavbarTop alertBar={bannerAlertInfo && bannerAlertInfo.length > 0} />
+            
             <div className="tenant_logo_container">
                 <div className="text-center ssp-logo">
                     <a href={getConfig("config")["website_url"]}>

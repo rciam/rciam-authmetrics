@@ -4,7 +4,7 @@ import App from './App';
 import 'react-toastify/dist/ReactToastify.css';
 import {ToastContainer} from 'react-toastify';
 import {UserProvider} from "./Context/UserProvider";
-
+import './components/Common/i18n';
 import {BrowserRouter as Router, Route, Link, Routes} from "react-router-dom";
 import Communities from './Pages/Communities';
 

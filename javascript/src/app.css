@@ -253,10 +253,20 @@ body .nav-header {
 .dropup .caret, .navbar-fixed-bottom .dropdown .caret {
     border-top: 0;
     border-bottom: 4px dashed;
-    border-bottom: 4px solid \9;
+
     content: "";
 }
+.caret {
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 4px dashed;
 
+    display: inline-block;
+    height: 0;
+    margin-left: 2px;
+    vertical-align: middle;
+    width: 0;
+}
 .ssp-footer__item__lang .dropdown-toggle::after {
     content:none!important;
 }
