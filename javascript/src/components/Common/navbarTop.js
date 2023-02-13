@@ -65,8 +65,7 @@ const NavbarTop = (props)=>{
           </Navbar.Collapse>
         </Navbar>
       }
-      </React.Fragment>
-  
+      </React.Fragment> 
     )
   }
   export default NavbarTop
