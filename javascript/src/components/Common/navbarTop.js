@@ -4,6 +4,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {faUser,faUserShield, faSignOutAlt} from '@fortawesome/free-solid-svg-icons';
 import Navbar from 'react-bootstrap/Navbar';
 import Button from 'react-bootstrap/Button';
+import DropdownButton from 'react-bootstrap/DropdownButton';
+import Dropdown from 'react-bootstrap/Dropdown';
 import { userContext } from './context';
 import { useTranslation } from 'react-i18next';
 import { useCookies } from 'react-cookie';
@@ -45,9 +47,9 @@ const NavbarTop = (props)=>{
                     {user.sub} <strong>(sub)</strong>
                   </Dropdown.Item>
                 }
-                <Dropdown.Item onClick={()=>{history.push('/'+(getConfig("config")&&(getConfig("config")["name"]+'/userinfo')));}}>
+                {/* <Dropdown.Item onClick={()=>{history.push('/'+(getConfig("config")&&(getConfig("config")["name"]+'/userinfo')));}}>
                 {t('nav_link_userinfo')}
-                </Dropdown.Item>
+                </Dropdown.Item> */}
                 <Dropdown.Item onClick={()=>{
                   window.location.assign(getConfig("config")["logout_uri"] + "&id_token_hint="+cookies.federation_logoutkey);
                   }}>
