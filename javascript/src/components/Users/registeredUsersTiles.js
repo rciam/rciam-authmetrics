@@ -1,12 +1,11 @@
 import { useState, useContext, useEffect } from "react";
-import "../../app.css";
 import { client } from '../../utils/api';
 import Container from 'react-bootstrap/Container';
 import Select from 'react-select';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { convertDateByGroup, getWeekNumber } from "../Common/utils";
-import 'bootstrap/dist/css/bootstrap.min.css';
+//import 'bootstrap/dist/css/bootstrap.min.css';
 
 const RegisteredUsersTiles = (parameters) => {
     const [tiles, setTiles] = useState({});

@@ -1,5 +1,4 @@
 import { useState, useContext, useEffect } from "react";
-import "../../app.css";
 import { client } from '../../utils/api';
 import Container from 'react-bootstrap/Container';
 import Select from 'react-select';
@@ -13,13 +12,13 @@ const LoginTiles = (parameters) => {
     useEffect(() => {
         Promise.all([
             client.get("logins_countby",
-            { params: { 'tenant_id': parameters['tenantId'] }}),
+            { params: { 'tenant_id': parameters['tenantId'], 'unique_logins': parameters['uniqueLogins'] }}),
             client.get("logins_countby",
-                { params: { 'interval': 'year', 'count_interval': '1', 'tenant_id': parameters['tenantId'] }}),
+                { params: { 'interval': 'year', 'count_interval': '1', 'tenant_id': parameters['tenantId'], 'unique_logins': parameters['uniqueLogins'] }}),
             client.get("logins_countby",
-                { params: { 'interval': 'days', 'count_interval': '30', 'tenant_id': parameters['tenantId'] }}),
+                { params: { 'interval': 'days', 'count_interval': '30', 'tenant_id': parameters['tenantId'], 'unique_logins': parameters['uniqueLogins'] }}),
             client.get("logins_countby",
-                { params: { 'interval': 'days', 'count_interval': '7', 'tenant_id': parameters['tenantId'] }})
+                { params: { 'interval': 'days', 'count_interval': '7', 'tenant_id': parameters['tenantId'], 'unique_logins': parameters['uniqueLogins'] }})
         ]).then(function (responses) {
             // Get a JSON object from each of the responses
             return Promise.all(responses.map(function (response) {
@@ -50,7 +49,7 @@ const LoginTiles = (parameters) => {
         });
 
 
-    }, [])
+    }, [parameters["uniqueLogins"]])
 
     return (
 

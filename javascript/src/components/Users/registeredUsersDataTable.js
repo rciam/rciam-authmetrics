@@ -1,5 +1,4 @@
 import {useState, useContext, useEffect} from "react";
-import "../../app.css";
 import {client} from '../../utils/api';
 import "jquery/dist/jquery.min.js";
 import $ from "jquery";

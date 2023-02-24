@@ -1,5 +1,4 @@
 import { useState, useContext, useEffect } from "react";
-import "../../app.css";
 import { client } from '../../utils/api';
 import { communitiesGroupBy } from "../../utils/queryKeys";
 import "jquery/dist/jquery.min.js";

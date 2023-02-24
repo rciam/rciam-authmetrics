@@ -1,4 +1,5 @@
 from typing import List, Optional, Union
+from xmlrpc.client import boolean
 from app.models.user_model import Users, UsersRead
 
 from fastapi import Depends, FastAPI, HTTPException, Query
@@ -24,7 +25,7 @@ app = FastAPI(root_path="/api/v1", root_path_in_servers=False, servers= [
         "url": "/api/v1"
     }
 ])
-# app = FastAPI()
+
 MembersReadWithCommunityInfo.update_forward_refs(
     Community_InfoRead=Community_InfoRead)
 CommunityReadwithInfo.update_forward_refs(
@@ -471,17 +472,23 @@ def read_logins_countby(
     offset: int = 0,
     interval: Union[str, None] = None,
     count_interval: int = None,
-    tenant_id: int
+    tenant_id: int,
+    unique_logins: Union[boolean, None] = False
 ):
     interval_subquery = ""
     if interval and count_interval:
         interval_subquery = """AND date >
         CURRENT_DATE - INTERVAL '{0} {1}'""".format(count_interval, interval)
-
-    logins = session.exec("""
-    select sum(count) as count
-    from statistics_country_hashed WHERE tenant_id={0}
-    {1}""".format(tenant_id, interval_subquery)).all()
+    if unique_logins == False:
+        logins = session.exec("""
+        select sum(count) as count
+        from statistics_country_hashed WHERE tenant_id={0}
+        {1}""".format(tenant_id, interval_subquery)).all()
+    else:
+        logins = session.exec("""
+        select count(DISTINCT hasheduserid) as count
+        from statistics_country_hashed WHERE tenant_id={0}
+        {1}""".format(tenant_id, interval_subquery)).all()
     return logins
 
 

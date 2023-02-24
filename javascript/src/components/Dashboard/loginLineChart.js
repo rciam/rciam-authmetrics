@@ -1,6 +1,5 @@
 import { useState, useContext, useEffect } from "react";
 import { Chart } from "react-google-charts";
-import "../../app.css";
 import { client } from '../../utils/api';
 import Select from 'react-select';
 import Container from 'react-bootstrap/Container';
@@ -10,7 +9,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 export const options = {
-    title: "Overall number of logins per day",
+    // title: "Overall number of logins per day",
     //curveType: "function",
     legend: 'none'
 };
@@ -25,7 +24,7 @@ const LoginLineChart = ({ type, identifier, tenantId }) => {
         console.log(type)
         params = { params: { tenant_id: tenantId } }
         if (type) {
-            params["params"][[type]]= identifier
+            params["params"][[type]] = identifier
         }
         console.log(params)
         client.get("logins_groupby/day", params).
@@ -87,46 +86,52 @@ const LoginLineChart = ({ type, identifier, tenantId }) => {
 
 
     return (
-        <Chart
-            chartType="LineChart"
-            width="100%"
-            height="100%"
-            data={lineData}
-            options={options}
-            chartEvents={[
-                {
-                    eventName: "ready",
-                    callback: ({ chartWrapper, google }) => {
-                        const chart = chartWrapper.getChart();
-                        if (!managed) {
-                            console.log(managed)
-                            setZerosIfNoDate(chartWrapper.getDataTable(), google)
+        <Row>
+            <Col md={12} className="box">
+                <div className="box-header with-border">
+                    <h3 className="box-title">Overall number of logins per day</h3>
+                </div>
+                <Chart
+                    chartType="LineChart"
+                    width="100%"
+                    data={lineData}
+                    options={options}
+                    chartEvents={[
+                        {
+                            eventName: "ready",
+                            callback: ({ chartWrapper, google }) => {
+                                const chart = chartWrapper.getChart();
+                                if (!managed) {
+                                    console.log(managed)
+                                    setZerosIfNoDate(chartWrapper.getDataTable(), google)
+                                }
+                                google.visualization.events.addListener(chart, "click", (e) => {
+                                    console.log("CLICK");
+                                });
+                            }
                         }
-                        google.visualization.events.addListener(chart, "click", (e) => {
-                            console.log("CLICK");
-                        });
-                    }
-                }
-            ]}
-            controls={[
-                {
+                    ]}
+                    controls={[
+                        {
 
-                    controlType: "ChartRangeFilter",
-                    options: {
-                        filterColumnIndex: 0,
-                        ui: {
-                            chartType: "LineChart",
-                            chartOptions: {
-                                chartArea: { width: "95%", height: "100%" },
-                                hAxis: { baselineColor: "none" },
+                            controlType: "ChartRangeFilter",
+                            options: {
+                                filterColumnIndex: 0,
+                                ui: {
+                                    chartType: "LineChart",
+                                    chartOptions: {
+                                        chartArea: { width: "80%", height: "100%" },
+                                        hAxis: { baselineColor: "none" },
+                                    },
+                                },
                             },
-                        },
-                    },
-                    controlPosition: "bottom",
+                            controlPosition: "bottom",
 
-                },
-            ]}
-        />
+                        },
+                    ]}
+                />
+            </Col>
+        </Row>
     );
 }
 

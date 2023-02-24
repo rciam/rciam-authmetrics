@@ -1,5 +1,4 @@
 import {useState, useContext, useEffect} from "react";
-import "../../app.css";
 import {Link, useNavigate} from "react-router-dom";
 import {useForm} from 'react-hook-form';
 import {useMutation} from 'react-query';

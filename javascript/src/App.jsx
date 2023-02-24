@@ -7,10 +7,17 @@ import {QueryClient, QueryClientProvider} from 'react-query'
 import Communities from "./Pages/Communities";
 import Users from "./Pages/Users";
 import Dashboard from "./Pages/Dashboard";
+import Col from 'react-bootstrap/Col';
+import Row from 'react-bootstrap/Row';
 // import Idps from "./Pages/Idps";
 // import Sps from "./Pages/Sps";
 import "./app.css";
+import "./style.scss";
+
 import { languageContext } from "./components/Common/context";
+import Layout from "./components/Common/layout";
+import SideNav from "./components/Common/sideNav";
+import Main from "./components/Common/main";
 
 function App() {
     // const queryClient = new QueryClient()
@@ -18,6 +25,9 @@ function App() {
 
     return (
         <languageContext.Provider value={[language, setLanguage]}>
+            <Layout>
+            <SideNav></SideNav>
+            <Main>
             <Router>
                 {/* <QueryClientProvider client={queryClient}> */}
                     <Routes>
@@ -38,6 +48,8 @@ function App() {
                     </Routes>
                 {/* </QueryClientProvider> */}
             </Router>
+            </Main>
+            </Layout>
         </languageContext.Provider>
     );
 }

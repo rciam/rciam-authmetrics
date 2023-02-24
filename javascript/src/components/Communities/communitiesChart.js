@@ -1,7 +1,6 @@
 import { useState, useContext, useEffect } from "react";
 
 import { Chart } from "react-google-charts";
-import "../../app.css";
 import { client } from '../../utils/api';
 import Select from 'react-select';
 import Container from 'react-bootstrap/Container';

@@ -1,5 +1,4 @@
 import {useState, useContext} from "react";
-import "../../app.css";
 import "../../components/Common/Style/formInput.css";
 import {Link, useNavigate} from "react-router-dom";
 import {useForm} from "react-hook-form";
