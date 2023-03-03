@@ -54,9 +54,8 @@ const RegisteredUsersTiles = (parameters) => {
     return (
 
         <Row>
-            {console.log(tiles)}
             <Col lg={3} xs={6}>
-                <div className="small-box bg-blue">
+                <div className="small-box bg-aqua">
                     <div className="inner">
                         <h3>{tiles["overall"]}</h3>
                         <p>Total Registered Users</p>
