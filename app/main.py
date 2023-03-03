@@ -1,4 +1,5 @@
 from typing import List, Optional, Union
+import os
 from xmlrpc.client import boolean
 from app.models.user_model import Users, UsersRead
 
@@ -20,13 +21,11 @@ from app.models.country_hashed_user_model import *
 import os
 import sys
 sys.path.insert(0, os.path.realpath('__file__'))
+# Development Environment: dev
+environment = os.getenv('API_ENVIRONMENT')
+# Instantiate app according to the environment configuration
+app = FastAPI() if environment == "dev" else FastAPI(root_path="/api/v1", root_path_in_servers=False, servers= [{"url": "/api/v1"}])
 
-app = FastAPI(root_path="/api/v1", root_path_in_servers=False, servers= [
-    {
-        "url": "/api/v1"
-    }
-])
-# app = FastAPI()
 MembersReadWithCommunityInfo.update_forward_refs(
     Community_InfoRead=Community_InfoRead)
 CommunityReadwithInfo.update_forward_refs(
@@ -656,7 +655,7 @@ def read_logins_per_country(
     unique_logins: Union[boolean, None] = False
 ):
     interval_subquery = ""
-    
+
     if group_by:
         if startDate and endDate:
             interval_subquery = """
