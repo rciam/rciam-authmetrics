@@ -33,7 +33,7 @@ export const options = {
     tooltip: { isHtml: true, trigger: "selection" }
 };
 var spsArray = [];
-const LoginSpPieChart = ({ setShowModalHandler, idpEntityId, tenantId }) => {
+const LoginSpPieChart = ({ setShowModalHandler, idpEntityId, tenantId, uniqueLogins }) => {
     const [sps, setSps] = useState([["Service Provider", "Logins"]]);
     var spsChartArray = [["Service Provider", "Logins"]];
 
@@ -41,7 +41,7 @@ const LoginSpPieChart = ({ setShowModalHandler, idpEntityId, tenantId }) => {
     useEffect(() => {
         var params = null
         console.log(idpEntityId)
-        params = { params: { tenant_id: tenantId } }
+        params = { params: { tenant_id: tenantId, unique_logins: uniqueLogins } }
         if (idpEntityId) {
             params["params"]["idp"] = idpEntityId
         }
@@ -58,7 +58,7 @@ const LoginSpPieChart = ({ setShowModalHandler, idpEntityId, tenantId }) => {
                 console.log(spsChartArray)
             })
 
-    }, [])
+    }, [uniqueLogins])
     return (
         <Row>
             <Col md={12} className="box">

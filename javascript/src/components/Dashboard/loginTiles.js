@@ -53,10 +53,10 @@ const LoginTiles = (parameters) => {
 
     return (
 
-        <Row>
+        <Row className="tiles-container">
             {console.log(tiles)}
             <Col lg={3} xs={6}>
-                <div className="small-box bg-blue">
+                <div className="small-box bg-aqua">
                     <div className="inner">
                         <h3>{tiles["overall"]}</h3>
                         <p>Total Logins</p>
@@ -64,7 +64,7 @@ const LoginTiles = (parameters) => {
                 </div>
             </Col>
             <Col lg={3} xs={6}>
-                <div className="small-box bg-aqua">
+                <div className="small-box bg-green">
                     <div className="inner">
                         <h3>{tiles["year_1"]}</h3>
                         <p>Last Year Logins</p>
@@ -72,7 +72,7 @@ const LoginTiles = (parameters) => {
                 </div>
             </Col>
             <Col lg={3} xs={6}>
-                <div className="small-box bg-aqua">
+                <div className="small-box bg-yellow">
                     <div className="inner">
                         <h3>{tiles["days_30"]}</h3>
                         <p>Last 30 days Logins</p>
@@ -80,7 +80,7 @@ const LoginTiles = (parameters) => {
                 </div>
             </Col>
             <Col lg={3} xs={6}>
-                <div className="small-box bg-aqua">
+                <div className="small-box bg-red">
                     <div className="inner">
                         <h3>{tiles["days_7"]}</h3>
                         <p>Last 7 days Logins</p>

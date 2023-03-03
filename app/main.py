@@ -17,7 +17,8 @@ from app.models.country_model import *
 from app.models.idp_model import *
 from app.models.country_hashed_user_model import *
 
-import os, sys
+import os
+import sys
 sys.path.insert(0, os.path.realpath('__file__'))
 
 app = FastAPI(root_path="/api/v1", root_path_in_servers=False, servers= [
@@ -25,7 +26,7 @@ app = FastAPI(root_path="/api/v1", root_path_in_servers=False, servers= [
         "url": "/api/v1"
     }
 ])
-
+# app = FastAPI()
 MembersReadWithCommunityInfo.update_forward_refs(
     Community_InfoRead=Community_InfoRead)
 CommunityReadwithInfo.update_forward_refs(
@@ -75,12 +76,12 @@ def read_communities(
             interval_subquery = """
                 WHERE created BETWEEN '{0}' AND '{1}'
             """.format(startDate, endDate)
-        if interval_subquery=="":
-            interval_subquery="""
+        if interval_subquery == "":
+            interval_subquery = """
                 WHERE community.tenant_id={0}
             """.format(tenant_id)
         else:
-            interval_subquery+=""" AND community.tenant_id={0} 
+            interval_subquery += """ AND community.tenant_id={0} 
             """.format(tenant_id)
 
         communities = session.exec("""
@@ -99,22 +100,23 @@ def read_communities(
 
 @app.get("/communities/")
 def read_community(
-    *, 
-    session: Session = Depends(get_session), 
+    *,
+    session: Session = Depends(get_session),
     community_id: Union[None, int] = None,
-    tenant_id: int):
+        tenant_id: int):
     sql_subquery = ''
     if community_id:
         sql_subquery = 'id={0} and'.format(community_id)
     community = session.exec("""
         SELECT * FROM community_info WHERE {0} tenant_id={1}
-    """.format(sql_subquery,tenant_id)).all()
+    """.format(sql_subquery, tenant_id)).all()
     # statement = select(Community).options(selectinload(Community.community_info))
     # result = session.exec(statement)
     # community = result.one()
     # if not community:
     #     raise HTTPException(status_code=404, detail="Community not found")
     return community
+
 
 @app.get("/communities_info/", response_model=List[Community_InfoRead])
 def read_communities_info(
@@ -160,6 +162,7 @@ def read_members_bystatus(
         # members = session.exec(""" SELECT community_id FROM members """)
     return members
 
+
 @app.get("/tenant/{project_name}/{environment_name}")
 def read_tenant_byname(
     *,
@@ -179,6 +182,7 @@ def read_tenant_byname(
         """.format(project_name, environment_name)).all()
     return tenant
 
+
 @app.get("/environment_byname/{environment_name}")
 def read_environment_byname(
     *,
@@ -193,6 +197,7 @@ def read_environment_byname(
             WHERE name='{0}' LIMIT 1
         """.format(environment_name)).all()
     return environment
+
 
 @app.get("/services/", response_model=List[Serviceprovidersmap])
 def read_services(
@@ -465,6 +470,7 @@ def read_users_countby(
 
 # Dashboard Page
 
+
 @app.get("/logins_countby")
 def read_logins_countby(
     *,
@@ -500,7 +506,8 @@ def read_logins_groupby(
     group_by: str,
     idp: str = None,
     sp: str = None,
-    tenant_id: int
+    tenant_id: int,
+    unique_logins: Union[boolean, None] = False
 ):
     interval_subquery = ""
     if idp != None:
@@ -510,18 +517,28 @@ def read_logins_groupby(
             WHERE entityid = '{0}'
         """.format(idp)
     elif sp != None:
-         interval_subquery = """ 
+        interval_subquery = """ 
             JOIN serviceprovidersmap ON serviceid=serviceprovidersmap.id
                 AND serviceprovidersmap.tenant_id=statistics_country_hashed.tenant_id
             WHERE identifier = '{0}'
         """.format(sp)
     if interval_subquery == "":
-        interval_subquery = """WHERE statistics_country_hashed.tenant_id = {0}""".format(tenant_id)
+        interval_subquery = """WHERE statistics_country_hashed.tenant_id = {0}""".format(
+            tenant_id)
     else:
-        interval_subquery += """ AND statistics_country_hashed.tenant_id = {0} """.format(tenant_id)
-
-    logins = session.exec("""
+        interval_subquery += """ AND statistics_country_hashed.tenant_id = {0} """.format(
+            tenant_id)
+    if unique_logins == False:
+        logins = session.exec("""
             select sum(count) as count, date_trunc('{0}', date) as date
+            from statistics_country_hashed
+            {1}
+            GROUP BY date_trunc('{0}', date)
+            ORDER BY date_trunc('{0}', date) ASC
+        """.format(group_by, interval_subquery)).all()
+    else:
+        logins = session.exec("""
+            select count(DISTINCT hasheduserid) as count, date_trunc('{0}', date) as date
             from statistics_country_hashed
             {1}
             GROUP BY date_trunc('{0}', date)
@@ -538,7 +555,8 @@ def read_logins_per_idp(
     sp: str = None,
     startDate: str = None,
     endDate: str = None,
-    tenant_id: int
+    tenant_id: int,
+    unique_logins: Union[boolean, None] = False
 ):
     interval_subquery = ""
     sp_subquery_join = ""
@@ -554,19 +572,26 @@ def read_logins_per_idp(
         interval_subquery = """
             AND date BETWEEN '{0}' AND '{1}'
         """.format(startDate, endDate)
-
+    if unique_logins == False:
+        sub_select = """
+            sum(count) as count
+        """
+    else:
+        sub_select = """
+            count(DISTINCT hasheduserid) as count
+        """
     logins = session.exec("""
-        select identityprovidersmap.name, entityid, sourceidpid, sum(count) as count
+        select identityprovidersmap.name, entityid, sourceidpid, {0}
         from statistics_country_hashed
         join identityprovidersmap ON identityprovidersmap.id=sourceidpid  
             AND identityprovidersmap.tenant_id=statistics_country_hashed.tenant_id
-        {0}
-        WHERE statistics_country_hashed.tenant_id = {1}
-        {2}
+        {1}
+        WHERE statistics_country_hashed.tenant_id = {2}
+        {3}
         GROUP BY sourceidpid, identityprovidersmap.name, entityid
         ORDER BY count DESC
-        """.format(sp_subquery_join, tenant_id, interval_subquery)).all()
-            
+        """.format(sub_select, sp_subquery_join, tenant_id, interval_subquery)).all()
+
     return logins
 
 
@@ -578,7 +603,8 @@ def read_logins_per_sp(
     idp: str = None,
     startDate: str = None,
     endDate: str = None,
-    tenant_id: int
+    tenant_id: int,
+    unique_logins: Union[boolean, None] = False
 ):
     interval_subquery = ""
     idp_subquery_join = ""
@@ -594,17 +620,27 @@ def read_logins_per_sp(
         interval_subquery = """
             AND date BETWEEN '{0}' AND '{1}'
         """.format(startDate, endDate)
+
+    if unique_logins == False:
+        sub_select = """
+            sum(count) as count
+        """
+    else:
+        sub_select = """
+            count(DISTINCT hasheduserid) as count
+        """
+
     logins = session.exec("""
-        select serviceprovidersmap.name, identifier, serviceid, sum(count) as count
+        select serviceprovidersmap.name, identifier, serviceid, {0}
         from statistics_country_hashed
         join serviceprovidersmap ON serviceprovidersmap.id=serviceid 
             AND serviceprovidersmap.tenant_id=statistics_country_hashed.tenant_id
-        {0}
-        WHERE statistics_country_hashed.tenant_id = {1}
-        {2}
+        {1}
+        WHERE statistics_country_hashed.tenant_id = {2}
+        {3}
         GROUP BY serviceid, serviceprovidersmap.name, identifier
         ORDER BY count DESC
-    """.format(idp_subquery_join, tenant_id, interval_subquery)).all()
+    """.format(sub_select, idp_subquery_join, tenant_id, interval_subquery)).all()
     return logins
 
 
@@ -616,39 +652,60 @@ def read_logins_per_country(
     group_by: Union[str, None] = None,
     startDate: str = None,
     endDate: str = None,
-    tenant_id: int
+    tenant_id: int,
+    unique_logins: Union[boolean, None] = False
 ):
     interval_subquery = ""
+    
     if group_by:
         if startDate and endDate:
             interval_subquery = """
                 AND date BETWEEN '{0}' AND '{1}'
             """.format(startDate, endDate)
 
+        if unique_logins == False:
+            sub_select = """
+                sum(count) as count_country
+            """
+            sum = "sum(count)"
+        else:
+            sub_select = """
+                count(DISTINCT hasheduserid) as count_country
+            """
+            sum = "count(DISTINCT hasheduserid)"
         logins = session.exec("""
         SELECT range_date, sum(count_country) as count, min(min_login_date) as min_date, STRING_AGG(country, '|| ') as countries 
         FROM (
-            SELECT date_trunc('{0}', date) as range_date, min(date) as min_login_date, sum(count) as count_country, CONCAT(country,': ',sum(count)) as country
+            SELECT date_trunc('{0}', date) as range_date, min(date) as min_login_date, {1}, CONCAT(country,': ',{2}) as country
             from statistics_country_hashed
             JOIN country_codes ON countryid=country_codes.id
-            WHERE tenant_id = {1}
-            {2}
+            WHERE tenant_id = {3}
+            {4}
             GROUP BY range_date, country
             ORDER BY range_date,country ASC
             ) country_logins
         GROUP BY range_date
-        """.format(group_by, tenant_id, interval_subquery)).all()
+        """.format(group_by, sub_select, sum, tenant_id, interval_subquery)).all()
     else:
         if startDate and endDate:
             interval_subquery = """
                 AND date BETWEEN '{0}' AND '{1}'
             """.format(startDate, endDate)
+
+        if unique_logins == False:
+            sub_select = """
+                sum(count) as sum
+            """
+        else:
+            sub_select = """
+                count(DISTINCT hasheduserid) as sum
+            """
         logins = session.exec(""" 
-        SELECT country, countrycode,sum(count) as sum
-            from statistics_country_hashed
+            SELECT country, countrycode, {0}
+            FROM statistics_country_hashed
             JOIN country_codes ON countryid=country_codes.id
-            WHERE tenant_id = {0}
-            {1}
+            WHERE tenant_id = {1}
+                {2}
             GROUP BY country,countrycode
-        """.format(tenant_id, interval_subquery)).all()
+        """.format(sub_select, tenant_id, interval_subquery)).all()
     return logins

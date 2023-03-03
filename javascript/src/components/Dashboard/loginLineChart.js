@@ -15,14 +15,14 @@ export const options = {
 };
 
 
-const LoginLineChart = ({ type, identifier, tenantId }) => {
+const LoginLineChart = ({ type, identifier, tenantId, uniqueLogins }) => {
 
     const [managed, setManaged] = useState(false);
     const [lineData, setLineData] = useState(["Date", "Logins"])
     useEffect(() => {
         var params = null
         console.log(type)
-        params = { params: { tenant_id: tenantId } }
+        params = { params: { tenant_id: tenantId, 'unique_logins': uniqueLogins } }
         if (type) {
             params["params"][[type]] = identifier
         }
@@ -37,7 +37,7 @@ const LoginLineChart = ({ type, identifier, tenantId }) => {
                 console.log(lineDataArray)
                 setLineData(lineDataArray)
             })
-    }, [])
+    }, [uniqueLogins])
 
 
     // This is for Dates with no logins, we have to set 0 for these dates

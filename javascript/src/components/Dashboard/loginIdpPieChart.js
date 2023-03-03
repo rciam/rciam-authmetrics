@@ -33,12 +33,12 @@ export const options = {
     tooltip: { isHtml: true, trigger: "selection" }
 };
 var idpsArray = [];
-const LoginIdpPieChart = ({ setShowModalHandler, spIdentifier, tenantId }) => {
+const LoginIdpPieChart = ({ setShowModalHandler, spIdentifier, tenantId, uniqueLogins }) => {
     const [idps, setIdps] = useState([["Identity Provider", "Identifier", "Logins"]]);
     var idpsChartArray = [["Identity Provider", "Logins"]];
 
     useEffect(() => {
-        var params = { params: { tenant_id: tenantId } }
+        var params = { params: { tenant_id: tenantId, 'unique_logins': uniqueLogins } }
         if (spIdentifier) {
             params["params"]["sp"] = spIdentifier
         }
@@ -53,7 +53,7 @@ const LoginIdpPieChart = ({ setShowModalHandler, spIdentifier, tenantId }) => {
                 console.log(idpsChartArray)
             })
 
-    }, [])
+    }, [uniqueLogins])
     return (
         <Row>
             <Col md={12} className="box">
