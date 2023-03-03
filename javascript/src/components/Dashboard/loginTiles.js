@@ -12,13 +12,13 @@ const LoginTiles = (parameters) => {
     useEffect(() => {
         Promise.all([
             client.get("logins_countby",
-            { params: { 'tenant_id': parameters['tenantId'], 'unique_logins': parameters['uniqueLogins'] }}),
+                { params: { 'tenant_id': parameters['tenantId'], 'unique_logins': parameters['uniqueLogins'] } }),
             client.get("logins_countby",
-                { params: { 'interval': 'year', 'count_interval': '1', 'tenant_id': parameters['tenantId'], 'unique_logins': parameters['uniqueLogins'] }}),
+                { params: { 'interval': 'year', 'count_interval': '1', 'tenant_id': parameters['tenantId'], 'unique_logins': parameters['uniqueLogins'] } }),
             client.get("logins_countby",
-                { params: { 'interval': 'days', 'count_interval': '30', 'tenant_id': parameters['tenantId'], 'unique_logins': parameters['uniqueLogins'] }}),
+                { params: { 'interval': 'days', 'count_interval': '30', 'tenant_id': parameters['tenantId'], 'unique_logins': parameters['uniqueLogins'] } }),
             client.get("logins_countby",
-                { params: { 'interval': 'days', 'count_interval': '7', 'tenant_id': parameters['tenantId'], 'unique_logins': parameters['uniqueLogins'] }})
+                { params: { 'interval': 'days', 'count_interval': '7', 'tenant_id': parameters['tenantId'], 'unique_logins': parameters['uniqueLogins'] } })
         ]).then(function (responses) {
             // Get a JSON object from each of the responses
             return Promise.all(responses.map(function (response) {
@@ -31,12 +31,12 @@ const LoginTiles = (parameters) => {
             var tilesArray = {}
             data.forEach(element => {
 
-                if (element["config"]["params"]["interval"] ) {
+                if (element["config"]["params"]["interval"]) {
                     var name = element["config"]["params"]["interval"] + "_" + element["config"]["params"]["count_interval"]
                     tilesArray[[name]] = (element["data"][0]["count"] != null) ? element["data"][0]["count"] : 0
                 }
                 else {
-                    tilesArray["overall"] = (element["data"][0]["count"] != null) ? element["data"][0]["count"] : 0 
+                    tilesArray["overall"] = (element["data"][0]["count"] != null) ? element["data"][0]["count"] : 0
                 }
 
             })
@@ -53,41 +53,41 @@ const LoginTiles = (parameters) => {
 
     return (
 
-        <Row className="tiles-container">
-            {console.log(tiles)}
-            <Col lg={3} xs={6}>
-                <div className="small-box bg-aqua">
-                    <div className="inner">
-                        <h3>{tiles["overall"]}</h3>
-                        <p>Total Logins</p>
+        <Row>
+            <Col md={12} className="tiles-container">
+                <Col lg={3} xs={6}>
+                    <div className="small-box bg-aqua">
+                        <div className="inner">
+                            <h3>{tiles["overall"]}</h3>
+                            <p>Total Logins</p>
+                        </div>
                     </div>
-                </div>
-            </Col>
-            <Col lg={3} xs={6}>
-                <div className="small-box bg-green">
-                    <div className="inner">
-                        <h3>{tiles["year_1"]}</h3>
-                        <p>Last Year Logins</p>
+                </Col>
+                <Col lg={3} xs={6}>
+                    <div className="small-box bg-green">
+                        <div className="inner">
+                            <h3>{tiles["year_1"]}</h3>
+                            <p>Last Year Logins</p>
+                        </div>
                     </div>
-                </div>
-            </Col>
-            <Col lg={3} xs={6}>
-                <div className="small-box bg-yellow">
-                    <div className="inner">
-                        <h3>{tiles["days_30"]}</h3>
-                        <p>Last 30 days Logins</p>
+                </Col>
+                <Col lg={3} xs={6}>
+                    <div className="small-box bg-yellow">
+                        <div className="inner">
+                            <h3>{tiles["days_30"]}</h3>
+                            <p>Last 30 days Logins</p>
+                        </div>
                     </div>
-                </div>
-            </Col>
-            <Col lg={3} xs={6}>
-                <div className="small-box bg-red">
-                    <div className="inner">
-                        <h3>{tiles["days_7"]}</h3>
-                        <p>Last 7 days Logins</p>
+                </Col>
+                <Col lg={3} xs={6}>
+                    <div className="small-box bg-red">
+                        <div className="inner">
+                            <h3>{tiles["days_7"]}</h3>
+                            <p>Last 7 days Logins</p>
+                        </div>
                     </div>
-                </div>
+                </Col>
             </Col>
-
         </Row>
     )
 }

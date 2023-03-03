@@ -3,6 +3,9 @@
 @import "~bootstrap/scss/bootstrap";
 @import "~react-bootstrap-sidebar-menu/dist/sidebar-menu.scss";
 
+.container {
+  max-width: none !important;
+}
 .main-wrapper {
   width: 100%;
   height: 100%;
@@ -64,7 +67,10 @@
   }
 }
 .tiles-container {
-  margin: 0px;
+  display: flex;
+  justify-content: space-around;
+  width: 97%;
+  margin: 2%;
 }
 .small-box {
   border-radius: 2px;
@@ -74,6 +80,7 @@
   box-shadow: 0 1px 1px rgb(0 0 0 / 10%);
   padding: 10px;
   color: #fff;
+  margin: 1%;
 }
 .bg-aqua {
   background-color: #00c0ef !important;
@@ -118,8 +125,8 @@
   }
 }
 .range_inputs {
-    padding: 30px 30px 20px 30px;
+  padding: 30px 30px 20px 30px;
 }
 .react-datepicker-wrapper {
-    padding: 0px 10px;
+  padding: 0px 10px;
 }
