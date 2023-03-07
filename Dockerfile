@@ -18,6 +18,8 @@ RUN apt-get -qq --allow-releaseinfo-change update \
 
 # Create working directory
 ENV APP_HOME /app
+ENV API_ENVIRONMENT dev
+
 RUN mkdir -p $APP_HOME
 WORKDIR $APP_HOME
 
@@ -26,8 +28,10 @@ ARG APP_GID=1000
 
 RUN groupadd -g ${APP_GID} app
 RUN useradd -u ${APP_UID} -g ${APP_GID} -d $APP_HOME app
+RUN echo $(python3 -m site --user-base)
 
 # set environment variables
+ENV PATH $APP_HOME/.local/bin:${PATH}
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 ENV ENVIRONMENT dev
