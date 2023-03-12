@@ -478,7 +478,9 @@ def read_logins_countby(
     interval: Union[str, None] = None,
     count_interval: int = None,
     tenant_id: int,
-    unique_logins: Union[boolean, None] = False
+    unique_logins: Union[boolean, None] = False,
+    idp: str = None,
+    sp: str = None
 ):
     interval_subquery = ""
     if interval and count_interval:
@@ -513,13 +515,13 @@ def read_logins_groupby(
         interval_subquery = """ 
             JOIN identityprovidersmap ON sourceidpid=identityprovidersmap.id
                 AND identityprovidersmap.tenant_id=statistics_country_hashed.tenant_id
-            WHERE entityid = '{0}'
+            WHERE identityprovidersmap.id = '{0}'
         """.format(idp)
     elif sp != None:
         interval_subquery = """ 
             JOIN serviceprovidersmap ON serviceid=serviceprovidersmap.id
                 AND serviceprovidersmap.tenant_id=statistics_country_hashed.tenant_id
-            WHERE identifier = '{0}'
+            WHERE serviceprovidersmap.id = '{0}'
         """.format(sp)
     if interval_subquery == "":
         interval_subquery = """WHERE statistics_country_hashed.tenant_id = {0}""".format(
@@ -580,14 +582,14 @@ def read_logins_per_idp(
             count(DISTINCT hasheduserid) as count
         """
     logins = session.exec("""
-        select identityprovidersmap.name, entityid, sourceidpid, {0}
+        select identityprovidersmap.id, identityprovidersmap.name, entityid, sourceidpid, {0}
         from statistics_country_hashed
         join identityprovidersmap ON identityprovidersmap.id=sourceidpid  
             AND identityprovidersmap.tenant_id=statistics_country_hashed.tenant_id
         {1}
         WHERE statistics_country_hashed.tenant_id = {2}
         {3}
-        GROUP BY sourceidpid, identityprovidersmap.name, entityid
+        GROUP BY identityprovidersmap.id, sourceidpid, identityprovidersmap.name, entityid
         ORDER BY count DESC
         """.format(sub_select, sp_subquery_join, tenant_id, interval_subquery)).all()
 
@@ -612,7 +614,7 @@ def read_logins_per_sp(
         JOIN identityprovidersmap ON identityprovidersmap.id=sourceidpid
         AND identityprovidersmap.tenant_id=statistics_country_hashed.tenant_id
         AND identityprovidersmap.tenant_id={1}
-        AND entityid = '{0}'
+        AND identityprovidersmap.id = '{0}'
         """.format(idp, tenant_id)
 
     if startDate and endDate:
@@ -630,14 +632,14 @@ def read_logins_per_sp(
         """
 
     logins = session.exec("""
-        select serviceprovidersmap.name, identifier, serviceid, {0}
+        select serviceprovidersmap.id, serviceprovidersmap.name, identifier, serviceid, {0}
         from statistics_country_hashed
         join serviceprovidersmap ON serviceprovidersmap.id=serviceid 
             AND serviceprovidersmap.tenant_id=statistics_country_hashed.tenant_id
         {1}
         WHERE statistics_country_hashed.tenant_id = {2}
         {3}
-        GROUP BY serviceid, serviceprovidersmap.name, identifier
+        GROUP BY serviceprovidersmap.id, serviceid, serviceprovidersmap.name, identifier
         ORDER BY count DESC
     """.format(sub_select, idp_subquery_join, tenant_id, interval_subquery)).all()
     return logins

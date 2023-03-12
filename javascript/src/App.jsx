@@ -11,6 +11,7 @@ import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 // import Idps from "./Pages/Idps";
 // import Sps from "./Pages/Sps";
+// import Idp from "./Pages/Idps/idp";
 import "./app.css";
 import "./style.scss";
 
@@ -38,13 +39,13 @@ function App() {
                         {/* <Route path="/" element={<Dashboard/>}/> 
                         <Route path="/communities" element={<Communities/>}/>
                         <Route path="/users" element={<Users/>}/>
-                        
-                        <Route path="/sps" element={<Sps/>}/> */}
+                        */}
                         <Route path="/:project/:environment" element={<Dashboard/>}/>
                         <Route path="/:project/:environment/communities" element={<Communities/>}/>
                         <Route path="/:project/:environment/users" element={<Users/>}/>
                         {/* <Route path="/:project/:environment/idps" element={<Idps/>}/>
-                        <Route path="/:project/:environment/sps" element={<Sps/>}/> */}
+                        <Route path="/:project/:environment/sps" element={<Sps/>}/>
+                        <Route path="/:project/:environment/idps/:id" element={<Idp/>}/> */}
                     </Routes>
                 {/* </QueryClientProvider> */}
             </Router>

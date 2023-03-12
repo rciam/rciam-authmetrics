@@ -1,6 +1,7 @@
 import { useState, useContext, useEffect } from "react";
 import { Chart } from "react-google-charts";
 import { client } from '../../utils/api';
+
 import Select from 'react-select';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
@@ -10,14 +11,6 @@ import "jquery/dist/jquery.min.js";
 import $ from "jquery";
 import { convertDateByGroup, getWeekNumber } from "../Common/utils";
 
-export const data = [
-    ["Task", "Hours per Day"],
-    ["Work", 11],
-    ["Eat", 2],
-    ["Commute", 2],
-    ["Watch TV", 2],
-    ["Sleep", 7],
-];
 
 export const options = {
     pieSliceText: 'value',
@@ -33,7 +26,7 @@ export const options = {
     tooltip: { isHtml: true, trigger: "selection" }
 };
 var idpsArray = [];
-const LoginIdpPieChart = ({ setShowModalHandler, spIdentifier, tenantId, uniqueLogins }) => {
+const LoginIdpPieChart = ({ setShowModalHandler, spIdentifier, tenantId, uniqueLogins, goToSpecificProviderHandler }) => {
     const [idps, setIdps] = useState([["Identity Provider", "Identifier", "Logins"]]);
     var idpsChartArray = [["Identity Provider", "Logins"]];
 
@@ -47,13 +40,14 @@ const LoginIdpPieChart = ({ setShowModalHandler, spIdentifier, tenantId, uniqueL
                 console.log(response)
                 response["data"].forEach(element => {
                     idpsChartArray.push([element.name, element.count])
-                    idpsArray.push([element.name, element.entityid])
+                    idpsArray.push([element.id, element.name, element.entityid])
                 })
                 setIdps(idpsChartArray)
                 console.log(idpsChartArray)
             })
 
     }, [uniqueLogins])
+
     return (
         <Row>
             <Col md={12} className="box">
@@ -98,9 +92,10 @@ const LoginIdpPieChart = ({ setShowModalHandler, spIdentifier, tenantId, uniqueL
                                         var identifier = idpsArray[selection[0].row];
                                         //var legend = data.getValue(selection[0].row, 0);
                                         console.log(selection[0])
-                                        console.log(identifier)
+                                        console.log(identifier[0]+"??????")
                                         // Show Modal
-                                        setShowModalHandler(true)
+                                        //setShowModalHandler(true)
+                                        goToSpecificProviderHandler(identifier[0])
                                         // activeTab = $("ul.tabset_tabs li.ui-tabs-active").attr("aria-controls").replace("Tab","");
                                         // unique_logins = $("#myModal").is(':visible') ? $("#unique-logins-modal").is(":checked") : $("#unique-logins-"+activeTab).is(":checked");
                                         // goToSpecificProvider(identifier, legend, type, unique_logins);

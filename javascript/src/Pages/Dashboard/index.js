@@ -42,7 +42,7 @@ const Dashboard = () => {
             
             <Row>
                 <Col md={6}><h2>Dashboard</h2></Col>
-                {/* <Col md={6} className="unique-logins">
+                <Col md={6} className="unique-logins">
                     <Form className="unique-logins-form">
                         <Form.Check
                             type="checkbox"
@@ -51,7 +51,7 @@ const Dashboard = () => {
                             onChange={handleChange}
                         />
                     </Form>
-                </Col> */}
+                </Col>
             </Row>
             <LoginTiles tenantId={tenantId} uniqueLogins={uniqueLogins}></LoginTiles>
             <LoginLineChart tenantId={tenantId}  uniqueLogins={uniqueLogins}></LoginLineChart>

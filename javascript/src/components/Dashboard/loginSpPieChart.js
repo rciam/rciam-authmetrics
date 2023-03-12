@@ -10,15 +10,6 @@ import "jquery/dist/jquery.min.js";
 import $ from "jquery";
 import { convertDateByGroup, getWeekNumber } from "../Common/utils";
 
-export const data = [
-    ["Task", "Hours per Day"],
-    ["Work", 11],
-    ["Eat", 2],
-    ["Commute", 2],
-    ["Watch TV", 2],
-    ["Sleep", 7],
-];
-
 export const options = {
     pieSliceText: 'value',
     width: '100%',
@@ -33,17 +24,17 @@ export const options = {
     tooltip: { isHtml: true, trigger: "selection" }
 };
 var spsArray = [];
-const LoginSpPieChart = ({ setShowModalHandler, idpEntityId, tenantId, uniqueLogins }) => {
+const LoginSpPieChart = ({ setShowModalHandler, idpId, tenantId, uniqueLogins }) => {
     const [sps, setSps] = useState([["Service Provider", "Logins"]]);
     var spsChartArray = [["Service Provider", "Logins"]];
 
 
     useEffect(() => {
         var params = null
-        console.log(idpEntityId)
+        console.log(idpId)
         params = { params: { tenant_id: tenantId, unique_logins: uniqueLogins } }
-        if (idpEntityId) {
-            params["params"]["idp"] = idpEntityId
+        if (idpId) {
+            params["params"]["idp"] = idpId
         }
 
         client.get("logins_per_sp/", params).
@@ -51,7 +42,7 @@ const LoginSpPieChart = ({ setShowModalHandler, idpEntityId, tenantId, uniqueLog
                 console.log(response)
                 response["data"].forEach(element => {
                     spsChartArray.push([element.name, element.count])
-                    spsArray.push([element.name, element.identifier])
+                    spsArray.push([element.id, element.name, element.identifier])
                 })
 
                 setSps(spsChartArray)
@@ -77,11 +68,7 @@ const LoginSpPieChart = ({ setShowModalHandler, idpEntityId, tenantId, uniqueLog
                             eventName: "ready",
                             callback: ({ chartWrapper, google }) => {
                                 const chart = chartWrapper.getChart();
-                                // if(!managed){
-                                //   console.log(managed)
-                                //   setZerosIfNoDate(chartWrapper.getDataTable(), google)
-                                // }
-
+                                
                                 google.visualization.events.addListener(chart, 'click', selectHandler);
                                 google.visualization.events.addListener(chart, 'onmouseover', showTooltip);
                                 google.visualization.events.addListener(chart, 'onmouseout', hideTooltip);

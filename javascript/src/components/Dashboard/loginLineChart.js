@@ -15,7 +15,7 @@ export const options = {
 };
 
 
-const LoginLineChart = ({ type, identifier, tenantId, uniqueLogins }) => {
+const LoginLineChart = ({ type, id, tenantId, uniqueLogins }) => {
 
     const [managed, setManaged] = useState(false);
     const [lineData, setLineData] = useState(["Date", "Logins"])
@@ -24,7 +24,7 @@ const LoginLineChart = ({ type, identifier, tenantId, uniqueLogins }) => {
         console.log(type)
         params = { params: { tenant_id: tenantId, 'unique_logins': uniqueLogins } }
         if (type) {
-            params["params"][[type]] = identifier
+            params["params"][[type]] = id
         }
         console.log(params)
         client.get("logins_groupby/day", params).
