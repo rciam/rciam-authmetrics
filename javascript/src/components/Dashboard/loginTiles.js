@@ -12,7 +12,7 @@ const LoginTiles = (parameters) => {
     useEffect(() => {
         Promise.all([
             client.get("logins_countby",
-                { params: { 'tenant_id': parameters['tenantId'], 'unique_logins': parameters['uniqueLogins'] } }),
+                { params: { 'tenant_id': parameters['tenantId'], 'unique_logins': parameters['uniqueLogins'], 'idpId': parameters['idpId']!== undefined ?  parameters['idpId'] : null } }),
             client.get("logins_countby",
                 { params: { 'interval': 'year', 'count_interval': '1', 'tenant_id': parameters['tenantId'], 'unique_logins': parameters['uniqueLogins'] } }),
             client.get("logins_countby",

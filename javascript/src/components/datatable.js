@@ -112,16 +112,20 @@ class Datatable extends Component {
                     }
                 ],
                 "autoWidth": false,
-                // fnRowCallback: function (
-                //     nRow,
-                //     aData,
-                //     iDisplayIndex,
-                //     iDisplayIndexFull
-                // ) {
-                //     var index = iDisplayIndexFull + 1;
-                //     $("td:first", nRow).html(index);
-                //     return nRow;
-                // },
+                fnRowCallback: function (
+                    nRow,
+                    aData,
+                    iDisplayIndex,
+                    iDisplayIndexFull
+                ) {
+                    
+                    var index = iDisplayIndexFull + 1;
+                    $("td", nRow).each(function (){
+                        var text = $(this).html()
+                        $(this).html(text.replaceAll('&lt;','<').replaceAll('&gt;', '>'));
+                    });
+                    return nRow;
+                },
 
                 // lengthMenu: [
                 //     [10, 20, 30, 50, -1],

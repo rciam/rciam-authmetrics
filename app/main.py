@@ -24,7 +24,8 @@ sys.path.insert(0, os.path.realpath('__file__'))
 # Development Environment: dev
 environment = os.getenv('API_ENVIRONMENT')
 # Instantiate app according to the environment configuration
-app = FastAPI() if environment == "dev" else FastAPI(root_path="/api/v1", root_path_in_servers=False, servers= [{"url": "/api/v1"}])
+app = FastAPI() if environment == "dev" else FastAPI(root_path="/api/v1",
+                                                     root_path_in_servers=False, servers=[{"url": "/api/v1"}])
 
 MembersReadWithCommunityInfo.update_forward_refs(
     Community_InfoRead=Community_InfoRead)
@@ -209,14 +210,22 @@ def read_services(
     return services
 
 
-@app.get("/idps/", response_model=List[Identityprovidersmap])
-def read_services(
+@app.get("/idps")
+def read_idps(
     *,
     session: Session = Depends(get_session),
-    offset: int = 0
+    tenant_id: int,
+    idpId: int = None
 ):
-
-    idps = session.exec(select(Identityprovidersmap).offset(offset)).all()
+    idpId_subquery = ""
+    if idpId:
+        idpId_subquery = """
+            AND id = {0}
+        """.format(idpId)
+    idps = session.exec("""
+            SELECT * FROM identityprovidersmap 
+            WHERE tenant_id='{0}' {1}
+        """.format(tenant_id, idpId_subquery)).all()
     return idps
 
 
@@ -479,23 +488,28 @@ def read_logins_countby(
     count_interval: int = None,
     tenant_id: int,
     unique_logins: Union[boolean, None] = False,
-    idp: str = None,
-    sp: str = None
+    idpId:  Union[int, None] = None,
+    spId:  Union[int, None] = None,
 ):
     interval_subquery = ""
+    idp_subquery = ""
     if interval and count_interval:
         interval_subquery = """AND date >
         CURRENT_DATE - INTERVAL '{0} {1}'""".format(count_interval, interval)
+    if idpId:
+        idp_subquery = """
+            AND sourceidpid = '{0}'
+        """.format(idpId)
     if unique_logins == False:
         logins = session.exec("""
         select sum(count) as count
         from statistics_country_hashed WHERE tenant_id={0}
-        {1}""".format(tenant_id, interval_subquery)).all()
+        {1} {2}""".format(tenant_id, interval_subquery, idp_subquery)).all()
     else:
         logins = session.exec("""
         select count(DISTINCT hasheduserid) as count
         from statistics_country_hashed WHERE tenant_id={0}
-        {1}""".format(tenant_id, interval_subquery)).all()
+        {1} {2}""".format(tenant_id, interval_subquery, idp_subquery)).all()
     return logins
 
 
@@ -654,10 +668,15 @@ def read_logins_per_country(
     startDate: str = None,
     endDate: str = None,
     tenant_id: int,
-    unique_logins: Union[boolean, None] = False
+    unique_logins: Union[boolean, None] = False,
+    idpId: Union[int, None] = None,
 ):
     interval_subquery = ""
-
+    entity_subquery = ""
+    if idpId: 
+        entity_subquery = """
+            AND sourceidpid = {0}
+        """.format(idpId)
     if group_by:
         if startDate and endDate:
             interval_subquery = """
@@ -681,12 +700,12 @@ def read_logins_per_country(
             from statistics_country_hashed
             JOIN country_codes ON countryid=country_codes.id
             WHERE tenant_id = {3}
-            {4}
+            {4} {5}
             GROUP BY range_date, country
             ORDER BY range_date,country ASC
             ) country_logins
         GROUP BY range_date
-        """.format(group_by, sub_select, sum, tenant_id, interval_subquery)).all()
+        """.format(group_by, sub_select, sum, tenant_id, interval_subquery, entity_subquery)).all()
     else:
         if startDate and endDate:
             interval_subquery = """
@@ -706,7 +725,7 @@ def read_logins_per_country(
             FROM statistics_country_hashed
             JOIN country_codes ON countryid=country_codes.id
             WHERE tenant_id = {1}
-                {2}
+                {2} {3}
             GROUP BY country,countrycode
-        """.format(sub_select, tenant_id, interval_subquery)).all()
+        """.format(sub_select, tenant_id, interval_subquery, entity_subquery)).all()
     return logins

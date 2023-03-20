@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import Sidebar from "react-bootstrap-sidebar-menu";
 import Layout from './layout';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHome, faObjectGroup, faShield, faUsers } from '@fortawesome/free-solid-svg-icons';
+import { faHome, faObjectGroup, faShield, faUsers, faWarehouse } from '@fortawesome/free-solid-svg-icons';
 
 const SideNav = (props) => {
     // eslint-disable-next-line
@@ -30,6 +30,10 @@ const SideNav = (props) => {
                             <Sidebar.Nav.Link href="/egi/devel">
                                 <Sidebar.Nav.Icon><FontAwesomeIcon icon={faHome}/></Sidebar.Nav.Icon>
                                 <Sidebar.Nav.Title>Home</Sidebar.Nav.Title>
+                            </Sidebar.Nav.Link>
+                            <Sidebar.Nav.Link href="/egi/devel/idps">
+                                <Sidebar.Nav.Icon><FontAwesomeIcon icon={faWarehouse}/></Sidebar.Nav.Icon>
+                                <Sidebar.Nav.Title>Idps</Sidebar.Nav.Title>
                             </Sidebar.Nav.Link>
                             <Sidebar.Nav.Link href="/egi/devel/users">
                                 <Sidebar.Nav.Icon><FontAwesomeIcon icon={faUsers}/></Sidebar.Nav.Icon>
