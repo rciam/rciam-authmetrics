@@ -3,7 +3,6 @@ from sqlmodel import Field, Session, SQLModel, create_engine, select
 from typing import Union
 from xmlrpc.client import boolean
 
-
 from app.database import get_session
 
 # from ..dependencies import get_token_header
@@ -14,16 +13,17 @@ router = APIRouter(
     # responses={404: {"description": "Not found"}},
 )
 
+
 @router.get("/logins_per_idp/")
-def read_logins_per_idp(
-    *,
-    session: Session = Depends(get_session),
-    offset: int = 0,
-    sp: str = None,
-    startDate: str = None,
-    endDate: str = None,
-    tenant_id: int,
-    unique_logins: Union[boolean, None] = False
+async def read_logins_per_idp(
+        *,
+        session: Session = Depends(get_session),
+        offset: int = 0,
+        sp: str = None,
+        startDate: str = None,
+        endDate: str = None,
+        tenant_id: int,
+        unique_logins: Union[boolean, None] = False
 ):
     interval_subquery = ""
     sp_subquery_join = ""
@@ -63,15 +63,15 @@ def read_logins_per_idp(
 
 
 @router.get("/logins_per_sp/")
-def read_logins_per_sp(
-    *,
-    session: Session = Depends(get_session),
-    offset: int = 0,
-    idp: str = None,
-    startDate: str = None,
-    endDate: str = None,
-    tenant_id: int,
-    unique_logins: Union[boolean, None] = False
+async def read_logins_per_sp(
+        *,
+        session: Session = Depends(get_session),
+        offset: int = 0,
+        idp: str = None,
+        startDate: str = None,
+        endDate: str = None,
+        tenant_id: int,
+        unique_logins: Union[boolean, None] = False
 ):
     interval_subquery = ""
     idp_subquery_join = ""
@@ -112,16 +112,16 @@ def read_logins_per_sp(
 
 
 @router.get("/logins_per_country/")
-def read_logins_per_country(
-    *,
-    session: Session = Depends(get_session),
-    offset: int = 0,
-    group_by: Union[str, None] = None,
-    startDate: str = None,
-    endDate: str = None,
-    tenant_id: int,
-    unique_logins: Union[boolean, None] = False,
-    idpId: Union[int, None] = None,
+async def read_logins_per_country(
+        *,
+        session: Session = Depends(get_session),
+        offset: int = 0,
+        group_by: Union[str, None] = None,
+        startDate: str = None,
+        endDate: str = None,
+        tenant_id: int,
+        unique_logins: Union[boolean, None] = False,
+        idpId: Union[int, None] = None,
 ):
     interval_subquery = ""
     entity_subquery = ""
@@ -184,16 +184,16 @@ def read_logins_per_country(
 
 
 @router.get("/logins_countby")
-def read_logins_countby(
-    *,
-    session: Session = Depends(get_session),
-    offset: int = 0,
-    interval: Union[str, None] = None,
-    count_interval: int = None,
-    tenant_id: int,
-    unique_logins: Union[boolean, None] = False,
-    idpId:  Union[int, None] = None,
-    spId:  Union[int, None] = None,
+async def read_logins_countby(
+        *,
+        session: Session = Depends(get_session),
+        offset: int = 0,
+        interval: Union[str, None] = None,
+        count_interval: int = None,
+        tenant_id: int,
+        unique_logins: Union[boolean, None] = False,
+        idpId: Union[int, None] = None,
+        spId: Union[int, None] = None,
 ):
     interval_subquery = ""
     idp_subquery = ""
@@ -218,15 +218,15 @@ def read_logins_countby(
 
 
 @router.get("/logins_groupby/{group_by}")
-def read_logins_groupby(
-    *,
-    session: Session = Depends(get_session),
-    offset: int = 0,
-    group_by: str,
-    idp: str = None,
-    sp: str = None,
-    tenant_id: int,
-    unique_logins: Union[boolean, None] = False
+async def read_logins_groupby(
+        *,
+        session: Session = Depends(get_session),
+        offset: int = 0,
+        group_by: str,
+        idp: str = None,
+        sp: str = None,
+        tenant_id: int,
+        unique_logins: Union[boolean, None] = False
 ):
     interval_subquery = ""
     if idp != None:

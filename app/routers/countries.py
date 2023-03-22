@@ -16,34 +16,32 @@ router = APIRouter(
 
 
 @router.get("/countries/", response_model=List[Country_CodesRead])
-def read_countries(
-    *,
-    session: Session = Depends(get_session),
-    offset: int = 0
+async def read_countries(
+        *,
+        session: Session = Depends(get_session),
+        offset: int = 0
 ):
-
     countries = session.exec(select(Country_Codes).offset(offset)).all()
     return countries
 
 
 @router.get("/country_stats/", response_model=List[Statistics_Country_HashedwithInfo])
-def read_country_stats(
-    *,
-    session: Session = Depends(get_session),
-    offset: int = 0
+async def read_country_stats(
+        *,
+        session: Session = Depends(get_session),
+        offset: int = 0
 ):
-
     stats = session.exec(
         select(Statistics_Country_Hashed).offset(offset)).all()
     return stats
 
 
 @router.get("/country_stats_by_vo/{community_id}")
-def read_country_stats_by_vo(
-    *,
-    session: Session = Depends(get_session),
-    offset: int = 0,
-    community_id: Union[None, int] = None
+async def read_country_stats_by_vo(
+        *,
+        session: Session = Depends(get_session),
+        offset: int = 0,
+        community_id: Union[None, int] = None
 ):
     stats = []
     stats_country = session.exec("""
@@ -99,5 +97,3 @@ def read_country_stats_by_vo(
     stats.append(stats_country)
     stats.append(status_per_country)
     return stats
-
-

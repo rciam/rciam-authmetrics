@@ -19,8 +19,9 @@ router = APIRouter(
     # responses={404: {"description": "Not found"}},
 )
 
+
 # @router.get("/communities/", response_model=List[CommunityReadwithInfo])
-# def read_communities(
+# async def read_communities(
 #     *,
 #     session: Session = Depends(get_session),
 #     offset: int = 0
@@ -30,11 +31,11 @@ router = APIRouter(
 #     return communities
 
 @router.get("/members/", response_model=List[MembersReadWithCommunityInfo])
-def read_members(
-    *,
-    session: Session = Depends(get_session),
-    offset: int = 0,
-    # community_id: Union[None, int] = None
+async def read_members(
+        *,
+        session: Session = Depends(get_session),
+        offset: int = 0,
+        # community_id: Union[None, int] = None
 ):
     # if not community_id:
     #     members = session.exec(select(Members).offset(offset)).all()
@@ -44,12 +45,12 @@ def read_members(
 
 
 @router.get("/members_bystatus/")
-def read_members_bystatus(
-    *,
-    session: Session = Depends(get_session),
-    offset: int = 0,
-    community_id: Union[None, int] = None,
-    tenant_id: int,
+async def read_members_bystatus(
+        *,
+        session: Session = Depends(get_session),
+        offset: int = 0,
+        community_id: Union[None, int] = None,
+        tenant_id: int,
 ):
     if not community_id:
         members = session.exec(select(Members).offset(offset)).all()
@@ -65,16 +66,16 @@ def read_members_bystatus(
 
 
 @router.get("/communities_groupby/{group_by}")
-def read_communities(
-    *,
-    session: Session = Depends(get_session),
-    offset: int = 0,
-    group_by: str,
-    tenant_id: int,
-    interval: Union[str, None] = None,
-    count_interval: int = None,
-    startDate: str = None,
-    endDate: str = None,
+async def read_communities(
+        *,
+        session: Session = Depends(get_session),
+        offset: int = 0,
+        group_by: str,
+        tenant_id: int,
+        interval: Union[str, None] = None,
+        count_interval: int = None,
+        startDate: str = None,
+        endDate: str = None,
 ):
     interval_subquery = ""
     if group_by:
@@ -108,10 +109,10 @@ def read_communities(
 
 
 @router.get("/communities/")
-def read_community(
-    *,
-    session: Session = Depends(get_session),
-    community_id: Union[None, int] = None,
+async def read_community(
+        *,
+        session: Session = Depends(get_session),
+        community_id: Union[None, int] = None,
         tenant_id: int):
     sql_subquery = ''
     if community_id:
@@ -128,10 +129,10 @@ def read_community(
 
 
 @router.get("/communities_info/", response_model=List[Community_InfoRead])
-def read_communities_info(
-    *,
-    session: Session = Depends(get_session),
-    offset: int = 0
+async def read_communities_info(
+        *,
+        session: Session = Depends(get_session),
+        offset: int = 0
 ):
     communities = session.exec(select(Community_Info).offset(offset)).all()
     return communities
