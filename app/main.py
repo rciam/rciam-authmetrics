@@ -50,12 +50,12 @@ app.include_router(logins.router)
 
 
 @app.get("/tenant/{project_name}/{environment_name}")
-def read_tenant_byname(
-    *,
-    session: Session = Depends(get_session),
-    offset: int = 0,
-    project_name: str,
-    environment_name: str
+async def read_tenant_byname(
+        *,
+        session: Session = Depends(get_session),
+        offset: int = 0,
+        project_name: str,
+        environment_name: str
 ):
     tenant = None
     if project_name and environment_name:
@@ -70,11 +70,11 @@ def read_tenant_byname(
 
 
 @app.get("/environment_byname/{environment_name}")
-def read_environment_byname(
-    *,
-    session: Session = Depends(get_session),
-    offset: int = 0,
-    environment_name: str
+async def read_environment_byname(
+        *,
+        session: Session = Depends(get_session),
+        offset: int = 0,
+        environment_name: str
 ):
     environment = None
     if environment_name:
@@ -86,22 +86,21 @@ def read_environment_byname(
 
 
 @app.get("/services/", response_model=List[Serviceprovidersmap])
-def read_services(
-    *,
-    session: Session = Depends(get_session),
-    offset: int = 0
+async def read_services(
+        *,
+        session: Session = Depends(get_session),
+        offset: int = 0
 ):
-
     services = session.exec(select(Serviceprovidersmap).offset(offset)).all()
     return services
 
 
 @app.get("/idps")
-def read_idps(
-    *,
-    session: Session = Depends(get_session),
-    tenant_id: int,
-    idpId: int = None
+async def read_idps(
+        *,
+        session: Session = Depends(get_session),
+        tenant_id: int,
+        idpId: int = None
 ):
     idpId_subquery = ""
     if idpId:
@@ -113,4 +112,3 @@ def read_idps(
             WHERE tenant_id='{0}' {1}
         """.format(tenant_id, idpId_subquery)).all()
     return idps
-

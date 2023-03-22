@@ -14,13 +14,13 @@ router = APIRouter(
 
 
 @router.get("/registered_users_country")
-def read_users_country(
-    *,
-    session: Session = Depends(get_session),
-    offset: int = 0,
-    startDate: str = None,
-    endDate: str = None,
-    tenant_id: int
+async def read_users_country(
+        *,
+        session: Session = Depends(get_session),
+        offset: int = 0,
+        startDate: str = None,
+        endDate: str = None,
+        tenant_id: int
 ):
     interval_subquery = ""
     if startDate and endDate:
@@ -57,14 +57,14 @@ def read_users_country(
 
 
 @router.get("/registered_users_country_group_by/{group_by}")
-def read_users_country_groupby(
-    *,
-    session: Session = Depends(get_session),
-    offset: int = 0,
-    group_by: str,
-    startDate: str = None,
-    endDate: str = None,
-    tenant_id: int
+async def read_users_country_groupby(
+        *,
+        session: Session = Depends(get_session),
+        offset: int = 0,
+        group_by: str,
+        startDate: str = None,
+        endDate: str = None,
+        tenant_id: int
 ):
     if group_by:
         interval_subquery = ""
@@ -106,18 +106,17 @@ def read_users_country_groupby(
 
 
 @router.get("/registered_users_groupby/{group_by}")
-def read_users_groupby(
-    *,
-    session: Session = Depends(get_session),
-    offset: int = 0,
-    group_by: str,
-    interval: Union[str, None] = None,
-    count_interval: int = None,
-    startDate: str = None,
-    endDate: str = None,
-    tenant_id: int
+async def read_users_groupby(
+        *,
+        session: Session = Depends(get_session),
+        offset: int = 0,
+        group_by: str,
+        interval: Union[str, None] = None,
+        count_interval: int = None,
+        startDate: str = None,
+        endDate: str = None,
+        tenant_id: int
 ):
-
     interval_subquery = ""
     if group_by:
         if interval and count_interval:
@@ -140,15 +139,14 @@ def read_users_groupby(
 
 
 @router.get("/registered_users_countby")
-def read_users_countby(
-    *,
-    session: Session = Depends(get_session),
-    offset: int = 0,
-    interval: Union[str, None] = None,
-    count_interval: int = None,
-    tenant_id: int
+async def read_users_countby(
+        *,
+        session: Session = Depends(get_session),
+        offset: int = 0,
+        interval: Union[str, None] = None,
+        count_interval: int = None,
+        tenant_id: int
 ):
-
     interval_subquery = ""
     if interval and count_interval:
         interval_subquery = """AND created >
