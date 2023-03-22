@@ -55,7 +55,7 @@ const Idp = () => {
 				</Row>
 				<LoginTiles tenantId={tenantId} uniqueLogins={uniqueLogins} idpId={id}></LoginTiles>
 				<LoginLineChart tenantId={tenantId} type="idp" id={id} uniqueLogins={uniqueLogins}></LoginLineChart>
-				{/* <LoginSpPieChart tenantId={tenantId} idpId={id} uniqueLogins={uniqueLogins}></LoginSpPieChart>
+				<LoginSpPieChart tenantId={tenantId} idpId={id} uniqueLogins={uniqueLogins}></LoginSpPieChart>
 				<SpsDataTable tenantId={tenantId} idpId={id} dataTableId="tableSps" uniqueLogins={uniqueLogins}></SpsDataTable>
 				<Tabs>
 					<TabList>
@@ -70,7 +70,7 @@ const Idp = () => {
 						<IdpMapToDataTable tenantId={tenantId} idpId={id} uniqueLogins={uniqueLogins}></IdpMapToDataTable>
 					</TabPanel>
 				</Tabs>
-				 */}
+				
 				
 			</Container>
 		)
