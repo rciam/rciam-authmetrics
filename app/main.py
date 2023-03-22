@@ -1,7 +1,7 @@
 from typing import List, Optional, Union
 import os
+import sys
 from xmlrpc.client import boolean
-from app.models.user_model import Users, UsersRead
 
 from fastapi import Depends, FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
@@ -18,8 +18,6 @@ from app.models.country_model import *
 from app.models.idp_model import *
 from app.models.country_hashed_user_model import *
 
-import os
-import sys
 sys.path.insert(0, os.path.realpath('__file__'))
 # Development Environment: dev
 environment = os.getenv('API_ENVIRONMENT')
@@ -313,19 +311,6 @@ def read_country_stats_by_vo(
     stats.append(stats_country)
     stats.append(status_per_country)
     return stats
-
-
-# Users Endpoints
-#
-@app.get("/users/", response_model=List[UsersRead])
-def read_users(
-    *,
-    session: Session = Depends(get_session),
-    offset: int = 0
-):
-
-    users = session.exec(select(Users).offset(offset)).all()
-    return users
 
 
 @app.get("/registered_users_country")
