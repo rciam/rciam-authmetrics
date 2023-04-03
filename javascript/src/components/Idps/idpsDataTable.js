@@ -79,7 +79,7 @@ const IdpsDataTable = ({ startDateHandler, endDateHandle, spId, dataTableId = "t
             params: {
                 'startDate': startDate,
                 'endDate': endDate,
-                'sp': identifier ? identifier : null,
+                'sp': spId ? spId : null,
                 'tenant_id': tenantId,
                 'unique_logins': uniqueLogins
             }

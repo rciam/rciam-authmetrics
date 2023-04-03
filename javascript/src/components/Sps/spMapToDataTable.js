@@ -11,7 +11,7 @@ import 'jquery-mapael';
 import 'jquery-mapael/js/maps/world_countries_mercator.js';
 
 
-const spMapToDataTable = ({startDate, endDate, tenantId, uniqueLogins, spId}) => {
+const SpMapToDataTable = ({startDate, endDate, tenantId, uniqueLogins, spId}) => {
     const [loginsPerCountry, setLoginsPerCountry] = useState();
     var loginsPerCountryArray = [];  
     useEffect(() => {
@@ -57,4 +57,4 @@ const spMapToDataTable = ({startDate, endDate, tenantId, uniqueLogins, spId}) =>
     )
 }
 
-export default spMapToDataTable;
+export default SpMapToDataTable;
