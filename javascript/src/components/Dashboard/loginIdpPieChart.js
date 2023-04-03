@@ -26,14 +26,14 @@ export const options = {
     tooltip: { isHtml: true, trigger: "selection" }
 };
 var idpsArray = [];
-const LoginIdpPieChart = ({ setShowModalHandler, spIdentifier, tenantId, uniqueLogins, goToSpecificProviderHandler }) => {
+const LoginIdpPieChart = ({ setShowModalHandler, spId, tenantId, uniqueLogins, goToSpecificProviderHandler }) => {
     const [idps, setIdps] = useState([["Identity Provider", "Identifier", "Logins"]]);
     var idpsChartArray = [["Identity Provider", "Logins"]];
 
     useEffect(() => {
         var params = { params: { tenant_id: tenantId, 'unique_logins': uniqueLogins } }
-        if (spIdentifier) {
-            params["params"]["sp"] = spIdentifier
+        if (spId) {
+            params["params"]["sp"] = spId
         }
         client.get("logins_per_idp/", params).
             then(response => {

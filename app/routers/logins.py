@@ -32,7 +32,7 @@ async def read_logins_per_idp(
         JOIN serviceprovidersmap ON serviceprovidersmap.id=serviceid
         AND serviceprovidersmap.tenant_id=statistics_country_hashed.tenant_id
         AND serviceprovidersmap.tenant_id={1}
-        AND identifier = '{0}'
+        AND serviceid = '{0}'
         """.format(sp, tenant_id)
 
     if startDate and endDate:
@@ -122,13 +122,19 @@ async def read_logins_per_country(
         tenant_id: int,
         unique_logins: Union[boolean, None] = False,
         idpId: Union[int, None] = None,
+        spId: Union[int, None] = None,
 ):
     interval_subquery = ""
     entity_subquery = ""
+    sp_subquery = ""
     if idpId:
         entity_subquery = """
             AND sourceidpid = {0}
         """.format(idpId)
+    if spId:
+        sp_subquery = """
+            AND serviceid = {0}
+        """.format(spId)
     if group_by:
         if startDate and endDate:
             interval_subquery = """
@@ -152,12 +158,12 @@ async def read_logins_per_country(
             from statistics_country_hashed
             JOIN country_codes ON countryid=country_codes.id
             WHERE tenant_id = {3}
-            {4} {5}
+            {4} {5} {6}
             GROUP BY range_date, country
             ORDER BY range_date,country ASC
             ) country_logins
         GROUP BY range_date
-        """.format(group_by, sub_select, sum, tenant_id, interval_subquery, entity_subquery)).all()
+        """.format(group_by, sub_select, sum, tenant_id, interval_subquery, entity_subquery, sp_subquery)).all()
     else:
         if startDate and endDate:
             interval_subquery = """
@@ -177,9 +183,9 @@ async def read_logins_per_country(
             FROM statistics_country_hashed
             JOIN country_codes ON countryid=country_codes.id
             WHERE tenant_id = {1}
-                {2} {3}
+                {2} {3} {4}
             GROUP BY country,countrycode
-        """.format(sub_select, tenant_id, interval_subquery, entity_subquery)).all()
+        """.format(sub_select, tenant_id, interval_subquery, entity_subquery, sp_subquery)).all()
     return logins
 
 
@@ -197,6 +203,7 @@ async def read_logins_countby(
 ):
     interval_subquery = ""
     idp_subquery = ""
+    sp_subquery = ""
     if interval and count_interval:
         interval_subquery = """AND date >
         CURRENT_DATE - INTERVAL '{0} {1}'""".format(count_interval, interval)
@@ -204,16 +211,20 @@ async def read_logins_countby(
         idp_subquery = """
             AND sourceidpid = '{0}'
         """.format(idpId)
+    if spId:
+        sp_subquery = """
+            AND serviceid = '{0}'
+        """.format(spId)
     if unique_logins == False:
         logins = session.exec("""
         select sum(count) as count
         from statistics_country_hashed WHERE tenant_id={0}
-        {1} {2}""".format(tenant_id, interval_subquery, idp_subquery)).all()
+        {1} {2} {3}""".format(tenant_id, interval_subquery, idp_subquery, sp_subquery)).all()
     else:
         logins = session.exec("""
         select count(DISTINCT hasheduserid) as count
         from statistics_country_hashed WHERE tenant_id={0}
-        {1} {2}""".format(tenant_id, interval_subquery, idp_subquery)).all()
+        {1} {2} {3}""".format(tenant_id, interval_subquery, idp_subquery, sp_subquery)).all()
     return logins
 
 

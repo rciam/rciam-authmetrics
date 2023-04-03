@@ -8,6 +8,7 @@ import RegisteredUsersMap from "../../components/Users/registeredUsersMap";
 import RegisteredUsersTiles from "../../components/Users/registeredUsersTiles";
 import Header from "../../components/Common/header";
 import Footer from "../../components/Common/footer";
+import { envContext, projectContext } from "../../components/Common/context";
 
 
 const Users = () => {
@@ -15,8 +16,12 @@ const Users = () => {
     const [tenantId, setTenantId] = useState(0);
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
+    const [projectCon, setProjectCon] = useContext(projectContext);
+    const [envCon, setEnvCon] = useContext(envContext)
 
-    useEffect(() => {   
+    useEffect(() => {  
+        setProjectCon(project)
+        setEnvCon(environment) 
         client.get("tenant/" + project + "/" + environment).
             then(response => {         
                 setTenantId(response["data"][0]["id"])

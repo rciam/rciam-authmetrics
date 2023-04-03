@@ -10,6 +10,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 const EntityInfo = (parameters) => {
     const [idp, setIdp] = useState([])
+    const [sp, setSp] = useState([])
     useEffect(() => {
         if (parameters['idpId']) {
             client.get("idps", { params: { 'tenant_id': parameters['tenantId'], 'idpId': parameters['idpId']} }).
@@ -18,11 +19,24 @@ const EntityInfo = (parameters) => {
                     console.log(idp_response)
                 })
         }
+        else if (parameters['spId']) {
+            client.get("sps", { params: { 'tenant_id': parameters['tenantId'], 'spId': parameters['spId']} }).
+                then(sp_response => {
+                    setSp(sp_response["data"][0])
+                    console.log(sp_response)
+                })
+        }
     }, [])
-
+    if(idp.name) {
     return (
         <h3>{idp.name} ({idp.entityid})</h3>
     )
+    }
+    else if (sp.name) {
+        return (
+            <h3>{sp.name} ({sp.identifier})</h3>
+        )
+    }
 }
 
 export default EntityInfo

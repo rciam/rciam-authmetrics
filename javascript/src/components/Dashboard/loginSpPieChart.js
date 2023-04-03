@@ -24,7 +24,7 @@ export const options = {
     tooltip: { isHtml: true, trigger: "selection" }
 };
 var spsArray = [];
-const LoginSpPieChart = ({ setShowModalHandler, idpId, tenantId, uniqueLogins }) => {
+const LoginSpPieChart = ({ setShowModalHandler, idpId, tenantId, uniqueLogins, goToSpecificProviderHandler }) => {
     const [sps, setSps] = useState([["Service Provider", "Logins"]]);
     var spsChartArray = [["Service Provider", "Logins"]];
 
@@ -91,10 +91,11 @@ const LoginSpPieChart = ({ setShowModalHandler, idpId, tenantId, uniqueLogins })
                                         console.log(selection[0])
                                         console.log(identifier)
                                         // Show Modal
-                                        setShowModalHandler(true)
+                                        // setShowModalHandler(true)
                                         // activeTab = $("ul.tabset_tabs li.ui-tabs-active").attr("aria-controls").replace("Tab","");
                                         // unique_logins = $("#myModal").is(':visible') ? $("#unique-logins-modal").is(":checked") : $("#unique-logins-"+activeTab).is(":checked");
                                         // goToSpecificProvider(identifier, legend, type, unique_logins);
+                                        goToSpecificProviderHandler(identifier[0], "sp")
                                     }
                                 }
                             }

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { client } from '../../utils/api';
 import Form from 'react-bootstrap/Form';
@@ -12,6 +12,8 @@ import Header from "../../components/Common/header";
 import Footer from "../../components/Common/footer";
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
+import { useNavigate } from "react-router-dom";
+import { envContext, projectContext } from "../../components/Common/context";
 // import IdpModal from "../Idps/idpModal";
 
 const Dashboard = () => {
@@ -21,7 +23,11 @@ const Dashboard = () => {
     const [tenantId, setTenantId] = useState(0);
     const [showModal, setShowModal] = useState(false);
     const { project, environment } = useParams();
+    const [projectCon, setProjectCon] = useContext(projectContext);
+    const [envCon, setEnvCon] = useContext(envContext)
     useEffect(() => {
+        setProjectCon(project)
+        setEnvCon(environment)
         client.get("tenant/" + project + "/" + environment).
             then(response => {
 
@@ -32,6 +38,16 @@ const Dashboard = () => {
     const handleChange = event => {
         setUniqueLogins(event.target.checked);
         console.log(uniqueLogins)
+    }
+    let navigate = useNavigate();
+    const goToSpecificProvider = (id, provider) => {
+        if(provider == "sp") {
+            var path = "/"+project+"/"+environment+"/sps/"+id;      
+        }
+        else {
+            var path = "/"+project+"/"+environment+"/idps/"+id; 
+        }
+        navigate(path);
     }
     if (tenantId == 0)
         return
@@ -55,8 +71,8 @@ const Dashboard = () => {
             </Row>
             <LoginTiles tenantId={tenantId} uniqueLogins={uniqueLogins}></LoginTiles>
             <LoginLineChart tenantId={tenantId}  uniqueLogins={uniqueLogins}></LoginLineChart>
-            <LoginIdpPieChart tenantId={tenantId} setShowModalHandler={setShowModal} uniqueLogins={uniqueLogins}></LoginIdpPieChart>
-            <LoginSpPieChart tenantId={tenantId} setShowModalHandler={setShowModal} uniqueLogins={uniqueLogins}></LoginSpPieChart>
+            <LoginIdpPieChart tenantId={tenantId} setShowModalHandler={setShowModal} uniqueLogins={uniqueLogins} goToSpecificProviderHandler={goToSpecificProvider}></LoginIdpPieChart>
+            <LoginSpPieChart tenantId={tenantId} setShowModalHandler={setShowModal} uniqueLogins={uniqueLogins} goToSpecificProviderHandler={goToSpecificProvider}></LoginSpPieChart>
             <LoginDataTable startDateHandler={setStartDate} endDateHandler={setEndDate} tenantId={tenantId} uniqueLogins={uniqueLogins}></LoginDataTable>
             <LoginsMap startDate={startDate} endDate={endDate} tenantId={tenantId} uniqueLogins={uniqueLogins}></LoginsMap>
 

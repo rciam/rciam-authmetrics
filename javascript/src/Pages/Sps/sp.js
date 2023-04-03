@@ -1,23 +1,23 @@
 import { useState, useEffect, useContext } from "react";
 import { useParams } from "react-router-dom";
+import { client } from '../../utils/api';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import { useNavigate } from "react-router-dom";
-import { client } from '../../utils/api';
 import LoginLineChart from "../../components/Dashboard/loginLineChart";
-import LoginSpPieChart from "../../components/Dashboard/loginSpPieChart";
 import LoginTiles from "../../components/Dashboard/loginTiles";
-import SpsDataTable from "../../components/Sps/spsDataTable";
 import Form from 'react-bootstrap/Form';
 import Container from "react-bootstrap/Container";
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import EntityInfo from "../../components/Common/entityInfo";
-import IdpMap from "../../components/Idps/idpMap";
-import IdpMapToDataTable from "../../components/Idps/idpMapToDataTable";
+import LoginIdpPieChart from "../../components/Dashboard/loginIdpPieChart";
+import IdpsDataTable from "../../components/Idps/idpsDataTable";
+import SpMap from "../../components/Sps/spMap";
+import SpMapToDataTable from "../../components/Sps/spMapToDataTable";
 import 'react-tabs/style/react-tabs.css';
 import { envContext, projectContext } from "../../components/Common/context";
 
-const Idp = () => {
+const Sp = () => {
 	const { project, environment, id } = useParams();
 	const [tenantId, setTenantId] = useState(0);
 	const [uniqueLogins, setUniqueLogins] = useState(false);
@@ -31,6 +31,8 @@ const Idp = () => {
 		client.get("tenant/" + project + "/" + environment).
 			then(response => {
 				setTenantId(response["data"][0]["id"])
+				console.log(tenantId)
+
 			})
 
 	}, [])
@@ -53,7 +55,7 @@ const Idp = () => {
 		return (
 			<Container>
 				<Row>
-					<Col md={6}><EntityInfo tenantId={tenantId} idpId={id}></EntityInfo></Col>
+					<Col md={6}><EntityInfo tenantId={tenantId} spId={id}></EntityInfo></Col>
 					<Col md={6} className="unique-logins">
 						<Form className="unique-logins-form">
 							<Form.Check
@@ -65,10 +67,10 @@ const Idp = () => {
 						</Form>
 					</Col>
 				</Row>
-				<LoginTiles tenantId={tenantId} uniqueLogins={uniqueLogins} idpId={id}></LoginTiles>
-				<LoginLineChart tenantId={tenantId} type="idp" id={id} uniqueLogins={uniqueLogins}></LoginLineChart>
-				<LoginSpPieChart tenantId={tenantId} idpId={id} uniqueLogins={uniqueLogins} goToSpecificProviderHandler={goToSpecificProvider}></LoginSpPieChart>
-				<SpsDataTable tenantId={tenantId} idpId={id} dataTableId="tableSps" uniqueLogins={uniqueLogins}></SpsDataTable>
+				<LoginTiles tenantId={tenantId} uniqueLogins={uniqueLogins} spId={id}></LoginTiles>
+				<LoginLineChart tenantId={tenantId} type="sp" id={id} uniqueLogins={uniqueLogins}></LoginLineChart>
+				<LoginIdpPieChart tenantId={tenantId} spId={id} uniqueLogins={uniqueLogins} goToSpecificProviderHandler={goToSpecificProvider}></LoginIdpPieChart>
+				<IdpsDataTable tenantId={tenantId} spId={id} dataTableId="tableSps" uniqueLogins={uniqueLogins}></IdpsDataTable>
 				<Tabs>
 					<TabList>
 						<Tab>Map</Tab>
@@ -76,14 +78,14 @@ const Idp = () => {
 					</TabList>
 
 					<TabPanel>
-						<IdpMap tenantId={tenantId} idpId={id} uniqueLogins={uniqueLogins}></IdpMap>
+						<SpMap tenantId={tenantId} spId={id} uniqueLogins={uniqueLogins}></SpMap>
 					</TabPanel>
 					<TabPanel>
-						<IdpMapToDataTable tenantId={tenantId} idpId={id} uniqueLogins={uniqueLogins}></IdpMapToDataTable>
+						<SpMapToDataTable tenantId={tenantId} spId={id} uniqueLogins={uniqueLogins}></SpMapToDataTable>
 					</TabPanel>
-				</Tabs>
+				</Tabs>	
 			</Container>
 		)
 }
 
-export default Idp
+export default Sp

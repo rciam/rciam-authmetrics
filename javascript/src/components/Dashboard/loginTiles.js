@@ -12,13 +12,25 @@ const LoginTiles = (parameters) => {
     useEffect(() => {
         Promise.all([
             client.get("logins_countby",
-                { params: { 'tenant_id': parameters['tenantId'], 'unique_logins': parameters['uniqueLogins'], 'idpId': parameters['idpId']!== undefined ?  parameters['idpId'] : null } }),
+                { params: { 'tenant_id': parameters['tenantId'], 'unique_logins': parameters['uniqueLogins'], 
+                    'idpId': parameters['idpId'] !== undefined ? parameters['idpId'] : null, 
+                    'spId': parameters['spId'] !== undefined ? parameters['spId'] : null } 
+                }),
             client.get("logins_countby",
-                { params: { 'interval': 'year', 'count_interval': '1', 'tenant_id': parameters['tenantId'], 'unique_logins': parameters['uniqueLogins'] } }),
+                { params: { 'interval': 'year', 'count_interval': '1', 'tenant_id': parameters['tenantId'], 'unique_logins': parameters['uniqueLogins'], 
+                    'idpId': parameters['idpId'] !== undefined ? parameters['idpId'] : null, 
+                    'spId': parameters['spId'] !== undefined ? parameters['spId'] : null } 
+                }),
             client.get("logins_countby",
-                { params: { 'interval': 'days', 'count_interval': '30', 'tenant_id': parameters['tenantId'], 'unique_logins': parameters['uniqueLogins'] } }),
+                { params: { 'interval': 'days', 'count_interval': '30', 'tenant_id': parameters['tenantId'], 'unique_logins': parameters['uniqueLogins'], 
+                    'idpId': parameters['idpId'] !== undefined ? parameters['idpId'] : null, 
+                    'spId': parameters['spId'] !== undefined ? parameters['spId'] : null } 
+                }),
             client.get("logins_countby",
-                { params: { 'interval': 'days', 'count_interval': '7', 'tenant_id': parameters['tenantId'], 'unique_logins': parameters['uniqueLogins'] } })
+                { params: { 'interval': 'days', 'count_interval': '7', 'tenant_id': parameters['tenantId'], 'unique_logins': parameters['uniqueLogins'], 
+                    'idpId': parameters['idpId'] !== undefined ? parameters['idpId'] : null, 
+                    'spId': parameters['spId'] !== undefined ? parameters['spId'] : null } 
+                })
         ]).then(function (responses) {
             // Get a JSON object from each of the responses
             return Promise.all(responses.map(function (response) {

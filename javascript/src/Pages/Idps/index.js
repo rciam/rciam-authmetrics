@@ -10,6 +10,7 @@ import LoginTiles from "../../components/Dashboard/loginTiles";
 import IdpsDataTable from "../../components/Idps/idpsDataTable";
 import IdpModal from "./idpModal";
 import { useNavigate } from "react-router-dom";
+import { envContext, projectContext } from "../../components/Common/context";
 
 
 const Idps = () => {
@@ -19,10 +20,14 @@ const Idps = () => {
     const { project, environment } = useParams();
     const [tenantId, setTenantId] = useState(0);
     const [showModal, setShowModal] = useState(false);
+    const [projectCon, setProjectCon] = useContext(projectContext);
+    const [envCon, setEnvCon] = useContext(envContext)
+
     useEffect(() => {
+        setProjectCon(project)
+        setEnvCon(environment)
         client.get("tenant/" + project + "/" + environment).
             then(response => {
-
                 setTenantId(response["data"][0]["id"])
             })
     }, [])
@@ -31,8 +36,13 @@ const Idps = () => {
         console.log(uniqueLogins)
     }
     let navigate = useNavigate();
-    const goToSpecificProvider = id => {
-        let path = "/"+project+"/"+environment+"/idps/"+id; 
+    const goToSpecificProvider = (id, provider) => {
+        if(provider == "sp") {
+            var path = "/"+project+"/"+environment+"/sps/"+id;      
+        }
+        else {
+            var path = "/"+project+"/"+environment+"/idps/"+id; 
+        }
         navigate(path);
     }
 

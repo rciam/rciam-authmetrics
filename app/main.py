@@ -84,17 +84,6 @@ async def read_environment_byname(
         """.format(environment_name)).all()
     return environment
 
-
-@app.get("/services/", response_model=List[Serviceprovidersmap])
-async def read_services(
-        *,
-        session: Session = Depends(get_session),
-        offset: int = 0
-):
-    services = session.exec(select(Serviceprovidersmap).offset(offset)).all()
-    return services
-
-
 @app.get("/idps")
 async def read_idps(
         *,
@@ -112,3 +101,21 @@ async def read_idps(
             WHERE tenant_id='{0}' {1}
         """.format(tenant_id, idpId_subquery)).all()
     return idps
+
+@app.get("/sps")
+async def read_sps(
+        *,
+        session: Session = Depends(get_session),
+        tenant_id: int,
+        spId: int = None
+):
+    spId_subquery = ""
+    if spId:
+        spId_subquery = """
+            AND id = {0}
+        """.format(spId)
+    sps = session.exec("""
+            SELECT * FROM serviceprovidersmap 
+            WHERE tenant_id='{0}' {1}
+        """.format(tenant_id, spId_subquery)).all()
+    return sps

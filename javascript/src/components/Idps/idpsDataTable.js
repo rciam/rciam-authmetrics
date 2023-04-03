@@ -24,7 +24,7 @@ const dropdownOptions = [
     { value: 'year', label: 'Yearly Basis' },
 ]
 
-const IdpsDataTable = ({ startDateHandler, endDateHandle, identifier, dataTableId = "table", tenantId, uniqueLogins }) => {
+const IdpsDataTable = ({ startDateHandler, endDateHandle, spId, dataTableId = "table", tenantId, uniqueLogins }) => {
     const [idpsLogins, setIdpsLogins] = useState();
     var idpsLoginsArray = [];
     const [minDate, setMinDate] = useState("");
@@ -34,8 +34,9 @@ const IdpsDataTable = ({ startDateHandler, endDateHandle, identifier, dataTableI
 
     useEffect(() => {
         var params = { params: { tenant_id: tenantId, 'unique_logins': uniqueLogins } }
-        if (identifier)
-            params["params"]["sp"] = identifier
+        if (spId) {
+            params["params"]["sp"] = spId
+        }
         client.get("logins_per_idp/", params).
             then(response => {
                 console.log(project);
@@ -100,7 +101,13 @@ const IdpsDataTable = ({ startDateHandler, endDateHandle, identifier, dataTableI
         //setSelected(event.value);
     };
 
-    return <Row>
+    return <Row className="box">
+        <Col md={12}>
+            <div className="box-header with-border">
+                <h3 className="box-title">Number of logins</h3>
+            </div>
+        </Col>
+
         <Col lg={12} className="range_inputs">
 
             From: <DatePicker selected={startDate} minDate={minDate} dateFormat="dd/MM/yyyy" onChange={(date: Date) => setStartDate(date)}></DatePicker>

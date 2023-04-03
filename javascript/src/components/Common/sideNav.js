@@ -1,21 +1,16 @@
 import React, { useContext } from 'react';
-import { Navbar, Container } from "react-bootstrap";
-import Nav from 'react-bootstrap/Nav';
-import { Link } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
-// import {userContext,tenantContext} from '../context.js';
 import Sidebar from "react-bootstrap-sidebar-menu";
-import Layout from './layout';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHome, faObjectGroup, faShield, faUsers, faWarehouse } from '@fortawesome/free-solid-svg-icons';
+import { faDoorOpen, faHome, faUser, faUsers, faWarehouse } from '@fortawesome/free-solid-svg-icons';
+import { envContext, projectContext } from './context';
 
 const SideNav = (props) => {
-    // eslint-disable-next-line
-    //   const tenant = useContext(tenantContext);
-    //   const user = useContext(userContext);
-    // eslint-disable-next-line
-    const { t, i18n } = useTranslation();
 
+    const { t, i18n } = useTranslation();
+    const [project, setProject] = useContext(projectContext);
+    const [environment, setEnvironment] = useContext(envContext);
+    console.log(project)
     return (
         
             <Sidebar expand="sm">
@@ -27,20 +22,24 @@ const SideNav = (props) => {
                     <Sidebar.Body>
                         <Sidebar.Nav>
                             
-                            <Sidebar.Nav.Link href="/egi/devel">
+                            <Sidebar.Nav.Link href={"/"+project+"/"+environment}>
                                 <Sidebar.Nav.Icon><FontAwesomeIcon icon={faHome}/></Sidebar.Nav.Icon>
                                 <Sidebar.Nav.Title>Home</Sidebar.Nav.Title>
                             </Sidebar.Nav.Link>
-                            <Sidebar.Nav.Link href="/egi/devel/idps">
+                            <Sidebar.Nav.Link href={"/"+project+"/"+environment+"/idps"}>
                                 <Sidebar.Nav.Icon><FontAwesomeIcon icon={faWarehouse}/></Sidebar.Nav.Icon>
                                 <Sidebar.Nav.Title>Idps</Sidebar.Nav.Title>
                             </Sidebar.Nav.Link>
-                            <Sidebar.Nav.Link href="/egi/devel/users">
-                                <Sidebar.Nav.Icon><FontAwesomeIcon icon={faUsers}/></Sidebar.Nav.Icon>
+                            <Sidebar.Nav.Link href={"/"+project+"/"+environment+"/sps"}>
+                                <Sidebar.Nav.Icon><FontAwesomeIcon icon={faDoorOpen}/></Sidebar.Nav.Icon>
+                                <Sidebar.Nav.Title>Sps</Sidebar.Nav.Title>
+                            </Sidebar.Nav.Link>
+                            <Sidebar.Nav.Link href={"/"+project+"/"+environment+"/users"}>
+                                <Sidebar.Nav.Icon><FontAwesomeIcon icon={faUser}/></Sidebar.Nav.Icon>
                                 <Sidebar.Nav.Title>Users</Sidebar.Nav.Title>
                             </Sidebar.Nav.Link>
-                            <Sidebar.Nav.Link href="/egi/devel/communities">
-                                <Sidebar.Nav.Icon><FontAwesomeIcon icon={faObjectGroup}/></Sidebar.Nav.Icon>
+                            <Sidebar.Nav.Link href={"/"+project+"/"+environment+"/communities"}>
+                                <Sidebar.Nav.Icon><FontAwesomeIcon icon={faUsers}/></Sidebar.Nav.Icon>
                                 <Sidebar.Nav.Title>Communities</Sidebar.Nav.Title>
                             </Sidebar.Nav.Link>
                             {/* <Sidebar.Sub eventKey={0}>

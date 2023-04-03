@@ -7,12 +7,17 @@ import CommunitiesDataTable from "../../components/Communities/communitiesDataTa
 import CommunitiesMap from "../../components/Communities/communitiesMap";
 import Header from "../../components/Common/header";
 import Footer from "../../components/Common/footer";
+import { envContext, projectContext } from "../../components/Common/context";
 
 const Communities = () => {
     const {project, environment } = useParams();
     const [tenantId, setTenantId] = useState(0);
+    const [projectCon, setProjectCon] = useContext(projectContext);
+    const [envCon, setEnvCon] = useContext(envContext)
 
-    useEffect(() => {   
+    useEffect(() => {
+        setProjectCon(project)
+        setEnvCon(environment)  
         client.get("tenant/" + project + "/" + environment).
             then(response => {
                 

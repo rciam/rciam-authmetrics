@@ -9,6 +9,8 @@ import LoginSpPieChart from "../../components/Dashboard/loginSpPieChart";
 import LoginTiles from "../../components/Dashboard/loginTiles";
 import SpsDataTable from "../../components/Sps/spsDataTable";
 import SpModal from "./spModal";
+import { useNavigate } from "react-router-dom";
+import { envContext, projectContext } from "../../components/Common/context";
 
 const Sps = () => {
     const [startDate, setStartDate] = useState("");
@@ -17,7 +19,12 @@ const Sps = () => {
     const { project, environment } = useParams();
     const [tenantId, setTenantId] = useState(0);
     const [showModal, setShowModal] = useState(false);
+    const [projectCon, setProjectCon] = useContext(projectContext);
+    const [envCon, setEnvCon] = useContext(envContext)
+
     useEffect(() => {
+        setProjectCon(project)
+        setEnvCon(environment)
         client.get("tenant/" + project + "/" + environment).
             then(response => {
                 setTenantId(response["data"][0]["id"])
@@ -26,6 +33,16 @@ const Sps = () => {
     const handleChange = event => {
         setUniqueLogins(event.target.checked);
         console.log(uniqueLogins)
+    }
+    let navigate = useNavigate();
+    const goToSpecificProvider = (id, provider) => {
+        if(provider == "sp") {
+            var path = "/"+project+"/"+environment+"/sps/"+id;      
+        }
+        else {
+            var path = "/"+project+"/"+environment+"/idps/"+id; 
+        }
+        navigate(path);
     }
     if (tenantId == 0)
         return
@@ -45,9 +62,9 @@ const Sps = () => {
                 </Col>
             </Row>
             <LoginTiles tenantId={tenantId} uniqueLogins={uniqueLogins}></LoginTiles>
-            <LoginSpPieChart tenantId={tenantId} uniqueLogins={uniqueLogins} setShowModalHandler={setShowModal}></LoginSpPieChart>
+            <LoginSpPieChart tenantId={tenantId} uniqueLogins={uniqueLogins} setShowModalHandler={setShowModal} goToSpecificProviderHandler={goToSpecificProvider}></LoginSpPieChart>
             <SpsDataTable tenantId={tenantId} uniqueLogins={uniqueLogins}></SpsDataTable>
-            <SpModal tenantId={tenantId} showModal={showModal} setShowModalHandler={setShowModal}></SpModal>
+            {/* <SpModal tenantId={tenantId} showModal={showModal} setShowModalHandler={setShowModal}></SpModal> */}
         </Container>)
 
 }
