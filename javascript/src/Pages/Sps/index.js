@@ -1,6 +1,8 @@
 import { useState, useContext, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { client } from '../../utils/api';
+import { useNavigate } from "react-router-dom";
+import { envContext, projectContext } from "../../components/Common/context";
 import Container from "react-bootstrap/Container";
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -8,8 +10,7 @@ import Form from 'react-bootstrap/Form';
 import LoginSpPieChart from "../../components/Dashboard/loginSpPieChart";
 import LoginTiles from "../../components/Dashboard/loginTiles";
 import SpsDataTable from "../../components/Sps/spsDataTable";
-import { useNavigate } from "react-router-dom";
-import { envContext, projectContext } from "../../components/Common/context";
+import Header from "../../components/Common/header";
 
 const Sps = () => {
 
@@ -46,6 +47,7 @@ const Sps = () => {
         return
     else return (
         <Container>
+            <Header></Header>
             <Row>
                 <Col className="title-container" md={12}>
                     <Col md={6}><h2>Service Providers Logins</h2></Col>

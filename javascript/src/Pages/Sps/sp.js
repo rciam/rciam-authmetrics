@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { client } from '../../utils/api';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import { useNavigate } from "react-router-dom";
+import { envContext, projectContext } from "../../components/Common/context";
 import LoginLineChart from "../../components/Dashboard/loginLineChart";
 import LoginTiles from "../../components/Dashboard/loginTiles";
 import Form from 'react-bootstrap/Form';
@@ -14,8 +15,10 @@ import LoginIdpPieChart from "../../components/Dashboard/loginIdpPieChart";
 import IdpsDataTable from "../../components/Idps/idpsDataTable";
 import SpMap from "../../components/Sps/spMap";
 import SpMapToDataTable from "../../components/Sps/spMapToDataTable";
+import Header from "../../components/Common/header";
+
 import 'react-tabs/style/react-tabs.css';
-import { envContext, projectContext } from "../../components/Common/context";
+
 
 const Sp = () => {
 	const { project, environment, id } = useParams();
@@ -53,6 +56,7 @@ const Sp = () => {
 	else
 		return (
 			<Container>
+				<Header></Header>
 				<Row>
 					<Col className="title-container" md={12}>
 						<Col md={6}><EntityInfo tenantId={tenantId} spId={id}></EntityInfo></Col>

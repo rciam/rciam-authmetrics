@@ -14,6 +14,7 @@ import Header from "../../components/Common/header";
 import Footer from "../../components/Common/footer";
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
+import { Container } from "react-bootstrap";
 
 const Dashboard = () => {
     const [startDate, setStartDate] = useState("");
@@ -52,7 +53,7 @@ const Dashboard = () => {
         return
     else return (
 
-        <>
+        <Container>
             <Header></Header>
             <Row>
                 <Col className="title-container" md={12}>
@@ -78,7 +79,7 @@ const Dashboard = () => {
 
             {/* <IdpModal tenantId={tenantId} showModal={showModal} setShowModalHandler={setShowModal}></IdpModal> */}
             <Footer></Footer>
-        </>
+        </Container>
     )
 
 }

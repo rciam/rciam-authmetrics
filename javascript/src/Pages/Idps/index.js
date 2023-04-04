@@ -1,6 +1,8 @@
 import { useState, useContext, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { client } from '../../utils/api';
+import { useNavigate } from "react-router-dom";
+import { envContext, projectContext } from "../../components/Common/context";
 import Container from "react-bootstrap/Container";
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -9,9 +11,7 @@ import LoginIdpPieChart from "../../components/Dashboard/loginIdpPieChart";
 import LoginTiles from "../../components/Dashboard/loginTiles";
 import IdpsDataTable from "../../components/Idps/idpsDataTable";
 import IdpModal from "./idpModal";
-import { useNavigate } from "react-router-dom";
-import { envContext, projectContext } from "../../components/Common/context";
-
+import Header from "../../components/Common/header";
 
 const Idps = () => {
 
@@ -49,6 +49,7 @@ const Idps = () => {
         return
     else return (
         <Container>
+            <Header></Header>
             <Row>
                 <Col className="title-container" md={12}>
                     <Col md={6}><h2>Identity Providers Logins</h2></Col>

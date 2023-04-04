@@ -15,6 +15,8 @@ import Col from 'react-bootstrap/Col';
 import EntityInfo from "../../components/Common/entityInfo";
 import IdpMap from "../../components/Idps/idpMap";
 import IdpMapToDataTable from "../../components/Idps/idpMapToDataTable";
+import Header from "../../components/Common/header";
+
 import 'react-tabs/style/react-tabs.css';
 
 const Idp = () => {
@@ -51,6 +53,7 @@ const Idp = () => {
 	else
 		return (
 			<Container>
+				<Header></Header>
 				<Row>
 					<Col className="title-container" md={12}>
 						<Col md={6}><EntityInfo tenantId={tenantId} idpId={id}></EntityInfo></Col>
