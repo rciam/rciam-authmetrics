@@ -1,11 +1,10 @@
-import { useState, useContext, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Chart } from "react-google-charts";
 import { client } from '../../utils/api';
-import Container from 'react-bootstrap/Container';
+import { convertDateByGroup, getWeekNumber } from "../Common/utils";
 import Select from 'react-select';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import { convertDateByGroup, getWeekNumber } from "../Common/utils";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const options = {
@@ -47,23 +46,22 @@ const RegisteredUsersChart = (parameters) => {
         var fValues = [['Date', 'Count', { 'type': 'string', 'role': 'tooltip', 'p': { 'html': true } }]]
         // Get data for the last 4 years
         // TODO: change it to last 1 year
-        client.get("registered_users_groupby/" + selected, 
-        { 
-            params: { 
-                'interval': 'year', 
-                'count_interval': '8',
-                'tenant_id': parameters['tenantId'] 
-            }
-        }).
-            then(response => {
-               
+        client.get("registered_users_groupby/" + selected,
+            {
+                params: {
+                    'interval': 'year',
+                    'count_interval': '8',
+                    'tenant_id': parameters['tenantId']
+                }
+            }).then(response => {
+
                 response["data"].forEach(element => {
                     //var community = {"created":element.created, "name":element.community_info.name}
                     var range_date = new Date(element.range_date);
                     var usersByRange = [range_date, element.count]
                     registeredUsersArray.push(usersByRange)
 
-                    if (selected == "week") {
+                    if (selected === "week") {
                         hticksArray.push({ v: range_date, f: getWeekNumber(range_date) })
                     }
                     else {
@@ -76,7 +74,7 @@ const RegisteredUsersChart = (parameters) => {
                     temp.push(parseInt(element['count']));
                     temp.push('<div style="padding:5px 5px 5px 5px;">'
                         + convertDateByGroup(range_date, selected)
-                        + "<br/> " + 'Registered Users'
+                        + '<br/>Registered Users'
                         + ": " + parseInt(element['count']) + '</div>');
                     fValues.push(temp);
                 });
@@ -114,13 +112,16 @@ const RegisteredUsersChart = (parameters) => {
         console.log(event.value);
         setSelected(event.value);
     };
-    
-    return <Row>
+
+    return <Row className="box">
+        <div className="box-header with-border">
+            <h3 className="box-title">Number of Registered Users</h3>
+        </div>
         <Col lg={12}>Select Period:
             <Select options={options_group_by} onChange={handleChange} ></Select>
         </Col>
         <Col lg={12}>
-        <Chart chartType="ColumnChart" width="100%" height="400px" data={registeredUsers}
+            <Chart chartType="ColumnChart" width="100%" height="400px" data={registeredUsers}
                 options={global_options} />
         </Col>
     </Row>

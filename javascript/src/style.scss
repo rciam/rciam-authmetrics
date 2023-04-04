@@ -66,6 +66,11 @@
     }
   }
 }
+.title-container {
+  margin: 0 2%;
+  width:97%;
+  display: flex;
+}
 .tiles-container {
   display: flex;
   justify-content: space-around;
@@ -129,4 +134,7 @@
 }
 .react-datepicker-wrapper {
   padding: 0px 10px;
+}
+.select-community {
+  padding-top:20px;
 }

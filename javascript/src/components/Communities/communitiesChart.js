@@ -1,15 +1,13 @@
-import { useState, useContext, useEffect } from "react";
-
+import { useState, useEffect } from "react";
 import { Chart } from "react-google-charts";
 import { client } from '../../utils/api';
+import { convertDateByGroup, getWeekNumber } from "../Common/utils";
 import Select from 'react-select';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import ListCommunities from "./listCommunities";
-import { convertDateByGroup, getWeekNumber } from "../Common/utils";
-
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 export const options = {
     year: {
@@ -35,8 +33,6 @@ export const options = {
     }
 };
 
-
-
 const options_group_by = [
     { value: 'year', label: 'yearly' },
     { value: 'month', label: 'monthly' },
@@ -48,28 +44,23 @@ const CommunitiesChart = (parameters) => {
     const [selected, setSelected] = useState(options_group_by[0].value);
     const [communities, setCommunities] = useState();
     const [communitiesList, setcommunitiesList] = useState([]);
-    var communitiesArray = [["Date", "Communities"]];
-    var communitiesListArray = [];
+    var communitiesArray = [["Date", "Communities"]];  
     const [global_options, setGlobalOptions] = useState();
-    
 
     useEffect(() => {
-        console.log(parameters["tenantId"])
+        var communitiesListArray = [];
         var hticksArray = [];
         var fValues = [['Date', 'Count', { 'type': 'string', 'role': 'tooltip', 'p': { 'html': true } }]]
         // Get data for the last 4 years
-        // TODO: change it to last 1 year
-        console.log(selected)
-        console.log(options[selected])
-        client.get("communities_groupby/" + selected, 
-        { 
-            params: 
-            { 'interval': selected, 
-              'count_interval': options[selected]["count_interval"], 
-              'tenant_id': parameters["tenantId"], 
-            } 
-        }).
-            then(response => {
+        client.get("communities_groupby/" + selected,
+            {
+                params:
+                {
+                    'interval': selected,
+                    'count_interval': options[selected]["count_interval"],
+                    'tenant_id': parameters["tenantId"],
+                }
+            }).then(response => {
                 console.log(response);
 
                 response["data"].forEach(element => {
@@ -82,10 +73,10 @@ const CommunitiesChart = (parameters) => {
                     var createdDate = element.created_date.split(", ")
                     var description = element.description.split("|| ")
                     element.names.split("|| ").forEach(function (name, index) {
-                        communitiesListArray.push({ name: name, created: createdDate[index], description: description[index] + '<br/>' + 'Created Date: ' + createdDate[index] })
+                        communitiesListArray.push({ name: name, created: createdDate[index], description: description[index] + '<br/>Created Date: ' + createdDate[index] })
                     })
 
-                    if (selected == "week") {
+                    if (selected === "week") {
                         hticksArray.push({ v: range_date, f: getWeekNumber(range_date) })
                     }
                     else {
@@ -98,7 +89,7 @@ const CommunitiesChart = (parameters) => {
                     temp.push(parseInt(element['count']));
                     temp.push('<div style="padding:5px 5px 5px 5px;">'
                         + convertDateByGroup(range_date, selected)
-                        + "<br/> " + 'Communities'
+                        + '<br/>Communities'
                         + ": " + parseInt(element['count']) + '</div>');
                     fValues.push(temp);
                 });
@@ -148,41 +139,47 @@ const CommunitiesChart = (parameters) => {
 
     }, [selected, parameters])
 
-    
+
 
     const handleChange = event => {
         console.log(event.value);
         setSelected(event.value);
     };
 
-    
-    return <Row>
-                <Col lg={9}>
-                    <Chart chartType="ColumnChart" width="100%" height="400px" data={communities}
-                        options={global_options} />
 
-                </Col>
-                <Col lg={3}>
-                    <Container>
-                        <Row>
+    return <Row className="box">
+        <Col md={12}>
+            <div className="box-header with-border">
+                <h3 className="box-title">Number of Communities created
+                </h3>
+            </div>
+        </Col>
+        <Col lg={9}>
+            <Chart chartType="ColumnChart" width="100%" height="400px" data={communities}
+                options={global_options} />
 
-                            <Col lg={4}>Select Period:</Col>
-                            <Col lg={8}>
-                                <Select options={options_group_by} onChange={handleChange} ></Select>
-                            </Col>
+        </Col>
+        <Col lg={3}>
+            <Container>
+                <Row>
 
-                        </Row>
-                        <Row>
-                            <Col lg={12}>
+                    <Col lg={4}>Select Period:</Col>
+                    <Col lg={8}>
+                        <Select options={options_group_by} onChange={handleChange} ></Select>
+                    </Col>
 
-                                <ListCommunities communitiesList={communitiesList}></ListCommunities>
+                </Row>
+                <Row>
+                    <Col lg={12}>
 
-                            </Col>
-                        </Row>
-                    </Container>
-                </Col>
-            </Row>
-        
+                        <ListCommunities communitiesList={communitiesList}></ListCommunities>
+
+                    </Col>
+                </Row>
+            </Container>
+        </Col>
+    </Row>
+
 
 }
 

@@ -13,14 +13,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import 'react-dropdown/style.css';
 import "react-datepicker/dist/react-datepicker.css";
 
-const dropdownOptions = [
-
-    { value: 'day', label: 'Daily Basis', className: 'myOptionClassName' },
-    { value: 'week', label: 'Weekly Basis', className: 'myOptionClassName' },
-    { value: 'month', label: 'Monthly Basis' },
-    { value: 'year', label: 'Yearly Basis' },
-]
-
 const SpsDataTable = ({ startDateHandler, endDateHandler, idpId, dataTableId = "table", tenantId, uniqueLogins }) => {
     const [spsLogins, setSpsLogins] = useState();
     var spsLoginsArray = [];
@@ -33,8 +25,7 @@ const SpsDataTable = ({ startDateHandler, endDateHandler, idpId, dataTableId = "
         var params = { params: { 'tenant_id': tenantId, 'unique_logins': uniqueLogins } }
         if (idpId)
             params["params"]["idp"] = idpId
-        client.get("logins_per_sp/", params).
-            then(response => {
+        client.get("logins_per_sp/", params).then(response => {
                 console.log(response);
                 //var minDateFromData = ""
                 response["data"].forEach(element => {
@@ -44,7 +35,7 @@ const SpsDataTable = ({ startDateHandler, endDateHandler, idpId, dataTableId = "
                     // if (minDateFromData == "") {
                     //     minDateFromData = new Date(element.min_date)
                     // }
-                    var perSp = { "Service Provider Name": '<a href="/' + project + '/' + environment + '/sps/' + element.id + '">' + element.name + '</a>', "Service Provider Identifier": element.identifier, "Number of Logins": element.count }
+                    var perSp = { "Service Provider Name": '<a href="/' + project + '/' + environment + '/services/' + element.id + '">' + element.name + '</a>', "Service Provider Identifier": element.identifier, "Number of Logins": element.count }
                     spsLoginsArray.push(perSp)
 
                 });
@@ -84,8 +75,7 @@ const SpsDataTable = ({ startDateHandler, endDateHandler, idpId, dataTableId = "
                 'unique_logins': uniqueLogins
             }
         }
-        client.get("logins_per_sp/", params).
-            then(response => {
+        client.get("logins_per_sp/", params).then(response => {
                 //console.log(response);
                 response["data"].forEach(element => {
 

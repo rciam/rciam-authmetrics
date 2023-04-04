@@ -1,18 +1,14 @@
-import { useState, useContext, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { client } from '../../utils/api';
-import Container from 'react-bootstrap/Container';
-import Select from 'react-select';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import { convertDateByGroup, getWeekNumber } from "../Common/utils";
-//import 'bootstrap/dist/css/bootstrap.min.css';
 
 const RegisteredUsersTiles = (parameters) => {
     const [tiles, setTiles] = useState({});
     useEffect(() => {
         Promise.all([
             client.get("registered_users_countby",
-            { params: { 'tenant_id': parameters['tenantId'] } }),
+                { params: { 'tenant_id': parameters['tenantId'] } }),
             client.get("registered_users_countby",
                 { params: { 'interval': 'year', 'count_interval': '1', 'tenant_id': parameters['tenantId'] } }),
             client.get("registered_users_countby",
@@ -54,39 +50,40 @@ const RegisteredUsersTiles = (parameters) => {
     return (
 
         <Row>
-            <Col lg={3} xs={6}>
-                <div className="small-box bg-aqua">
-                    <div className="inner">
-                        <h3>{tiles["overall"]}</h3>
-                        <p>Total Registered Users</p>
+            <Col md={12} className="tiles-container">
+                <Col lg={3} xs={6}>
+                    <div className="small-box bg-aqua">
+                        <div className="inner">
+                            <h3>{tiles["overall"]}</h3>
+                            <p>Total Registered Users</p>
+                        </div>
                     </div>
-                </div>
-            </Col>
-            <Col lg={3} xs={6}>
-                <div className="small-box bg-aqua">
-                    <div className="inner">
-                        <h3>{tiles["year_1"]}</h3>
-                        <p>Last Year Registered Users</p>
+                </Col>
+                <Col lg={3} xs={6}>
+                    <div className="small-box bg-aqua">
+                        <div className="inner">
+                            <h3>{tiles["year_1"]}</h3>
+                            <p>Last Year Registered Users</p>
+                        </div>
                     </div>
-                </div>
-            </Col>
-            <Col lg={3} xs={6}>
-                <div className="small-box bg-aqua">
-                    <div className="inner">
-                        <h3>{tiles["days_30"]}</h3>
-                        <p>Last 30 days Registered Users</p>
+                </Col>
+                <Col lg={3} xs={6}>
+                    <div className="small-box bg-aqua">
+                        <div className="inner">
+                            <h3>{tiles["days_30"]}</h3>
+                            <p>Last 30 days Registered Users</p>
+                        </div>
                     </div>
-                </div>
-            </Col>
-            <Col lg={3} xs={6}>
-                <div className="small-box bg-aqua">
-                    <div className="inner">
-                        <h3>{tiles["days_7"]}</h3>
-                        <p>Last 7 days Registered Users</p>
+                </Col>
+                <Col lg={3} xs={6}>
+                    <div className="small-box bg-aqua">
+                        <div className="inner">
+                            <h3>{tiles["days_7"]}</h3>
+                            <p>Last 7 days Registered Users</p>
+                        </div>
                     </div>
-                </div>
+                </Col>
             </Col>
-
         </Row>
     )
 }

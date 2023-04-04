@@ -8,13 +8,11 @@ import Form from 'react-bootstrap/Form';
 import LoginSpPieChart from "../../components/Dashboard/loginSpPieChart";
 import LoginTiles from "../../components/Dashboard/loginTiles";
 import SpsDataTable from "../../components/Sps/spsDataTable";
-import SpModal from "./spModal";
 import { useNavigate } from "react-router-dom";
 import { envContext, projectContext } from "../../components/Common/context";
 
 const Sps = () => {
-    const [startDate, setStartDate] = useState("");
-    const [endDate, setEndDate] = useState("");
+
     const [uniqueLogins, setUniqueLogins] = useState(false);
     const { project, environment } = useParams();
     const [tenantId, setTenantId] = useState(0);
@@ -25,8 +23,7 @@ const Sps = () => {
     useEffect(() => {
         setProjectCon(project)
         setEnvCon(environment)
-        client.get("tenant/" + project + "/" + environment).
-            then(response => {
+        client.get("tenant/" + project + "/" + environment).then(response => {
                 setTenantId(response["data"][0]["id"])
             })
     }, [])
@@ -36,29 +33,32 @@ const Sps = () => {
     }
     let navigate = useNavigate();
     const goToSpecificProvider = (id, provider) => {
-        if(provider == "sp") {
-            var path = "/"+project+"/"+environment+"/sps/"+id;      
+        var path = ""
+        if (provider === "sp") {
+            path = "/" + project + "/" + environment + "/services/" + id;
         }
         else {
-            var path = "/"+project+"/"+environment+"/idps/"+id; 
+            path = "/" + project + "/" + environment + "/identity-providers/" + id;
         }
         navigate(path);
     }
-    if (tenantId == 0)
+    if (tenantId === 0)
         return
     else return (
         <Container>
             <Row>
-                <Col md={6}><h2>Service Providers Logins</h2></Col>
-                <Col md={6} className="unique-logins">
-                    <Form className="unique-logins-form">
-                        <Form.Check
-                            type="checkbox"
-                            id="unique-logins"
-                            label="Unique Logins"
-                            onChange={handleChange}
-                        />
-                    </Form>
+                <Col className="title-container" md={12}>
+                    <Col md={6}><h2>Service Providers Logins</h2></Col>
+                    <Col md={6} className="unique-logins">
+                        <Form className="unique-logins-form">
+                            <Form.Check
+                                type="checkbox"
+                                id="unique-logins"
+                                label="Unique Logins"
+                                onChange={handleChange}
+                            />
+                        </Form>
+                    </Col>
                 </Col>
             </Row>
             <LoginTiles tenantId={tenantId} uniqueLogins={uniqueLogins}></LoginTiles>

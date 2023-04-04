@@ -14,8 +14,7 @@ import { envContext, projectContext } from "../../components/Common/context";
 
 
 const Idps = () => {
-    const [startDate, setStartDate] = useState("");
-    const [endDate, setEndDate] = useState("");
+
     const [uniqueLogins, setUniqueLogins] = useState(false);
     const { project, environment } = useParams();
     const [tenantId, setTenantId] = useState(0);
@@ -26,8 +25,7 @@ const Idps = () => {
     useEffect(() => {
         setProjectCon(project)
         setEnvCon(environment)
-        client.get("tenant/" + project + "/" + environment).
-            then(response => {
+        client.get("tenant/" + project + "/" + environment).then(response => {
                 setTenantId(response["data"][0]["id"])
             })
     }, [])
@@ -37,30 +35,33 @@ const Idps = () => {
     }
     let navigate = useNavigate();
     const goToSpecificProvider = (id, provider) => {
-        if(provider == "sp") {
-            var path = "/"+project+"/"+environment+"/sps/"+id;      
+        var path = ""
+        if (provider === "sp") {
+            path = "/" + project + "/" + environment + "/services/" + id;
         }
         else {
-            var path = "/"+project+"/"+environment+"/idps/"+id; 
+            path = "/" + project + "/" + environment + "/identity-providers/" + id;
         }
         navigate(path);
     }
 
-    if (tenantId == 0)
+    if (tenantId === 0)
         return
     else return (
         <Container>
             <Row>
-                <Col md={6}><h2>Identity Providers Logins</h2></Col>
-                <Col md={6} className="unique-logins">
-                    <Form className="unique-logins-form">
-                        <Form.Check
-                            type="checkbox"
-                            id="unique-logins"
-                            label="Unique Logins"
-                            onChange={handleChange}
-                        />
-                    </Form>
+                <Col className="title-container" md={12}>
+                    <Col md={6}><h2>Identity Providers Logins</h2></Col>
+                    <Col md={6} className="unique-logins">
+                        <Form className="unique-logins-form">
+                            <Form.Check
+                                type="checkbox"
+                                id="unique-logins"
+                                label="Unique Logins"
+                                onChange={handleChange}
+                            />
+                        </Form>
+                    </Col>
                 </Col>
             </Row>
 

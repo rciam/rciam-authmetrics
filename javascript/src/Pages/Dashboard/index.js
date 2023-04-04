@@ -1,6 +1,8 @@
 import { useState, useEffect, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { client } from '../../utils/api';
+import { useNavigate } from "react-router-dom";
+import { envContext, projectContext } from "../../components/Common/context";
 import Form from 'react-bootstrap/Form';
 import LoginDataTable from "../../components/Dashboard/loginDataTable";
 import LoginIdpPieChart from "../../components/Dashboard/loginIdpPieChart";
@@ -12,9 +14,6 @@ import Header from "../../components/Common/header";
 import Footer from "../../components/Common/footer";
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
-import { useNavigate } from "react-router-dom";
-import { envContext, projectContext } from "../../components/Common/context";
-// import IdpModal from "../Idps/idpModal";
 
 const Dashboard = () => {
     const [startDate, setStartDate] = useState("");
@@ -41,11 +40,11 @@ const Dashboard = () => {
     }
     let navigate = useNavigate();
     const goToSpecificProvider = (id, provider) => {
-        if(provider == "sp") {
-            var path = "/"+project+"/"+environment+"/sps/"+id;      
+        if (provider == "sp") {
+            var path = "/" + project + "/" + environment + "/services/" + id;
         }
         else {
-            var path = "/"+project+"/"+environment+"/idps/"+id; 
+            var path = "/" + project + "/" + environment + "/identity-providers/" + id;
         }
         navigate(path);
     }
@@ -55,29 +54,29 @@ const Dashboard = () => {
 
         <>
             <Header></Header>
-            
             <Row>
-                <Col md={6}><h2>Dashboard</h2></Col>
-                <Col md={6} className="unique-logins">
-                    <Form className="unique-logins-form">
-                        <Form.Check
-                            type="checkbox"
-                            id="unique-logins"
-                            label="Unique Logins"
-                            onChange={handleChange}
-                        />
-                    </Form>
+                <Col className="title-container" md={12}>
+                    <Col md={6}><h2>Dashboard</h2></Col>
+                    <Col md={6} className="unique-logins">
+                        <Form className="unique-logins-form">
+                            <Form.Check
+                                type="checkbox"
+                                id="unique-logins"
+                                label="Unique Logins"
+                                onChange={handleChange}
+                            />
+                        </Form>
+                    </Col>
                 </Col>
             </Row>
             <LoginTiles tenantId={tenantId} uniqueLogins={uniqueLogins}></LoginTiles>
-            <LoginLineChart tenantId={tenantId}  uniqueLogins={uniqueLogins}></LoginLineChart>
+            <LoginLineChart tenantId={tenantId} uniqueLogins={uniqueLogins}></LoginLineChart>
             <LoginIdpPieChart tenantId={tenantId} setShowModalHandler={setShowModal} uniqueLogins={uniqueLogins} goToSpecificProviderHandler={goToSpecificProvider}></LoginIdpPieChart>
             <LoginSpPieChart tenantId={tenantId} setShowModalHandler={setShowModal} uniqueLogins={uniqueLogins} goToSpecificProviderHandler={goToSpecificProvider}></LoginSpPieChart>
             <LoginDataTable startDateHandler={setStartDate} endDateHandler={setEndDate} tenantId={tenantId} uniqueLogins={uniqueLogins}></LoginDataTable>
             <LoginsMap startDate={startDate} endDate={endDate} tenantId={tenantId} uniqueLogins={uniqueLogins}></LoginsMap>
 
             {/* <IdpModal tenantId={tenantId} showModal={showModal} setShowModalHandler={setShowModal}></IdpModal> */}
-
             <Footer></Footer>
         </>
     )
