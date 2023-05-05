@@ -32,14 +32,14 @@ jobs:
         with:
           # Repository name with owner. For example, actions/checkout
           # Default: ${{ github.repository }}
-          repository: 'lionick/rciam-deploy'   
-          ref: 'rciam-metrics-role'
+          repository: 'rciam/rciam-deploy'   
+          ref: 'devel'
           path: 'roles'
       - name: Download inventory
         uses: actions/checkout@v3
         with:
-          repository: 'lionick/rciam-deploy-inv'   
-          ref: 'add_metrics_inv'
+          repository: 'grnet/rciam-deploy-inv'   
+          ref: 'master'
           ssh-key: ${{ secrets.DEPLOY_READ_SECRET }}
           path: 'inventory'
       - name: Run playbook (create react_config file)
