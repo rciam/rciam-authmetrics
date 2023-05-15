@@ -43,6 +43,7 @@
 
 .navbar-fixed-top {
   float: right;
+  position: absolute;
 }
 
 .sidebar-menu-toggle:focus {
@@ -76,6 +77,8 @@
   justify-content: space-around;
   width: 97%;
   margin: 2%;
+  flex-direction: row;
+  flex-wrap: wrap;
 }
 .small-box {
   border-radius: 2px;
@@ -137,4 +140,11 @@
 }
 .select-community {
   padding-top:20px;
+}
+@media(max-width:780px) {
+
+  .Dropdown-root {
+    margin: auto;
+    padding: 20px;
+  }
 }

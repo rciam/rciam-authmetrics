@@ -400,6 +400,7 @@ button.reg-form {
 .range_inputs {
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
 }
 .range_inputs input {
     padding: 0.5em;

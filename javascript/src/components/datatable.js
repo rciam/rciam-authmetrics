@@ -31,6 +31,7 @@ class Datatable extends Component {
       if (!$.fn.DataTable.isDataTable("#myTable")) {
         setTimeout(function () {
           table = $("#" + dataTableId).DataTable({
+            responsive: true,
             pagingType: "full_numbers",
             pageLength: 10,
             //processing: true,
