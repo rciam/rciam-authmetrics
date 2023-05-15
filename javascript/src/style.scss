@@ -44,6 +44,7 @@
 .navbar-fixed-top {
   float: right;
   position: absolute;
+  z-index: 0!important;
 }
 
 .sidebar-menu-toggle:focus {
@@ -141,8 +142,15 @@
 .select-community {
   padding-top:20px;
 }
-@media(max-width:780px) {
+@media(max-width:1200px) {
+  .navbar-fixed-top button {
+    width: 200px;
+    word-wrap: break-word;
+    white-space: break-spaces;
+  }
+}
 
+@media(max-width:780px) {
   .Dropdown-root {
     margin: auto;
     padding: 20px;
