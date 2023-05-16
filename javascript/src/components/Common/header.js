@@ -20,21 +20,21 @@ const Header = (props) => {
 
   return (
     <div className="header">
-      {bannerAlertInfo && bannerAlertInfo[0] &&
-        <div id="noty-info-bar" className={"noty-top-" + bannerAlertInfo[0].type + " noty-top-global"}>
-          <div>
-            {parse(bannerAlertInfo[0].alert_message)}
+        <div className="tenant_logo_container">
+        {bannerAlertInfo && bannerAlertInfo[0] &&
+          <div id="noty-info-bar" className={"noty-top-" + bannerAlertInfo[0].type + " noty-top-global"}>
+            <div>
+              {parse(bannerAlertInfo[0].alert_message)}
+            </div>
+            <button className="noty-top-close link-button" onClick={() => {
+              setBannerAlertInfo([...bannerAlertInfo.slice(1)])
+            }}>
+              <FontAwesomeIcon icon={faTimes}/>
+            </button>
           </div>
-          <button className="noty-top-close link-button" onClick={() => {
-            setBannerAlertInfo([...bannerAlertInfo.slice(1)])
-          }}>
-            <FontAwesomeIcon icon={faTimes}/>
-          </button>
-        </div>
-      }
-      <NavbarTop alertBar={bannerAlertInfo && bannerAlertInfo.length > 0}/>
+        }
+        <NavbarTop alertBar={bannerAlertInfo && bannerAlertInfo.length > 0}/>
 
-      <div className="tenant_logo_container">
         <div className="text-center ssp-logo">
           <a href={getConfig("config")["website_url"]}>
             <Image src={getConfig("config")["logo_url"]} fluid/>
