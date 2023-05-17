@@ -43,7 +43,7 @@ const IdpsDataTable = ({ startDateHandler, endDateHandle, spId, dataTableId = "t
                 //var minDateFromData = ""
                 response["data"].forEach(element => {
 
-                    var perIdp = { "Identity Provider Name": '<a href="/' + project + '/' + environment + '/idps/' + element.id + '">' + element.name + '</a>', "Identity Provider Identifier": element.entityid, "Number of Logins": element.count }
+                    var perIdp = { "Identity Provider Name": '<a href="/' + project + '/' + environment + '/identity-providers/' + element.id + '">' + element.name + '</a>', "Identity Provider Identifier": element.entityid, "Number of Logins": element.count }
                     idpsLoginsArray.push(perIdp)
 
                 });
