@@ -1,7 +1,5 @@
 import os
 import sys
-import time
-from pprint import pprint
 
 from xmlrpc.client import boolean
 from fastapi import Depends, FastAPI, HTTPException, Query, Request, HTTPException, status
@@ -22,18 +20,15 @@ from app.models.idp_model import *
 from app.models.country_hashed_user_model import *
 
 from .routers import authenticate, communities, countries, logins, users
+from app.utils.globalMethods import is_authenticated
 
 sys.path.insert(0, os.path.realpath('__file__'))
 # Development Environment: dev
 environment = os.getenv('API_ENVIRONMENT')
 
-async def is_authenticated(request: Request):
-    pprint(request.headers)
-
 
 # Instantiate app according to the environment configuration
-app = FastAPI(dependencies=[Depends(is_authenticated)]) if environment == "dev" else FastAPI(root_path="/api/v1",
-                                                     dependencies=[Depends(is_authenticated)],
+app = FastAPI() if environment == "dev" else FastAPI(root_path="/api/v1",
                                                      root_path_in_servers=False,
                                                      servers=[{"url": "/api/v1"}])
 
