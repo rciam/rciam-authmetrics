@@ -16,8 +16,6 @@ import {getLoginsPerIdp} from "../../utils/queries";
 import {useCookies} from "react-cookie";
 
 const IdpsDataTable = ({
-                         startDateHandler,
-                         endDateHandle,
                          spId,
                          dataTableId = "table-idp",
                          tenantId,
@@ -74,6 +72,7 @@ const IdpsDataTable = ({
   useEffect(() => {
     const perIdp = !loginsPerIpd.isLoading
       && !loginsPerIpd.isFetching
+      && loginsPerIpd.isFetched
       && loginsPerIpd.isSuccess
       && loginsPerIpd?.data?.map(idp => ({
         "Identity Provider Name": cookies.userinfo == undefined ? idp.name : '<a href="/' + project + '/' + environment + '/identity-providers/' + idp.id + '">' + idp.name + '</a>',
@@ -81,9 +80,13 @@ const IdpsDataTable = ({
         "Number of Logins": idp.count
       }))
 
-    // This is essential: We must destroy the datatable in order to be refreshed with the new data
-    $("#" + dataTableId).DataTable().destroy()
-    setIdpsLogins(perIdp)
+    if (!!loginsPerIpd?.data && !!perIdp) {
+      // console.log('destroy')
+      // console.log('perIdp', perIdp)
+      // This is essential: We must destroy the datatable in order to be refreshed with the new data
+      $("#" + dataTableId).DataTable().destroy()
+      setIdpsLogins(perIdp)
+    }
   }, [!loginsPerIpd.isLoading
   && !loginsPerIpd.isFetching
   && loginsPerIpd.isSuccess])
@@ -102,10 +105,14 @@ const IdpsDataTable = ({
         </div>
       </Col>
       <Col lg={12} className="range_inputs">
-        From: <DatePicker selected={startDate} minDate={minDate} dateFormat="dd/MM/yyyy"
-                          onChange={(date) => setStartDate(date)}></DatePicker>
-        To: <DatePicker selected={endDate} minDate={minDate} dateFormat="dd/MM/yyyy"
-                        onChange={(date) => setEndDate(date)}></DatePicker>
+        From: <DatePicker selected={startDate}
+                          minDate={minDate}
+                          dateFormat="dd/MM/yyyy"
+                          onChange={(date) => setStartDate(date)}/>
+        To: <DatePicker selected={endDate}
+                        minDate={minDate}
+                        dateFormat="dd/MM/yyyy"
+                        onChange={(date) => setEndDate(date)}/>
         {/* Probably add a tooltip here that both fields are required */}
         <Button variant="light"
                 disabled={startDate == undefined || endDate == undefined}
@@ -114,7 +121,8 @@ const IdpsDataTable = ({
         </Button>
       </Col>
       <Col lg={12}>
-        <Datatable items={idpsLogins} dataTableId={dataTableId}></Datatable>
+        <Datatable items={idpsLogins}
+                   dataTableId={dataTableId}/>
       </Col>
     </Row>
   )

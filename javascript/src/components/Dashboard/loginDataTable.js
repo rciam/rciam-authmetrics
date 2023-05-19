@@ -28,6 +28,7 @@ const LoginDataTable = ({startDateHandler, endDateHandler, tenantId, uniqueLogin
   const [minDate, setMinDate] = useState("");
   const [startDate, setStartDate] = useState();
   const [endDate, setEndDate] = useState();
+
   useEffect(() => {
     client.get("logins_per_country/", {
       params: {
@@ -116,9 +117,9 @@ const LoginDataTable = ({startDateHandler, endDateHandler, tenantId, uniqueLogin
     <Col lg={12} className="range_inputs">
 
       From: <DatePicker selected={startDate} minDate={minDate} dateFormat="dd/MM/yyyy"
-                        onChange={(date: Date) => setStartDate(date)}></DatePicker>
+                        onChange={(date) => setStartDate(date)}></DatePicker>
       To: <DatePicker selected={endDate} minDate={minDate} dateFormat="dd/MM/yyyy"
-                      onChange={(date: Date) => setEndDate(date)}></DatePicker>
+                      onChange={(date) => setEndDate(date)}></DatePicker>
       <Dropdown placeholder='Filter' options={dropdownOptions} onChange={handleChange}/>
       <ToastContainer position="top-center"
                       autoClose={5000}
