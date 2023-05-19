@@ -14,7 +14,7 @@ import 'react-dropdown/style.css';
 import "react-datepicker/dist/react-datepicker.css";
 import {useQuery, useQueryClient} from "react-query";
 import {loginsPerSpKey} from "../../utils/queryKeys";
-import {getLoginsPerSp} from "../../utils/queries";
+import {getLoginsPerSP} from "../../utils/queries";
 import {useCookies} from "react-cookie";
 
 const SpsDataTable = ({
@@ -26,7 +26,7 @@ const SpsDataTable = ({
                         uniqueLogins
                       }) => {
   const [cookies, setCookie] = useCookies();                      
-  const [spsLogins, setSpsLogins] = useState();
+  const [spsLogins, setSpsLogins] = useState([]);
   const [minDate, setMinDate] = useState("");
   const [btnPressed, setBtnPressed] = useState(false);
   const [startDate, setStartDate] = useState();
@@ -46,7 +46,7 @@ const SpsDataTable = ({
 
   const loginsPerSp = useQuery(
     [loginsPerSpKey, params],
-    getLoginsPerSp,
+    getLoginsPerSP,
     {
       enabled: false
     }
