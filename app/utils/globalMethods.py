@@ -1,6 +1,6 @@
 from pprint import pprint
 import requests as reqs
-from fastapi import Depends, FastAPI, HTTPException, Query, Request, HTTPException, status
+from fastapi import Depends, FastAPI, HTTPException, Query, Request, HTTPException, status, Response
 
 from app.utils import configParser
 from authlib.integrations.starlette_client import OAuth, OAuthError
@@ -26,6 +26,7 @@ async def is_authenticated(request: Request):
 
         headers = {'Authorization': f'Bearer {access_token}'}
         resp = reqs.get(metadata['userinfo_endpoint'], headers=headers)
+        # todo: Role Component
         # pprint(resp)
         # pprint(resp.status_code)
         # pprint(resp.reason)
@@ -34,3 +35,10 @@ async def is_authenticated(request: Request):
         pprint(data)
     except Exception as er:
         raise HTTPException(status_code=401)
+
+
+async def rolesCalculation():
+    roles = []
+    actions = []
+
+    return [roles, actions]
