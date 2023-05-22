@@ -1,7 +1,7 @@
 import {useState, useContext, useEffect} from "react";
 import {Chart} from "react-google-charts";
 import {client} from '../../utils/api';
-
+import {useCookies} from "react-cookie";
 import Select from 'react-select';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
@@ -46,11 +46,16 @@ const LoginIdpPieChart = ({
     }
   }
 
+  const [cookies, setCookie] = useCookies();
+
   const loginsPerIpd = useQuery(
     [loginsPerIdpKey, params],
-    getLoginsPerIdp
+    getLoginsPerIdp, {
+      refetchOnWindowFocus: false,
+      enabled: false
+    }
   )
-
+  
   useEffect(() => {
     loginsPerIpd.refetch()
       .then(response => {
@@ -87,8 +92,10 @@ const LoginIdpPieChart = ({
               eventName: "ready",
               callback: ({chartWrapper, google}) => {
                 const chart = chartWrapper.getChart();
+                if (cookies.userinfo != undefined) {
+                  google.visualization.events.addListener(chart, 'click', selectHandler);
+                }
 
-                google.visualization.events.addListener(chart, 'click', selectHandler);
                 google.visualization.events.addListener(chart, 'onmouseover', showTooltip);
                 google.visualization.events.addListener(chart, 'onmouseout', hideTooltip);
 

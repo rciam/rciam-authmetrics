@@ -1,5 +1,6 @@
 import {useState, useEffect} from "react";
 import {Chart} from "react-google-charts";
+import {useCookies} from "react-cookie";
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -44,10 +45,13 @@ const LoginSpPieChart = ({
       }
   }
 
+  const [cookies, setCookie] = useCookies();
+
   const loginsPerSp = useQuery(
     [loginsPerSpKey, params],
     getLoginsPerSP,
     {
+      refetchOnWindowFocus: false,
       enabled: false
     }
   )
@@ -88,7 +92,9 @@ const LoginSpPieChart = ({
               callback: ({chartWrapper, google}) => {
                 const chart = chartWrapper.getChart();
 
-                google.visualization.events.addListener(chart, 'click', selectHandler);
+                if (cookies.userinfo != undefined) {
+                  google.visualization.events.addListener(chart, 'click', selectHandler);
+                }
                 google.visualization.events.addListener(chart, 'onmouseover', showTooltip);
                 google.visualization.events.addListener(chart, 'onmouseout', hideTooltip);
 
