@@ -105,7 +105,6 @@ const LoginSpPieChart = ({
                 }
 
                 function hideTooltip() {
-
                   chart.setSelection([]);
                   $('.pieChart').css('cursor', 'default')
                 }
