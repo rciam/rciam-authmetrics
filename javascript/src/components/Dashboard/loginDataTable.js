@@ -37,6 +37,9 @@ const LoginDataTable = ({startDateHandler, endDateHandler, tenantId, uniqueLogin
         'unique_logins': uniqueLogins
       }
     }).then(response => {
+      // need to be initialized every time gets here
+      loginsPerCountryPerPeriodArray = []
+      
       var minDateFromData = ""
       response["data"].forEach(element => {
 

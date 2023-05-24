@@ -1,4 +1,5 @@
-import {Component} from "react";
+import { Component } from "react";
+import { renderToString } from 'react-dom/server';
 import "jquery/dist/jquery.min.js";
 import "datatables.net-dt/js/dataTables.dataTables";
 import "datatables.net-dt/css/jquery.dataTables.min.css";
@@ -23,7 +24,6 @@ class Datatable extends Component {
   componentDidUpdate(prevProps, prevState) {
     var dataTableId = this.props.dataTableId
     if (prevProps.items !== this.props.items) {
-
       this.setState({
         items: this.props.items,
         dataTableId: this.props.dataTableId
@@ -120,7 +120,7 @@ class Datatable extends Component {
             ) {
 
               var index = iDisplayIndexFull + 1;
-              $("td", nRow).each(function () {
+              $("td", nRow).each(function () {     
                 var text = $(this).html()
                 $(this).html(text.replaceAll('&lt;', '<').replaceAll('&gt;', '>'));
               });
@@ -151,7 +151,7 @@ class Datatable extends Component {
 
   listNames = (names, key) => {
     if (this.props.columnSep && key == this.props.columnSep && typeof names === 'string') {
-      return (
+      return renderToString(
         <ul>
           {
             names.split("||").map((name, keyIndex) => (
@@ -172,7 +172,6 @@ class Datatable extends Component {
       <td></td>
       <td>No data available in the table</td>
     </tr>)
-    // try {
     return items.map((item, index) => {
       return (
         <tr key={index.toString()}
@@ -182,8 +181,7 @@ class Datatable extends Component {
             Object.keys(item).map((key, keyIndex) =>
               (
                 <td key={key.toString()+keyIndex.toString()}
-                    className="text-xs font-weight-bold">
-                  {this.listNames(item[key], key)}
+                    className="text-xs font-weight-bold" dangerouslySetInnerHTML={{ __html: this.listNames(item[key], key) }} >    
                 </td>
               )
             )
@@ -191,9 +189,6 @@ class Datatable extends Component {
         </tr>
       );
     });
-    // } catch (e) {
-    //     //alert(e.message);
-    // }
 
   };
 
