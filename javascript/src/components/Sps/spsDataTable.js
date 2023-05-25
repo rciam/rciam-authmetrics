@@ -77,7 +77,7 @@ const SpsDataTable = ({
       && loginsPerSp.isSuccess
       && loginsPerSp?.data?.map(sp => ({
         "Service Provider Name": cookies.userinfo == undefined ? sp.name : '<a href="/' + project + '/' + environment + '/services/' + sp.id + '">' + sp.name + '</a>',
-        "Service Provider Identifier": sp.entityid,
+        "Service Provider Identifier": sp.identifier,
         "Number of Logins": sp.count
       }))
 
