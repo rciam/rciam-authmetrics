@@ -1,77 +1,82 @@
-import { useState, useContext, useEffect } from "react";
+import { useCallback, useRef, useEffect } from "react";
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import Select from 'react-select';
-import { client } from '../../utils/api';
-import $, { map } from "jquery";
+import $ from "jquery";
 import { calculateLegends, setMapConfiguration, setLegend } from "../Common/utils";
 import 'jquery-mapael';
 import 'jquery-mapael/js/maps/world_countries_mercator.js';
+import {useQuery, useQueryClient} from "react-query";
+import {loginsPerCountryKey} from "../../utils/queryKeys";
+import {getLoginsPerCountry} from "../../utils/queries";
+import {createMap} from "../Common/utils";
 
+const LoginsMap = ({ startDate, endDate, tenantId, uniqueLogins }) => {
+  const areaLegendRef = useRef(null)
+  const queryClient = useQueryClient();
 
-const LoginsMap = ({startDate, endDate, tenantId, uniqueLogins}) => {
-      
-    useEffect(() => {
-        client.get("logins_per_country", 
-            {
-                params: {
-                    'startDate':startDate,
-                    'endDate':endDate,
-                    'tenant_id': tenantId,
-                    'unique_logins': uniqueLogins             
-                }
-            }).then(response => {
-            createMap("loginsMap", response["data"])
-        })
-    }, [startDate, endDate, uniqueLogins])
+  let params = {
+    params: {
+      'startDate': startDate,
+      'endDate': endDate,
+      'tenant_id': tenantId,
+      'unique_logins': uniqueLogins
+    }
+  }
 
-    const createMap = (id, mapData, tooltipLabel = "Logins", legendLabel = 'Logins per country') => {
-        var areas = {};
-        var i = 1;
-        var maxSum = 0;
-        mapData.forEach(function (mapRow) {
-            
-            var contentTooltip = "<span style=\"font-weight:bold;\">" + mapRow.country + "</span><br />" + tooltipLabel + " : " + mapRow.sum
+  const loginsPerCountry = useQuery(
+    [loginsPerCountryKey, params],
+    getLoginsPerCountry,
+    {
+      enabled: false
+    }
+  )
 
-            //contentTooltip += mapRow.additional_text !== undefined ? '<hr style="border-color:#fff; margin:5px 0px"/>' + mapRow.additional_text : '';
-            areas[mapRow.countrycode] = {
-                value: mapRow.sum,
-                tooltip: { content: contentTooltip }
-            }
-            if (mapRow.sum > maxSum) {
-                maxSum = mapRow.sum;
-            }
-            i++;
-        })
-        // Calculate Legends
-        var legends = calculateLegends(maxSum)
-        $(".areaLegend").show()
-        $("#" + id).mapael({
-            map: setMapConfiguration(),
-            legend: setLegend(legendLabel, legends),
-            areas: areas
-        })
-       
+  useEffect(() => {
+    params = {
+      params: {
+        'startDate': startDate,
+        'endDate': endDate,
+        'tenant_id': tenantId,
+        'unique_logins': uniqueLogins
+      }
+    }
+    try {
+      var response = queryClient.refetchQueries([loginsPerCountryKey, params])
+    } catch (error) {
+      // todo: Here we can handle any authentication or authorization errors
+      console.log(error)
     }
 
-    return (
-        <Row className="loginsByCountry">
-            
-            <Col md={12} className="box">
-                <div className="box-header with-border">
-                    <h3 className="box-title">Logins Per Country</h3>
-                </div>
-            
-            
-           
-                <div className="container_map" id="loginsMap">
-                    <div className="map"></div>
-                    <div className="areaLegend"></div>
-                </div>
-            </Col>
+  }, [uniqueLogins, startDate, endDate])
 
-        </Row>
-    )
+  const loginsMapDrawRef = useCallback(node => {
+    if (loginsPerCountry?.data !== undefined && node !== undefined) {
+      createMap(node, areaLegendRef, loginsPerCountry?.data)
+    }
+  }, [!loginsPerCountry.isLoading && loginsPerCountry.isSuccess && loginsPerCountry?.data])
+
+  if (loginsPerCountry.isLoading
+    || loginsPerCountry.isFetching
+    || loginsPerCountry.length === 0) {
+    return null
+  }
+
+  return (
+    <Row className="loginsByCountry">
+      <Col md={12} className="box">
+        <div className="box-header with-border">
+          <h3 className="box-title">Logins Per Country</h3>
+        </div>
+        <div className="container_map"
+             ref={loginsMapDrawRef}
+             id="loginsMap">
+          <div className="map"></div>
+          <div ref={areaLegendRef}
+               className="areaLegend"></div>
+        </div>
+      </Col>
+    </Row>
+  )
 }
 
 export default LoginsMap;
