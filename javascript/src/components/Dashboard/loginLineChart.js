@@ -1,12 +1,11 @@
-import {useState, useContext, useEffect} from "react";
-import {Chart} from "react-google-charts";
-import {client} from '../../utils/api';
-import Select from 'react-select';
-import Container from 'react-bootstrap/Container';
+import { useState, useContext, useEffect } from "react";
+import { Chart } from "react-google-charts";
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import 'bootstrap/dist/css/bootstrap.min.css';
-
+import { getLoginsGroupByDay } from "../../utils/queries";
+import { useQuery } from "react-query";
+import { loginsGroupByDayKey } from "../../utils/queryKeys";
 
 export const options = {
   // title: "Overall number of logins per day",
@@ -15,24 +14,52 @@ export const options = {
 };
 
 
-const LoginLineChart = ({type, id, tenantId, uniqueLogins}) => {
+const LoginLineChart = ({ type, id, tenantId, uniqueLogins }) => {
 
   const [managed, setManaged] = useState(false);
-  const [lineData, setLineData] = useState(["Date", "Logins"])
+  let lineDataArray = [["Date", "Logins"]];
+  const [lineData, setLineData] = useState(lineDataArray)
+
+  let params = {
+    params: {
+      tenant_id: tenantId,
+      unique_logins: uniqueLogins
+    }
+  }
+
+  const loginsGroupByDay = useQuery(
+    [loginsGroupByDayKey, params],
+    getLoginsGroupByDay,
+    {
+      enabled: false
+    }
+  )
+
   useEffect(() => {
-    var params = null
-    params = {params: {tenant_id: tenantId, 'unique_logins': uniqueLogins}}
+    params = {
+      params: {
+        tenant_id: tenantId,
+        unique_logins: uniqueLogins
+      }
+    }
     if (type) {
       params["params"][[type]] = id
     }
-    client.get("logins_groupby/day", params).then(response => {
-      var lineDataArray = [["Date", "Logins"]];
-      response["data"].forEach(element => {
-        lineDataArray.push([new Date(element.date), element.count])
-      })
-      setLineData(lineDataArray)
-    })
-  }, [uniqueLogins])
+    try {
+      loginsGroupByDay.refetch()
+        .then(response => {
+          
+          response?.data.forEach(element => {
+            lineDataArray.push([new Date(element.date), element.count])
+          })
+          setLineData(lineDataArray)
+          setManaged(false);
+        })
+    } catch (error) {
+      // todo: Here we can handle any authentication or authorization errors
+      console.log(error)
+    }
+  }, [!loginsGroupByDay.isLoading && loginsGroupByDay.isSuccess && loginsGroupByDay?.data, uniqueLogins])
 
 
   // This is for Dates with no logins, we have to set 0 for these dates
@@ -46,15 +73,15 @@ const LoginLineChart = ({type, id, tenantId, uniqueLogins}) => {
     var endDate = dataTable.getColumnRange(0).max;
     var oneDay = (1000 * 60 * 60 * 24);
     for (var i = startDate.getTime(); i < endDate.getTime(); i = i + oneDay) {
-      var coffeeData = dataTable.getFilteredRows([{
+      var rowsData = dataTable.getFilteredRows([{
         column: 0,
         test: function (value, row, column, table) {
-          var coffeeDate = formatDate.formatValue(table.getValue(row, column));
+          var rowDate = formatDate.formatValue(table.getValue(row, column));
           var testDate = formatDate.formatValue(new Date(i));
-          return (coffeeDate === testDate);
+          return (rowDate === testDate);
         }
       }]);
-      if (coffeeData.length === 0) {
+      if (rowsData.length === 0) {
         dataTable.addRow([
           new Date(i),
           0
@@ -76,6 +103,11 @@ const LoginLineChart = ({type, id, tenantId, uniqueLogins}) => {
     return dataTable;
   }
 
+  if (loginsGroupByDay.isLoading
+    || loginsGroupByDay.isFetching
+    || lineData.length === 1) {
+    return null
+  }
 
   return (
     <Row>
@@ -86,12 +118,12 @@ const LoginLineChart = ({type, id, tenantId, uniqueLogins}) => {
         <Chart
           chartType="LineChart"
           width="100%"
-          data={lineData}
+          data={lineData ?? []}
           options={options}
           chartEvents={[
             {
               eventName: "ready",
-              callback: ({chartWrapper, google}) => {
+              callback: ({ chartWrapper, google }) => {
                 const chart = chartWrapper.getChart();
                 if (!managed) {
                   setZerosIfNoDate(chartWrapper.getDataTable(), google)
@@ -110,8 +142,8 @@ const LoginLineChart = ({type, id, tenantId, uniqueLogins}) => {
                 ui: {
                   chartType: "LineChart",
                   chartOptions: {
-                    chartArea: {width: "80%", height: "100%"},
-                    hAxis: {baselineColor: "none"},
+                    chartArea: { width: "80%", height: "100%" },
+                    hAxis: { baselineColor: "none" },
                   },
                 },
               },
