@@ -45,3 +45,10 @@ export const getSps = async ({queryKey}) => {
   const response = await apiClient.get("sps", params)
   return response.data
 }
+
+// Users
+export const getRegisteredUsersCountby = async ({queryKey}) => {
+  const [_, params] = queryKey
+  const response = await apiClient.get("registered_users_countby", params)
+  return response.data
+}
