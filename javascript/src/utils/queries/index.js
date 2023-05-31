@@ -58,6 +58,13 @@ export const getRegisteredUsersCountby = async ({queryKey}) => {
   const response = await apiClient.get("registered_users_countby", params)
   return response.data
 }
+
+export const getRegisteredUsersByCountry = async ({queryKey}) => {
+  const [_, params] = queryKey
+  const response = await apiClient.get("registered_users_country", params)
+  return response.data
+}
+
 // Communities
 export const getCommunities = async ({queryKey}) => {
   const [_, params] = queryKey
