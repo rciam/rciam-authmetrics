@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useQuery, useQueryClient } from "react-query";
+import { useQuery } from "react-query";
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { registeredUsersCountByKey } from "../../utils/queryKeys";
