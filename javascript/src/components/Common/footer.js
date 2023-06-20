@@ -1,22 +1,17 @@
-import React, {useState, useEffect, useContext} from 'react';
-import {useParams} from "react-router-dom";
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import React from 'react';
 import Image from 'react-bootstrap/Image';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
-
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import Dropdown from 'react-bootstrap/Dropdown';
 import parse from 'html-react-parser';
-import config from "./../../config_react.json";
-import {languageContext} from '../../Context/context';
 import {useTranslation} from 'react-i18next';
+import {constructConfiFilename} from "./utils";
 
 const Footer = (props) => {
-  const [language, setLanguage] = useContext(languageContext)
-  const {tenant, environment} = useParams();
-  const getConfig = key => config[tenant][environment][key]
+  const config = require(`../../${constructConfiFilename()}`)
   const {t, i18n} = useTranslation();
+
   return (
     <footer>
       <div className="container ssp-footer--container">
@@ -53,17 +48,17 @@ const Footer = (props) => {
           <Col sm="3" className="ssp-footer__item">
             <div className="footer_link_container">
               <div className="ssp-footer__item__powered">
-                <a href={"mailto: " + (getConfig("config") && getConfig("config")["contact"])}>Contact us</a>
+                <a href={"mailto: " + (config && config?.contact)}>Contact us</a>
               </div>
               <div className="ssp-footer__item__powered">
-                <a href={config["configReact"]["apiUrl"] + "docs"}>API Documentation</a>
+                <a href={config?.config?.apiUrl + "docs"}>API Documentation</a>
               </div>
             </div>
           </Col>
         </Row>
         <Row>
           <div className='copyright-funding-footer'>
-            {getConfig("config") && getConfig("config")["footer_description"] && parse(getConfig("config")["footer_description"])} |
+            {config && config?.footer_description && parse(config?.footer_description)} |
             Powered by <a href="https://rciam.github.io/rciam-docs/" target="_blank" rel="noreferrer"> RCIAM</a>
           </div>
         </Row>
