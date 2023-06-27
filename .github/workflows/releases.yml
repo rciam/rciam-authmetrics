@@ -61,7 +61,7 @@ jobs:
           ls -la ${{ github.workspace }}/inventory/rciam-metrics-dev/files
           mv ${{ github.workspace }}/inventory/rciam-metrics-dev/files/config.json ${{ github.workspace }}/metrics-app/javascript/src/config.json
           ls -la ${{ github.workspace }}/metrics-app/javascript/src
-          cat ${{ github.workspace }}/metrics-app/javascript/src
+          cat ${{ github.workspace }}/metrics-app/javascript/src/config.json
       - name: Share artifact inside workflow
         uses: actions/upload-artifact@v3
         with:
