@@ -14,7 +14,6 @@ import {useCookies} from "react-cookie";
 const Middleware = ({elementName}) => {
   const {tenant, environment} = useParams();
   const [cookies, setCookie] = useCookies();
-  console.log('tenant', tenant)
 
   // XXX We set the environment and tenant globally
   window.environment = environment
