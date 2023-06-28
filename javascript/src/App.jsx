@@ -14,8 +14,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import jwt_decode from "jwt-decode";
 import {
   languageContext,
-  tenantContext,
-  envContext,
   userinfoContext
 } from "./Context/context";
 import Layout from "./components/Common/layout";
@@ -30,9 +28,8 @@ import Middleware from "./components/Common/middleware"
 
 function App() {
   const [language, setLanguage] = useState('en')
-  const [tenantCon, setTenantCon] = useState(null)
-  const [envCon, setEnvCon] = useState(null)
   const [userInfo, setUserInfo] = useState(null)
+  const [permissions, setPermissions] = useState(null)
   const [cookies, setCookie] = useCookies();
 
 
@@ -40,7 +37,16 @@ function App() {
     if (cookies.userinfo != undefined) {
       setUserInfo(jwt_decode(cookies.userinfo))
     }
-  }, [cookies])
+    if (cookies.permissions != undefined) {
+      // The backend will send an encoded permissions while
+      // the frontend adds a simple json value
+      try {
+        setPermissions(jwt_decode(cookies.permissions))
+      } catch (error) {
+        setPermissions(cookies.permissions)
+      }
+    }
+  }, [cookies.userinfo, cookies.permissions])
 
   useEffect(() => {
     if (userInfo != undefined) {
@@ -50,25 +56,22 @@ function App() {
 
   return (
     <languageContext.Provider value={[language, setLanguage]}>
-      <tenantContext.Provider value={[tenantCon, setTenantCon]}>
-        <envContext.Provider value={[envCon, setEnvCon]}>
-          <userinfoContext.Provider value={[userInfo, setUserInfo]}>
-            <Layout>
-              <SideNav></SideNav>
-              <Main>
-                <AppRoutes/>
-              </Main>
-              <ToastContainer
-                position="bottom-left"
-                autoClose={false}
-                closeOnClick
-                rtl={false}
-                pauseOnHover
-              />
-            </Layout>
-          </userinfoContext.Provider>
-        </envContext.Provider>
-      </tenantContext.Provider>
+      <userinfoContext.Provider value={[userInfo, setUserInfo]}>
+        <Layout>
+          <SideNav userInfo={userInfo}
+                   permissions={permissions}/>
+          <Main>
+            <AppRoutes/>
+          </Main>
+          <ToastContainer
+            position="bottom-left"
+            autoClose={false}
+            closeOnClick
+            rtl={false}
+            pauseOnHover
+          />
+        </Layout>
+      </userinfoContext.Provider>
     </languageContext.Provider>
   );
 }

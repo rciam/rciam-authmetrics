@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {Link} from 'react-router-dom'
 import Sidebar from "react-bootstrap-sidebar-menu";
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
@@ -6,18 +6,22 @@ import {faDoorOpen, faHome, faUser, faUsers, faWarehouse} from '@fortawesome/fre
 import {useCookies} from 'react-cookie';
 
 
-const SideNav = (props) => {
-  const [cookies, setCookie] = useCookies();
-  const permissions = cookies.permissions
+const SideNav = ({
+                   userInfo,
+                   permissions
+                 }) => {
+  const [reload, setReload] = useState(false)
   const environment = window.environment
-  const tenant =  window.tenant
+  const tenant = window.tenant
+
+  useEffect(() => {
+    setReload((prev) => !prev)
+  }, [userInfo, permissions])
 
   return (
-
     <Sidebar expand="sm">
       <Sidebar.Collapse>
         <Sidebar.Header>
-          {/* <Sidebar.Brand>Logo</Sidebar.Brand> */}
           <Sidebar.Toggle/>
         </Sidebar.Header>
         <Sidebar.Body>
@@ -41,7 +45,7 @@ const SideNav = (props) => {
               <Sidebar.Nav.Title>Services</Sidebar.Nav.Title>
             </Link>
             {
-              cookies.userinfo != undefined
+              userInfo != undefined
               && !!permissions?.actions?.registered_users?.['view'] ?
                 // Users
                 (<Link className="sidebar-menu-nav-link"
@@ -51,7 +55,7 @@ const SideNav = (props) => {
                 </Link>) : null
             }
             {
-              cookies.userinfo != undefined
+              userInfo != undefined
               && !!permissions?.actions?.communities?.['view'] ?
                 // Communities
                 (<Link className="sidebar-menu-nav-link"
