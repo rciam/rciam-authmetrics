@@ -51,7 +51,6 @@ app.add_middleware(GlobalsMiddleware)
 # Get the tenant and environment from the request
 @app.middleware("http")
 async def get_tenacy(request: Request, call_next):
-    pprint('get tenacy')
     if 'x-tenant' in request.headers:
         g.tenant = request.headers['x-tenant']
     elif 'x-tenant' in request.cookies:
