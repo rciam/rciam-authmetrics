@@ -119,8 +119,7 @@ async def authorize_rciam(
 
         # Authorization
         authorize_file = 'authorize.' + g.tenant + '.' + g.environment + '.py'
-        entitlements_config = configParser.getConfig('entitlements', authorize_file)
-        permissions = permissionsCalculation(entitlements_config, user_info_data)
+        permissions = permissionsCalculation(authorize_file, user_info_data)
         permissions_json = json.dumps(permissions).replace(" ", "").replace("\n", "")
 
         # Set the permissions cookie.
