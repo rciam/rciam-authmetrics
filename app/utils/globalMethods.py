@@ -21,7 +21,7 @@ class AuthNZCheck:
         authorize_file = 'authorize.' + g.tenant + '.' + g.environment + '.py'
         self.entitlements_config = configParser.getConfig('entitlements', authorize_file)
         config_file = 'config.' + g.tenant + '.' + g.environment + '.py'
-        oidc_config = configParser.getConfig('oidc_client_egi', config_file)
+        oidc_config = configParser.getConfig('oidc_client', config_file)
 
         self.oauth.register(
             'rciam',

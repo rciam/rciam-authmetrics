@@ -20,7 +20,7 @@ router = APIRouter(
 
 def initializeAuthOb():
     config_file = 'config.' + g.tenant + '.' + g.environment + '.py'
-    oidc_config = configParser.getConfig('oidc_client_egi', config_file)
+    oidc_config = configParser.getConfig('oidc_client', config_file)
     oauth = OAuth()
 
     oauth.register(
