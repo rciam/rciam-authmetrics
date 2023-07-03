@@ -14,12 +14,10 @@ class AuthNZCheck:
         self.skip = skip
         self.tag = tag
         self.oauth = OAuth()
-        self.entitlements_config = None
 
     async def __call__(self, request: Request, response: Response):
         # config
         authorize_file = 'authorize.' + g.tenant + '.' + g.environment + '.py'
-        self.entitlements_config = configParser.getConfig('entitlements', authorize_file)
         config_file = 'config.' + g.tenant + '.' + g.environment + '.py'
         oidc_config = configParser.getConfig('oidc_client', config_file)
 
@@ -45,7 +43,7 @@ class AuthNZCheck:
         if resp.status_code == 401:
             # For now we skip logins and dashboard routes
             if (self.tag == 'logins' or self.tag == 'dashboard') and self.skip:
-                permissions = permissionsCalculation(self.entitlements_config)
+                permissions = permissionsCalculation(authorize_file)
                 permissions_json = json.dumps(permissions).replace(" ", "").replace("\n", "")
                 # pprint(permissions_json)
                 response.headers["X-Permissions"] = permissions_json
@@ -71,7 +69,7 @@ class AuthNZCheck:
                 raise HTTPException(status_code=500)
 
         # Authorization
-        permissions = permissionsCalculation(self.entitlements_config, data)
+        permissions = permissionsCalculation(authorize_file, data)
         permissions_json = json.dumps(permissions).replace(" ", "").replace("\n", "")
 
         # Add the permission to a custom header field
@@ -84,7 +82,8 @@ class AuthNZCheck:
                 HTTPException(status_code=403)
 
 
-def permissionsCalculation(entitlements_config, user_info=None):
+def permissionsCalculation(authorize_file, user_info=None):
+    entitlements_config = configParser.getConfig('entitlements', authorize_file)
     user_entitlements = {}
     if user_info is not None:
         user_entitlements = user_info.get('eduperson_entitlement')
@@ -139,7 +138,7 @@ def permissionsCalculation(entitlements_config, user_info=None):
 
     for role in roles.keys():
         if roles[role]:
-            role_actions = configParser.getConfig(role, 'authorize.py')
+            role_actions = configParser.getConfig(role, authorize_file)
             for view, config_actions in role_actions.items():
                 for item in config_actions.split(","):
                     actions[view][item] = True
