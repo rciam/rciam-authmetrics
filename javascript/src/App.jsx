@@ -79,14 +79,14 @@ function App() {
 function AppRoutes() {
   return (
     <Routes>
-      <Route path="/" element={<Middleware elementName={Dashboard}/>}/>
-      <Route path="/communities" element={<Middleware elementName={Communities}/>}/>
-      <Route path="/users" element={<Middleware elementName={Users}/>}/>
-      <Route path="/identity-providers" element={<Middleware elementName={Idps}/>}/>
-      <Route path="/services" element={<Middleware elementName={Sps}/>}/>
-      <Route path="/identity-providers/:id" element={<Middleware elementName={Idp}/>}/>
-      <Route path="/services/:id" element={<Middleware elementName={Sp}/>}/>
-      <Route path="/login" element={<Middleware elementName={Login}/>}/>
+      <Route path="/metrics" element={<Middleware elementName={Dashboard}/>}/>
+      <Route path="/metrics/communities" element={<Middleware elementName={Communities}/>}/>
+      <Route path="/metrics/users" element={<Middleware elementName={Users}/>}/>
+      <Route path="/metrics/identity-providers" element={<Middleware elementName={Idps}/>}/>
+      <Route path="/metrics/services" element={<Middleware elementName={Sps}/>}/>
+      <Route path="/metrics/identity-providers/:id" element={<Middleware elementName={Idp}/>}/>
+      <Route path="/metrics/services/:id" element={<Middleware elementName={Sp}/>}/>
+      <Route path="/metrics/login" element={<Middleware elementName={Login}/>}/>
       <Route path="*" element={<Middleware elementName={ErrorPage}/>}/>
     </Routes>
   )
