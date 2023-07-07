@@ -1,18 +1,18 @@
 name: CI at Devel Branch
 run-name: ${{ github.actor }} is deploying at devel branch 🚀
-on: 
+on:
   push:
     branches:
       - devel
       - deploy_changes
 env:
-  RELEASE_ID: rc-${{ github.run_id }} 
+  RELEASE_ID: rc-${{ github.run_id }}
 jobs:
-  checkout:  
+  checkout:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [16.x]
+        node-version: [ 16.x ]
     steps:
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
       - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
@@ -32,13 +32,13 @@ jobs:
         with:
           # Repository name with owner. For example, actions/checkout
           # Default: ${{ github.repository }}
-          repository: 'rciam/rciam-deploy'   
+          repository: 'rciam/rciam-deploy'
           ref: 'devel'
           path: 'roles'
       - name: Download inventory
         uses: actions/checkout@v3
         with:
-          repository: 'grnet/rciam-deploy-inv'   
+          repository: 'grnet/rciam-deploy-inv'
           ref: 'master'
           ssh-key: ${{ secrets.DEPLOY_READ_SECRET }}
           path: 'inventory'
@@ -66,7 +66,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: react-application
-          path: | 
+          path: |
             ${{ github.workspace }}/metrics-app
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
@@ -99,7 +99,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: react-github-actions-build
-          path: | 
+          path: |
             ${{ github.workspace }}/metrics-app/javascript/build
             ${{ github.workspace }}/metrics-app/app
             ${{ github.workspace }}/metrics-app/requirements.txt
@@ -151,13 +151,13 @@ jobs:
         with:
           # Repository name with owner. For example, actions/checkout
           # Default: ${{ github.repository }}
-          repository: 'rciam/rciam-deploy'   
+          repository: 'rciam/rciam-deploy'
           ref: 'devel'
           path: 'roles'
       - name: Download inventory
         uses: actions/checkout@v3
         with:
-          repository: 'grnet/rciam-deploy-inv'   
+          repository: 'grnet/rciam-deploy-inv'
           ref: 'master'
           ssh-key: ${{ secrets.DEPLOY_READ_SECRET }}
           path: 'inventory'
