@@ -5,9 +5,9 @@ from logging.handlers import TimedRotatingFileHandler
 
 FORMATTER = logging.Formatter("""%(asctime)s - %(name)s - %(levelname)s -
                                %(message)s""")
-LOG_FILE = "{0}/{1}".format(configParser.getConfig('logging')['folder'],
-                            configParser.getConfig('logging')['file'])
-LEVEL = configParser.getConfig('logging')['level']
+LOG_FILE = "{0}/{1}".format(configParser.getConfig('logging', 'config.global.py')['folder'],
+                            configParser.getConfig('logging', 'config.global.py')['file'])
+LEVEL = configParser.getConfig('logging', 'config.global.py')['level']
 
 
 def get_console_handler():
