@@ -6,13 +6,14 @@ on:
       - devel
       - deploy_changes
 env:
-  RELEASE_ID: rc-${{ github.run_id }}
+  RELEASE_ID: rc-${{ github.ref }}-${{ github.run_id }}
+  NODE_VERSION: 16.x
 jobs:
   checkout:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [ 16.x ]
+        tenant: [ egi.devel ]
     steps:
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
       - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
@@ -59,19 +60,18 @@ jobs:
       - name: List files in the repository
         run: |
           ls -la ${{ github.workspace }}/inventory/rciam-metrics-dev/files
-          mv ${{ github.workspace }}/inventory/rciam-metrics-dev/files/config.json ${{ github.workspace }}/metrics-app/javascript/src/config.json
+          mv ${{ github.workspace }}/inventory/rciam-metrics-dev/files/config.json ${{ github.workspace }}/metrics-app/javascript/src/config.${{ matrix.tenant }}.json
           ls -la ${{ github.workspace }}/metrics-app/javascript/src
-          cat ${{ github.workspace }}/metrics-app/javascript/src/config.json
       - name: Share artifact inside workflow
         uses: actions/upload-artifact@v3
         with:
           name: react-application
           path: |
             ${{ github.workspace }}/metrics-app
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Use Node.js ${{ env.NODE_VERSION }}
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: ${{ env.NODE_VERSION }}
       - name: Install dependencies
         run: |
           cd ${{ github.workspace }}/metrics-app/javascript; npm install
@@ -104,7 +104,44 @@ jobs:
             ${{ github.workspace }}/metrics-app/app
             ${{ github.workspace }}/metrics-app/requirements.txt
       - run: echo "🍏 This job's status is ${{ job.status }}."
-  release:
+  frontend_release:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        tenant: [ egi.devel ]
+    # We specify that deploys needs to
+    # finish before we create a release
+    needs: checkout
+    steps:
+      # Download previously shared build
+      - name: Get artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: react-github-actions-build
+      - name: Compress action step
+        uses: a7ul/tar-action@v1.1.0
+        id: compress
+        with:
+          command: c
+          cwd: ./
+          files: |
+                   javascript/
+          outPath: frontend-${{matrix.tenant}}-release-build.tar.gz
+      # Upload as an artifact of the current workflow
+      - name: Upload frontend build zip artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: frontend-${{matrix.tenant}}-release-build.tar.gz
+          path: frontend-${{matrix.tenant}}-release-build.tar.gz
+      - name: Create Release
+        uses: marvinpinto/action-automatic-releases@latest
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          automatic_release_tag: ${{ env.RELEASE_ID }}
+          prerelease: false
+          files: |
+            frontend-${{matrix.tenant}}-release-build.tar.gz
+  backend_release:
     runs-on: ubuntu-latest
     # We specify that deploys needs to
     # finish before we create a release
@@ -122,29 +159,28 @@ jobs:
           command: c
           cwd: ./
           files: |
-            app/
-            javascript/
-            requirements.txt
-          outPath: react-github-actions-release-build.tar.gz
+                   app/
+                   requirements.txt
+          outPath: backend-release-build.tar.gz
       # Upload as an artifact of the current workflow
-      - name: Upload build zip artifact
+      - name: Upload backend build zip artifact
         uses: actions/upload-artifact@v1
         with:
-          name: react-github-actions-release-build.tar.gz
-          path: react-github-actions-release-build.tar.gz
+          name: backend-release-build.tar.gz
+          path: backend-release-build.tar.gz
       - name: Create Release
         uses: marvinpinto/action-automatic-releases@latest
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          automatic_release_tag: ${{ env.RELEASE_ID }}
+          automatic_release_tag: metrics-api-${{ github.ref }}-${{ env.RELEASE_ID }}
           prerelease: false
           files: |
-            react-github-actions-release-build.tar.gz
-  deploy:
+            backend-release-build.tar.gz
+  deploy_backend:
     runs-on: ubuntu-latest
     # We specify that deploys needs to
     # finish before we create a release
-    needs: release
+    needs: backend_release
     steps:
       - name: Download playbook
         uses: actions/checkout@v3
@@ -161,7 +197,7 @@ jobs:
           ref: 'master'
           ssh-key: ${{ secrets.DEPLOY_READ_SECRET }}
           path: 'inventory'
-      - name: Run playbook (deploy rciam-metrics) with release ${{ env.RELEASE_ID }}
+      - name: Run playbook (deploy rciam-metrics) with release metrics-api-${{ github.ref }}-${{ env.RELEASE_ID }}
         uses: dawidd6/action-ansible-playbook@v2
         with:
           # Required, playbook filepath
@@ -175,4 +211,43 @@ jobs:
             --inventory ${{ github.workspace }}/inventory/rciam-metrics-dev/hosts.ini
             --tags rciam-metrics:config
             -u debian
-            --extra-vars "metrics_latest_release=${{ env.RELEASE_ID }}"
+            --extra-vars "metrics_latest_release=metrics-api-${{ github.ref }}-${{ env.RELEASE_ID }}"
+  deploy_frontend:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        tenant: [ egi.devel ]
+    # We specify that deploys needs to
+    # finish before we create a release
+    needs: backend_release
+    steps:
+      - name: Download playbook
+        uses: actions/checkout@v3
+        with:
+          # Repository name with owner. For example, actions/checkout
+          # Default: ${{ github.repository }}
+          repository: 'rciam/rciam-deploy'
+          ref: 'devel'
+          path: 'roles'
+      - name: Download inventory
+        uses: actions/checkout@v3
+        with:
+          repository: 'grnet/rciam-deploy-inv'
+          ref: 'master'
+          ssh-key: ${{ secrets.DEPLOY_READ_SECRET }}
+          path: 'inventory'
+      - name: Run playbook (deploy rciam-metrics) with release metrics-api-${{ github.ref }}-${{ env.RELEASE_ID }}
+        uses: dawidd6/action-ansible-playbook@v2
+        with:
+          # Required, playbook filepath
+          playbook: metricsservers.yml
+          # Optional, directory where playbooks live
+          directory: ./roles
+          key: ${{ secrets.DEPLOY_READ_SECRET }}
+          # Optional, encrypted vault password
+          vault_password: ${{secrets.VAULT_PASSWORD}}
+          options: |
+            --inventory ${{ github.workspace }}/inventory/rciam-metrics-dev/hosts.ini
+            --tags rciam-metrics:config-front
+            -u debian
+            --extra-vars "metrics_latest_release=metrics-api-${{ github.ref }}-${{ env.RELEASE_ID }} tenant_environment=${{matrix.tenant}}"
