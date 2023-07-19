@@ -20,7 +20,7 @@ from app.models.country_model import *
 from app.models.idp_model import *
 from app.models.country_hashed_user_model import *
 
-from .routers import authenticate, communities, countries, logins, users, dashboard
+from .routers import authenticate, communities, countries, logins, users, dashboard, ams
 from app.utils import configParser
 from app.utils.fastapiGlobals import GlobalsMiddleware, g
 
@@ -77,3 +77,4 @@ app.include_router(communities.router)
 app.include_router(countries.router)
 app.include_router(logins.router)
 app.include_router(dashboard.router)
+app.include_router(ams.router)
