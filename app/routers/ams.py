@@ -14,10 +14,7 @@ router = APIRouter(
 
 
 @router.get("/ams_stats/ams_verification_hash")
-async def get_verification(
-        *,
-        session: Session = Depends(get_session)
-):
+async def get_verification():
 
     verification_hash = configParser.getConfig('ams', 'config.global.py')['verification_hash']
     return verification_hash
