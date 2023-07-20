@@ -32,6 +32,7 @@ function App() {
   const [permissions, setPermissions] = useState(null)
   const [cookies, setCookie] = useCookies();
 
+
   useEffect(() => {
     if (cookies.userinfo != undefined) {
       setUserInfo(jwt_decode(cookies.userinfo))
