@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Clean Releases
-      uses: dev-drprasad/delete-older-releases@v0.2
+      uses: dev-drprasad/delete-older-releases@v0.2.1
       with:
         keep_latest: 100
       env:
