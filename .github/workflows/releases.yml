@@ -58,6 +58,8 @@ jobs:
             --tags rciam-metrics:config-local
             -u debian
       - name: List files in the repository
+        # The tenant specific config file, i.e. config.tenant.environment.json, becomes plain config.json
+        # because the frontend lives under its own directory/path
         run: |
           ls -la ${{ github.workspace }}/inventory/rciam-metrics-dev/files
           mv ${{ github.workspace }}/inventory/rciam-metrics-dev/files/config.${{ matrix.tenant }}.json ${{ github.workspace }}/metrics-app/javascript/src/config.json
@@ -121,6 +123,7 @@ jobs:
       - name: Compress action step
         uses: a7ul/tar-action@v1.1.0
         id: compress
+        # The frontend release is only the javascript/build
         with:
           command: c
           cwd: ./
