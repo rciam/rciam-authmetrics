@@ -9,6 +9,15 @@ env:
   RELEASE_ID: rc-${{ github.ref }}-${{ github.run_id }}
   NODE_VERSION: 16.x
 jobs:
+  clean_repo:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Clean Releases
+      uses: dev-drprasad/delete-older-releases@v0.2
+      with:
+        keep_latest: 100
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   checkout:
     runs-on: ubuntu-latest
     strategy:
