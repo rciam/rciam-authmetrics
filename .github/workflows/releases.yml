@@ -60,7 +60,7 @@ jobs:
       - name: List files in the repository
         run: |
           ls -la ${{ github.workspace }}/inventory/rciam-metrics-dev/files
-          mv ${{ github.workspace }}/inventory/rciam-metrics-dev/files/config.${{ matrix.tenant }}.json ${{ github.workspace }}/metrics-app/javascript/src/config.${{ matrix.tenant }}.json
+          mv ${{ github.workspace }}/inventory/rciam-metrics-dev/files/config.${{ matrix.tenant }}.json ${{ github.workspace }}/metrics-app/javascript/src/config.json
           ls -la ${{ github.workspace }}/metrics-app/javascript/src
       - name: Share artifact inside workflow
         uses: actions/upload-artifact@v3
