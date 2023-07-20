@@ -137,7 +137,7 @@ jobs:
         uses: marvinpinto/action-automatic-releases@latest
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          automatic_release_tag: ${{ env.RELEASE_ID }}
+          automatic_release_tag: frontend-${{matrix.tenant}}-${{ github.ref }}-${{ env.RELEASE_ID }}
           prerelease: false
           files: |
             frontend-${{matrix.tenant}}-release-build.tar.gz
@@ -219,7 +219,7 @@ jobs:
         tenant: [ egi.devel ]
     # We specify that deploys needs to
     # finish before we create a release
-    needs: backend_release
+    needs: frontend_release
     steps:
       - name: Download playbook
         uses: actions/checkout@v3
@@ -236,7 +236,7 @@ jobs:
           ref: 'master'
           ssh-key: ${{ secrets.DEPLOY_READ_SECRET }}
           path: 'inventory'
-      - name: Run playbook (deploy rciam-metrics) with release metrics-api-${{ github.ref }}-${{ env.RELEASE_ID }}
+      - name: Run playbook (deploy rciam-metrics) with release frontend-${{matrix.tenant}}-${{ github.ref }}-${{ env.RELEASE_ID }}
         uses: dawidd6/action-ansible-playbook@v2
         with:
           # Required, playbook filepath
@@ -250,4 +250,4 @@ jobs:
             --inventory ${{ github.workspace }}/inventory/rciam-metrics-dev/hosts.ini
             --tags rciam-metrics:config-front
             -u debian
-            --extra-vars "metrics_latest_release=metrics-api-${{ github.ref }}-${{ env.RELEASE_ID }} tenant_environment=${{matrix.tenant}}"
+            --extra-vars "metrics_latest_release=frontend-${{matrix.tenant}}-${{ github.ref }}-${{ env.RELEASE_ID }} tenant_environment=${{matrix.tenant}}"
