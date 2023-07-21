@@ -124,6 +124,8 @@ jobs:
         uses: a7ul/tar-action@v1.1.0
         id: compress
         # The frontend release is only the javascript/build
+        # We need to include all the files and directories since
+        # the action is not smart enough to under asterisk (*)
         with:
           command: c
           cwd: ./javascript/build
