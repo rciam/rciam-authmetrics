@@ -20,10 +20,10 @@ jobs:
           repository: 'grnet/rciam-deploy-inv'
           ref: 'master'
           ssh-key: ${{ secrets.DEPLOY_READ_SECRET }}
-          path: 'inventory/rciam-metrics-dev/files/all/tenants'
+          path: 'inventory'
       - name: Set matrix data
         id: set-matrix
-        run: echo "matrix=$(jq -c . < ./config.json)" >> $GITHUB_OUTPUT
+        run: echo "matrix=$(jq -c . < ./rciam-metrics-dev/files/all/tenants/config.json)" >> $GITHUB_OUTPUT
   checkout:
     runs-on: ubuntu-latest
     strategy:
