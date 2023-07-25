@@ -9,11 +9,25 @@ env:
   RELEASE_ID: rc-${{ github.ref }}-${{ github.run_id }}
   NODE_VERSION: 16.x
 jobs:
+  configure:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - name: Checkout to repository
+        uses: actions/checkout@v3
+        with:
+          repository: 'grnet/rciam-deploy-inv'
+          ref: 'master'
+          ssh-key: ${{ secrets.DEPLOY_READ_SECRET }}
+          path: 'inventory/rciam-metrics-dev/files/all/tenants'
+      - name: Set matrix data
+        id: set-matrix
+        run: echo "matrix=$(jq -c . < ./config.json)" >> $GITHUB_OUTPUT
   checkout:
     runs-on: ubuntu-latest
     strategy:
-      matrix:
-        tenant: [ egi.devel ]
+      matrix: ${{ fromJson(needs.configure.outputs.matrix) }}
     steps:
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
       - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
@@ -109,8 +123,7 @@ jobs:
   frontend_release:
     runs-on: ubuntu-latest
     strategy:
-      matrix:
-        tenant: [ egi.devel ]
+      matrix: ${{ fromJson(needs.configure.outputs.matrix) }}
     # We specify that deploys needs to
     # finish before we create a release
     needs: checkout
@@ -222,8 +235,7 @@ jobs:
   deploy_frontend:
     runs-on: ubuntu-latest
     strategy:
-      matrix:
-        tenant: [ egi.devel ]
+      matrix: ${{ fromJson(needs.configure.outputs.matrix) }}
     # We specify that deploys needs to
     # finish before we create a release
     needs: frontend_release
