@@ -23,7 +23,8 @@ jobs:
           path: 'inventory'
       - name: Set matrix data
         id: set-matrix
-        run: echo "matrix=$(jq -c . < ./rciam-metrics-dev/files/all/tenants/config.json)" >> $GITHUB_OUTPUT
+        working-directory: ./rciam-metrics-dev/files/all/tenants
+        run: echo "matrix=$(jq -c . < ./config.json)" >> $GITHUB_OUTPUT
   checkout:
     runs-on: ubuntu-latest
     strategy:
