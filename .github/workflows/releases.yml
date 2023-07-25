@@ -172,7 +172,7 @@ jobs:
     # We specify that deploys needs to
     # finish before we create a release
     # Job outputs are available to all downstream jobs that depend on this job.
-    needs: []checkout, configure]
+    needs: [checkout, configure]
     steps:
       # Download previously shared build
       - name: Get artifact
