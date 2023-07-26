@@ -131,7 +131,8 @@ jobs:
       matrix: ${{ fromJson(needs.configure.outputs.matrix) }}
     # We specify that deploys needs to
     # finish before we create a release
-    needs: checkout
+    # Job outputs are available to all downstream jobs that depend on this job.
+    needs: [checkout, configure]
     steps:
       # Download previously shared build
       - name: Get artifact
@@ -170,7 +171,8 @@ jobs:
     runs-on: ubuntu-latest
     # We specify that deploys needs to
     # finish before we create a release
-    needs: checkout
+    # Job outputs are available to all downstream jobs that depend on this job.
+    needs: [checkout, configure]
     steps:
       # Download previously shared build
       - name: Get artifact
@@ -243,7 +245,8 @@ jobs:
       matrix: ${{ fromJson(needs.configure.outputs.matrix) }}
     # We specify that deploys needs to
     # finish before we create a release
-    needs: frontend_release
+    # Job outputs are available to all downstream jobs that depend on this job.
+    needs: [frontend_release, configure]
     steps:
       - name: Download playbook
         uses: actions/checkout@v3
