@@ -75,7 +75,7 @@ def process_data(data, session):
         or "eventIdentifier" not in data
         or "source" not in data
         or "tenenvId" not in data):
-       
+
         raise MissingDataException("One or more required attributes are missing.")
 
     if "ipAddress" in data:
