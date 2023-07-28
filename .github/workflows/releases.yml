@@ -212,6 +212,7 @@ jobs:
           bodyFile: "CHANGELOG.md"
           tag: "metrics-api-${{ github.ref_name }}-${{ env.RELEASE_ID }}"
           makeLatest: true
+          generateReleaseNotes: true
   deploy_backend:
     runs-on: ubuntu-latest
     # We specify that deploys needs to
