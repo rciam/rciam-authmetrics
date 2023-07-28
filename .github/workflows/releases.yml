@@ -164,9 +164,10 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           artifacts: "frontend-${{matrix.tenant}}-release-build.tar.gz"
-          bodyFile: "javascript/CHANGELOG.md"
+          bodyFile: "./javascript/CHANGELOG.md"
           tag: "frontend-${{matrix.tenant}}-${{ github.ref_name }}-${{ env.RELEASE_ID }}"
           makeLatest: true
+          generateReleaseNotes: true
   backend_release:
     runs-on: ubuntu-latest
     # We specify that deploys needs to
@@ -196,13 +197,13 @@ jobs:
           name: backend-release-build.tar.gz
           path: backend-release-build.tar.gz
       - name: Create Release
-        uses: marvinpinto/action-automatic-releases@latest
+        uses: ncipollo/release-action@v1
         with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          automatic_release_tag: metrics-api-${{ github.ref_name }}-${{ env.RELEASE_ID }}
-          prerelease: false
-          files: |
-            backend-release-build.tar.gz
+          token: ${{ secrets.GITHUB_TOKEN }}
+          artifacts: "backend-release-build.tar.gz"
+          bodyFile: "CHANGELOG.md"
+          tag: "metrics-api-${{ github.ref_name }}-${{ env.RELEASE_ID }}"
+          makeLatest: true
   deploy_backend:
     runs-on: ubuntu-latest
     # We specify that deploys needs to
