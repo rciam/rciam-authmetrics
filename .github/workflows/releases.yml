@@ -122,8 +122,10 @@ jobs:
           name: react-github-actions-build
           path: |
             ${{ github.workspace }}/metrics-app/javascript/build
+            ${{ github.workspace }}/metrics-app/javascript/CHANGELOG.md
             ${{ github.workspace }}/metrics-app/app
             ${{ github.workspace }}/metrics-app/requirements.txt
+            ${{ github.workspace }}/metrics-app/CHANGELOG.md
       - run: echo "🍏 This job's status is ${{ job.status }}."
   frontend_release:
     runs-on: ubuntu-latest
@@ -195,6 +197,7 @@ jobs:
         run: |
           pwd
           ls -la
+          ls -la ./javascript
           cat CHANGELOG.md
       - name: Upload backend build zip artifact
         uses: actions/upload-artifact@v1
