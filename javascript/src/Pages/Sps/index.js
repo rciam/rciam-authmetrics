@@ -39,12 +39,7 @@ const Sps = () => {
   }
   let navigate = useNavigate();
   const goToSpecificProvider = (id, provider) => {
-    var path = ""
-    if (provider === "sp") {
-      path = "/" + tenant + "/" + environment + "/services/" + id;
-    } else {
-      path = "/" + tenant + "/" + environment + "/identity-providers/" + id;
-    }
+    const path = provider === "sp" ? `/services/${id}` : `/identity-providers/${id}`
     navigate(path);
   }
   if (tenenvId == undefined || tenenvId == 0 || tenenvId == "") return
