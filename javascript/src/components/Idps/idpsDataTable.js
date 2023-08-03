@@ -13,9 +13,10 @@ import {useQuery, useQueryClient} from "react-query";
 import {loginsPerIdpKey} from "../../utils/queryKeys";
 import {getLoginsPerIdp} from "../../utils/queries";
 import {useCookies} from "react-cookie";
-import {createAnchorElement} from "../Common/utils";
+import {createAnchorElement, formatStartDate, formatEndDate} from "../Common/utils";
 import {toast} from "react-toastify";
 import Spinner from "../Common/spinner";
+import {format} from "date-fns";
 
 const IdpsDataTable = ({
                          spId,
@@ -39,8 +40,8 @@ const IdpsDataTable = ({
 
   let params = {
     params: {
-      'startDate': startDate,
-      'endDate': endDate,
+      'startDate': !startDate ? null : format(startDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"),
+      'endDate': !endDate ? null : format(endDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"),
       'sp': spId,
       'tenenv_id': tenenvId,
       'unique_logins': uniqueLogins
@@ -58,8 +59,8 @@ const IdpsDataTable = ({
   useEffect(() => {
     params = {
       params: {
-        'startDate': startDate,
-        'endDate': endDate,
+        'startDate': !startDate ? null : format(startDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"),
+        'endDate': !endDate ? null : format(endDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"),
         'sp': spId,
         'tenenv_id': tenenvId,
         'unique_logins': uniqueLogins
@@ -96,6 +97,23 @@ const IdpsDataTable = ({
   && !loginsPerIpd.isFetching
   && loginsPerIpd.isSuccess])
 
+  const handleStartDateChange = (date) => {
+   
+    date = formatStartDate(date);
+    if(date != null) {
+      setStartDate(date);
+    }
+  };
+
+  const handleEndDateChange = (date) => {
+   
+    date = formatEndDate(date);
+    if(date != null) {
+      setEndDate(date);
+    }
+  };
+
+
   const handleBtnclick = () => {
     if (!startDate || !endDate) {
       toast.warning("You have to fill both startDate and endDate")
@@ -124,11 +142,13 @@ const IdpsDataTable = ({
         From: <DatePicker selected={startDate}
                           minDate={minDate}
                           dateFormat="dd/MM/yyyy"
-                          onChange={(date) => setStartDate(date)}/>
+                          onChange={handleStartDateChange}
+                          />
         To: <DatePicker selected={endDate}
                         minDate={minDate}
                         dateFormat="dd/MM/yyyy"
-                        onChange={(date) => setEndDate(date)}/>
+                        onChange={handleEndDateChange}
+                        />
         {/* Probably add a tooltip here that both fields are required */}
         <Button variant="light"
                 disabled={startDate == undefined || endDate == undefined}

@@ -16,6 +16,8 @@ import {loginsPerCountryKey} from "../../utils/queryKeys";
 import {getLoginsPerCountry} from "../../utils/queries";
 import {toast} from "react-toastify";
 import Spinner from "../Common/spinner"
+import {format} from "date-fns";
+import {convertDateByGroup, formatStartDate, formatEndDate} from "../Common/utils";
 
 const LoginDataTable = ({
                           startDateHandler,
@@ -36,8 +38,8 @@ const LoginDataTable = ({
   let params = {
     params: {
       'group_by': groupBy,
-      'startDate': startDate,
-      'endDate': endDate,
+      'startDate': !startDate ? null : format(startDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"),
+      'endDate': !endDate ? null : format(endDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"),
       'tenenv_id': tenenvId,
       'unique_logins': uniqueLogins
     }
@@ -56,8 +58,8 @@ const LoginDataTable = ({
     params = {
       params: {
         'group_by': groupBy,
-        'startDate': startDate,
-        'endDate': endDate,
+        'startDate': !startDate ? null : format(startDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"),
+        'endDate': !endDate ? null : format(endDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"),
         'tenenv_id': tenenvId,
         'unique_logins': uniqueLogins
       }
@@ -78,7 +80,7 @@ const LoginDataTable = ({
       && !loginsPerCountry.isFetching
       && loginsPerCountry.isSuccess
       && loginsPerCountry?.data?.map(element => ({
-        "Date": !!element?.range_date ? dateFormat(new Date(element?.range_date), "yyyy-mm") : null,
+        "Date": !!element?.range_date ? convertDateByGroup(new Date(element?.range_date), groupBy): null,
         "Number of Logins": element?.count,
         "Number of Logins per Country": element?.countries
       }))
@@ -95,6 +97,22 @@ const LoginDataTable = ({
   }, [!loginsPerCountry.isLoading
   && !loginsPerCountry.isFetching
   && loginsPerCountry.isSuccess])
+
+  const handleStartDateChange = (date) => {
+   
+    date = formatStartDate(date);
+    if(date != null) {
+      setStartDate(date);
+    }
+  };
+
+  const handleEndDateChange = (date) => {
+   
+    date = formatEndDate(date);
+    if(date != null) {
+      setEndDate(date);
+    }
+  };
 
   const handleChange = (event) => {
     if (!startDate || !endDate) {
@@ -126,11 +144,11 @@ const LoginDataTable = ({
         From: <DatePicker selected={startDate}
                           minDate={minDate ?? null}
                           dateFormat="dd/MM/yyyy"
-                          onChange={(date) => setStartDate(date)}/>
+                          onChange={handleStartDateChange}/>
         To: <DatePicker selected={endDate}
                         minDate={minDate ?? null}
                         dateFormat="dd/MM/yyyy"
-                        onChange={(date) => setEndDate(date)}/>
+                        onChange={handleEndDateChange}/>
         <Dropdown placeholder='Filter'
                   options={dropdownOptions}
                   onChange={handleChange}/>

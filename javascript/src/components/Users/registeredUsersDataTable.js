@@ -17,6 +17,8 @@ import {loginsPerIdpKey, registeredUsersPerCountryGroupByKey} from "../../utils/
 import {getRegisteredUsersPerCountryGroupBy} from "../../utils/queries";
 import {useCookies} from "react-cookie";
 import Spinner from "../Common/spinner";
+import {format} from "date-fns";
+import {convertDateByGroup, formatStartDate, formatEndDate} from "../Common/utils";
 
 const RegisteredUsersDataTable = ({
                                     tenenvId,
@@ -34,8 +36,8 @@ const RegisteredUsersDataTable = ({
 
   let params = {
     params: {
-      'startDate': startDate,
-      'endDate': endDate,
+      'startDate': !startDate ? null : format(startDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"),
+      'endDate': !endDate ? null : format(endDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"),
       'tenenv_id': tenenvId
     }
   }
@@ -51,8 +53,8 @@ const RegisteredUsersDataTable = ({
   useEffect(() => {
     params = {
       params: {
-        'startDate': startDate,
-        'endDate': endDate,
+        'startDate': !startDate ? null : format(startDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"),
+        'endDate': !endDate ? null : format(endDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"),
         'tenenv_id': tenenvId
       }
     }
@@ -76,7 +78,7 @@ const RegisteredUsersDataTable = ({
       && registeredUsersPerCountryGroup.isFetched
       && registeredUsersPerCountryGroup.isSuccess
       && registeredUsersPerCountryGroup?.data?.map(user => ({
-        "Date": dateFormat(new Date(user?.range_date), "yyyy-mm"),
+        "Date": !!user?.range_date ? convertDateByGroup(new Date(user?.range_date), groupBy): null,
         "Number of Registered Users": user?.count,
         "Registered Users per country": user?.countries
       }))
@@ -92,6 +94,23 @@ const RegisteredUsersDataTable = ({
   }, [!registeredUsersPerCountryGroup.isLoading
   && !registeredUsersPerCountryGroup.isFetching
   && registeredUsersPerCountryGroup.isSuccess])
+
+  const handleStartDateChange = (date) => {
+   
+    date = formatStartDate(date);
+    if(date != null) {
+      setStartDate(date);
+    }
+  };
+
+  const handleEndDateChange = (date) => {
+   
+    date = formatEndDate(date);
+    if(date != null) {
+      setEndDate(date);
+    }
+  };
+
 
   const handleChange = (event) => {
     if (!startDate || !endDate) {
@@ -122,11 +141,11 @@ const RegisteredUsersDataTable = ({
         From: <DatePicker selected={startDate}
                           minDate={minDate}
                           dateFormat="dd/MM/yyyy"
-                          onChange={(date) => setStartDate(date)}/>
+                          onChange={handleStartDateChange}/>
         To: <DatePicker selected={endDate}
                         minDate={minDate}
                         dateFormat="dd/MM/yyyy"
-                        onChange={(date) => setEndDate(date)}/>
+                        onChange={handleEndDateChange}/>
         <Dropdown placeholder='Filter'
                   options={dropdownOptions}
                   onChange={handleChange}/>

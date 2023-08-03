@@ -9,7 +9,7 @@ import 'jquery-mapael/js/maps/world_countries_mercator.js';
 import {useQuery} from "react-query";
 import {loginsPerCountryKey} from "../../utils/queryKeys";
 import {getLoginsPerCountry} from "../../utils/queries";
-
+import {format} from "date-fns";
 
 const SpMapToDataTable = ({
                             startDate,
@@ -21,8 +21,8 @@ const SpMapToDataTable = ({
 
   let params = {
     params: {
-      'startDate': startDate,
-      'endDate': endDate,
+      'startDate': !startDate ? null : format(startDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"),
+      'endDate': !endDate ? null : format(endDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"),
       'tenenv_id': tenenvId,
       'unique_logins': uniqueLogins,
       'spId': spId

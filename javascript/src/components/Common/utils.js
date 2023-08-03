@@ -190,3 +190,32 @@ export function sortByNamePropertyCallback(a, b) {
   // names must be equal
   return 0;
 }
+
+export function parseDateWithoutTimezone(dateString, type) {
+  const dateWithoutTimezone = new Date(dateString);
+  dateWithoutTimezone.setMinutes(dateWithoutTimezone.getMinutes() - dateWithoutTimezone.getTimezoneOffset());
+
+  return dateWithoutTimezone;
+};
+
+export function formatStartDate(date) {
+  // Check if a valid date object is received
+  if (date instanceof Date && !isNaN(date.getTime())) {   
+    // Set the time to midnight (00:00:00)
+    date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
+    date.setHours(0, 0, 0, 0);
+    return date;
+  }
+  return null;
+}
+
+export function formatEndDate(date) {
+  // Check if a valid date object is received
+  if (date instanceof Date && !isNaN(date.getTime())) {    
+    // Set the time to midnight (23:59:59)
+    date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
+    date.setHours(23, 59, 59, 59);
+    return date;
+  }
+  return null;
+}

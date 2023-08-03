@@ -7,7 +7,7 @@ import Col from 'react-bootstrap/Col';
 import DatePicker from "react-datepicker";
 import Dropdown from 'react-dropdown';
 import {toast} from 'react-toastify';
-import {convertDateByGroup} from "../Common/utils";
+import {convertDateByGroup, formatStartDate, formatEndDate} from "../Common/utils";
 import 'react-toastify/dist/ReactToastify.css';
 import 'react-dropdown/style.css';
 import "react-datepicker/dist/react-datepicker.css";
@@ -16,6 +16,7 @@ import {useQuery, useQueryClient} from "react-query";
 import {communitiesGroupByKey} from "../../utils/queryKeys";
 import {getCommunitiesGroupBy} from "../../utils/queries";
 import Spinner from "../Common/spinner";
+import {format} from "date-fns";
 
 const CommunitiesDataTable = ({tenenvId}) => {
   const [communitiesPerPeriod, setCommunitiesPerPeriod] = useState([]);
@@ -28,8 +29,8 @@ const CommunitiesDataTable = ({tenenvId}) => {
 
   let params = {
     params: {
-      'startDate': startDate,
-      'endDate': endDate,
+      'startDate': !startDate ? null : format(startDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"),
+      'endDate': !endDate ? null : format(endDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"),
       'tenenv_id': tenenvId
     }
   }
@@ -45,8 +46,8 @@ const CommunitiesDataTable = ({tenenvId}) => {
   useEffect(() => {
     params = {
       params: {
-        'startDate': startDate,
-        'endDate': endDate,
+        'startDate': !startDate ? null : format(startDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"),
+        'endDate': !endDate ? null : format(endDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"),
         'tenenv_id': tenenvId
       }
     }
@@ -86,6 +87,22 @@ const CommunitiesDataTable = ({tenenvId}) => {
   && !communitiesGroupBy.isFetching
   && communitiesGroupBy.isSuccess])
 
+  const handleStartDateChange = (date) => {
+   
+    date = formatStartDate(date);
+    if(date != null) {
+      setStartDate(date);
+    }
+  };
+
+  const handleEndDateChange = (date) => {
+   
+    date = formatEndDate(date);
+    if(date != null) {
+      setEndDate(date);
+    }
+  };
+
   const handleChange = (event) => {
     if (!startDate || !endDate) {
       toast.warning("You have to fill both startDate and endDate")
@@ -114,11 +131,13 @@ const CommunitiesDataTable = ({tenenvId}) => {
       From: <DatePicker selected={startDate}
                         minDate={minDate}
                         dateFormat="dd/MM/yyyy"
-                        onChange={(date) => setStartDate(date)}/>
+                        onChange={handleStartDateChange}
+                        />
       To: <DatePicker selected={endDate}
                       minDate={minDate}
                       dateFormat="dd/MM/yyyy"
-                      onChange={(date) => setEndDate(date)}/>
+                      onChange={handleEndDateChange}
+                      />
       <Dropdown placeholder='Filter'
                 options={dropdownOptions}
                 onChange={handleChange}/>

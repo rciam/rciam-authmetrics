@@ -8,6 +8,7 @@ import {getRegisteredUsersByCountry} from "../../utils/queries";
 import {registeredUsersByCountryKey} from "../../utils/queryKeys";
 import EarthMap from "../Common/earthMap";
 import Spinner from "../Common/spinner";
+import {format} from "date-fns";
 
 const RegisteredUsersMap = ({
                               startDate,
@@ -18,8 +19,8 @@ const RegisteredUsersMap = ({
 
   let params = {
     params: {
-      'startDate': startDate,
-      'endDate': endDate,
+      'startDate': !startDate ? null : format(startDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"),
+      'endDate': !endDate ? null : format(endDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"),
       'tenenv_id': tenenvId,
     }
   }

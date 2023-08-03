@@ -17,7 +17,7 @@ const EarthMap = ({
   const mapDrawRef = useCallback(node => {
     if (datasetQuery?.data !== undefined
       && node !== undefined) {
-      createMap(node, areaLegendRef, datasetQuery?.data)
+      createMap(node, areaLegendRef, datasetQuery?.data, tooltipLabel, legendLabel)
     }
   }, [!datasetQuery.isLoading && datasetQuery.isSuccess && datasetQuery?.data])
 
