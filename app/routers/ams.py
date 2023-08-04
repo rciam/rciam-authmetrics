@@ -12,6 +12,7 @@ from fastapi.security import HTTPBearer
 from starlette.responses import JSONResponse
 from sqlalchemy.exc import NoResultFound
 from app.utils.ipDatabase import geoip2Database
+from typing import Optional
 # from ..dependencies import get_token_header
 
 router = APIRouter(
@@ -30,14 +31,14 @@ async def get_verification(response: Response):
     return PlainTextResponse(verification_hash)
 
 
-async def verify_authorization_header(authorization: str = Security(HTTPBearer())):
+async def verify_authorization_header(Authorization: Optional[str] = Header(None)):
     authkey = configParser.getConfig('ams', 'config.global.py')['auth_key']
     # check authorization
-    if (authorization != authkey):
+    if (Authorization != authkey):
         HTTPException(status_code=401)
         # response.status_code = 401
         # return PlainTextResponse('Client Certificate Authentication Failure')
-    return authorization
+    return Authorization
 
 
 @router.post("/ams_stats")
@@ -46,7 +47,7 @@ async def get_ams_stats(*,
                         request: Request, 
                         response: Response, 
                         body = Body(..., example={"name": "Item Name"}),
-                        authorization: str = Depends(verify_authorization_header)):
+                        Authorization: str = Depends(verify_authorization_header)):
 
     response.status_code = 200
     # Access the request data
@@ -63,7 +64,7 @@ async def get_ams_stats(*,
             data_dict = json.loads(decoded_data)
             process_data(data_dict, session)
         except Exception as e:
-            return {"error": f"Error: {e}"}
+            logger.error(f"Error: {e}")
 
     return JSONResponse({"message": "Endpoint called successfully"})
 
