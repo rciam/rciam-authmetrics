@@ -42,31 +42,43 @@ async def verify_authorization_header(Authorization: Optional[str] = Header(None
 
 
 @router.post("/ams_stats")
-async def get_ams_stats(*, 
-                        session: Session = Depends(get_session),
-                        request: Request, 
-                        response: Response, 
-                        body = Body(..., example={"name": "Item Name"}),
-                        Authorization: str = Depends(verify_authorization_header)):
+async def get_ams_stats(*,
+    session: Session = Depends(get_session),
+    request: Request,
+    response: Response,
+    body = Body(..., example={"name": "Item Name"}),
+    Authorization: str = Depends(verify_authorization_header)):
 
     response.status_code = 200
     # Access the request data
     data = await request.json()
     logger.debug(data)
-    print(data)
-    for item in data.get("messages", []):
+    messages = data.get("messages", [])  # Retrieve the list of messages
+    if not messages: # if only one message exists
         try:
-            decoded_data = base64.b64decode(item.get("message").get("data")).decode()
-            logger.debug(decoded_data)
-            # Process the data
-            print(decoded_data)
-            # Convert the JSON-formatted string to a Python dictionary
-            data_dict = json.loads(decoded_data)
+            data_dict = process_message(data.get("message").get("data"))
             process_data(data_dict, session)
         except Exception as e:
             logger.error(f"Error: {e}")
+    else:
+        for item in data.get("messages", []):
+            try:
+                data_dict = process_message(item.get("message").get("data"))
+                process_data(data_dict, session)
+            except Exception as e:
+                logger.error(f"Error: {e}")
 
     return JSONResponse({"message": "Endpoint called successfully"})
+
+
+def process_message(message):
+    decoded_data = base64.b64decode(message).decode()
+    logger.debug(decoded_data)
+    # Process the data
+    print(decoded_data)
+    # Convert the JSON-formatted string to a Python dictionary
+    data_dict = json.loads(decoded_data)
+    return data_dict
 
 
 def process_data(data, session):
