@@ -88,17 +88,16 @@ const CommunitiesDataTable = ({tenenvId}) => {
   && communitiesGroupBy.isSuccess])
 
   const handleStartDateChange = (date) => {
-   
+
     date = formatStartDate(date);
-    if(date != null) {
+    if (date != null) {
       setStartDate(date);
     }
   };
 
   const handleEndDateChange = (date) => {
-   
     date = formatEndDate(date);
-    if(date != null) {
+    if (date != null) {
       setEndDate(date);
     }
   };
@@ -112,7 +111,7 @@ const CommunitiesDataTable = ({tenenvId}) => {
   };
 
   if (communitiesGroupBy.isLoading
-      || communitiesGroupBy.isFetching) {
+    || communitiesGroupBy.isFetching) {
     return (<Spinner/>)
   }
 
@@ -132,12 +131,12 @@ const CommunitiesDataTable = ({tenenvId}) => {
                         minDate={minDate}
                         dateFormat="dd/MM/yyyy"
                         onChange={handleStartDateChange}
-                        />
+    />
       To: <DatePicker selected={endDate}
                       minDate={minDate}
                       dateFormat="dd/MM/yyyy"
                       onChange={handleEndDateChange}
-                      />
+    />
       <Dropdown placeholder='Filter'
                 options={dropdownOptions}
                 onChange={handleChange}/>
