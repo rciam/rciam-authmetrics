@@ -26,9 +26,8 @@ docker-compose run --rm web alembic upgrade head
 ### Start the Service
 docker-compose up api
 
-> Scroll down for code samples, example requests and responses. Select a language for code samples from the tabs above or the mobile navigation menu.
+## API Guide
 
-## API
 
 <h1 id="fastapi-users">users</h1>
 
