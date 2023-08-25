@@ -1,27 +1,34 @@
----
-title: RCIAM Metrics v0.1.0
-language_tabs:
-  - shell: Shell
-  - http: HTTP
-  - javascript: JavaScript
-  - ruby: Ruby
-  - python: Python
-  - php: PHP
-  - java: Java
-  - go: Go
-toc_footers: []
-includes: []
-search: true
-highlight_theme: darkula
-headingLevel: 2
+<h1 id="rciam-metrics">RCIAM Metrics v0.1.0</h1>
 
----
+## Install
 
-<!-- Generator: Widdershins v4.0.1 -->
+### Build the Python/Nodejs image
+docker-compose build
 
-<h1 id="fastapi">FastAPI v0.1.0</h1>
+### Pull the database
+docker-compose pull
+
+### Install python dependencies
+docker-compose run --rm --no-deps web pip install --upgrade pip
+docker-compose run --rm --no-deps web pip install -r requirements.txt
+
+### Install nodejs dependencies
+docker-compose run --rm --no-deps api npm install
+
+### Run Database deployment
+[//]: # (docker-compose run --rm web alembic revision --autogenerate -m 'Initial Migration')
+docker-compose run --rm web alembic upgrade head
+
+### Seed with test data
+
+[//]: # (docker-compose run --rm web python app/seed.py)
+
+### Start the Service
+docker-compose up api
 
 > Scroll down for code samples, example requests and responses. Select a language for code samples from the tabs above or the mobile navigation menu.
+
+## API
 
 <h1 id="fastapi-users">users</h1>
 
