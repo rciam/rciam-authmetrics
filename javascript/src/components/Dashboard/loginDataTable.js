@@ -31,6 +31,7 @@ const LoginDataTable = ({
   const [groupBy, setGroupBy] = useState("month");
   const [endDate, setEndDate] = useState(null);
   const [startDate, setStartDate] = useState(null);
+  const controller = new AbortController
 
   const queryClient = useQueryClient();
 
@@ -42,7 +43,8 @@ const LoginDataTable = ({
       'endDate': !endDate ? null : format(endDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"),
       'tenenv_id': tenenvId,
       'unique_logins': uniqueLogins
-    }
+    },
+    signal: controller.signal
   }
 
   const loginsPerCountry = useQuery(
@@ -62,7 +64,8 @@ const LoginDataTable = ({
         'endDate': !endDate ? null : format(endDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"),
         'tenenv_id': tenenvId,
         'unique_logins': uniqueLogins
-      }
+      },
+      signal: controller.signal
     }
 
     try {
@@ -70,6 +73,10 @@ const LoginDataTable = ({
     } catch (error) {
       // todo: Here we can handle any authentication or authorization errors
       console.log(error)
+    }
+
+    return () => {
+      controller.abort()
     }
 
   }, [uniqueLogins, groupBy])
@@ -80,7 +87,7 @@ const LoginDataTable = ({
       && !loginsPerCountry.isFetching
       && loginsPerCountry.isSuccess
       && loginsPerCountry?.data?.map(element => ({
-        "Date": !!element?.range_date ? convertDateByGroup(new Date(element?.range_date), groupBy): null,
+        "Date": !!element?.range_date ? convertDateByGroup(new Date(element?.range_date), groupBy) : null,
         "Number of Logins": element?.count,
         "Number of Logins per Country": element?.countries
       }))
@@ -98,17 +105,17 @@ const LoginDataTable = ({
   }, [loginsPerCountry.isSuccess])
 
   const handleStartDateChange = (date) => {
-   
+
     date = formatStartDate(date);
-    if(date != null) {
+    if (date != null) {
       setStartDate(date);
     }
   };
 
   const handleEndDateChange = (date) => {
-   
+
     date = formatEndDate(date);
-    if(date != null) {
+    if (date != null) {
       setEndDate(date);
     }
   };
@@ -143,10 +150,10 @@ const LoginDataTable = ({
                   options={dropdownOptions}
                   onChange={handleChange}/>
       </Col>
-      <Col lg={12}> 
-            <Datatable dataTableId="table-login"
-                       items={loginsPerCountryPerPeriod}
-                       columnSep="Number of Logins per Country"/> 
+      <Col lg={12}>
+        <Datatable dataTableId="table-login"
+                   items={loginsPerCountryPerPeriod}
+                   columnSep="Number of Logins per Country"/>
       </Col>
     </Row>
   )

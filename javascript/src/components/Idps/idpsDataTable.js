@@ -30,6 +30,7 @@ const IdpsDataTable = ({
                        }) => {
   const [cookies, setCookie] = useCookies();
   const permissions = cookies.permissions
+  const controller = new AbortController
   const tenant = window.tenant
   const environment = window.environment
 
@@ -45,7 +46,8 @@ const IdpsDataTable = ({
       'sp': spId,
       'tenenv_id': tenenvId,
       'unique_logins': uniqueLogins
-    }
+    },
+      signal: controller.signal
   }
 
   const loginsPerIpd = useQuery(
@@ -64,7 +66,8 @@ const IdpsDataTable = ({
         'sp': spId,
         'tenenv_id': tenenvId,
         'unique_logins': uniqueLogins
-      }
+      },
+      signal: controller.signal
     }
 
     try {
@@ -72,6 +75,10 @@ const IdpsDataTable = ({
     } catch (error) {
       // todo: Here we can handle any authentication or authorization errors
       console.log(error)
+    }
+
+    return () => {
+      controller.abort()
     }
 
   }, [uniqueLogins, btnPressed])
@@ -96,17 +103,17 @@ const IdpsDataTable = ({
   }, [loginsPerIpd.isSuccess])
 
   const handleStartDateChange = (date) => {
-   
+
     date = formatStartDate(date);
-    if(date != null) {
+    if (date != null) {
       setStartDate(date);
     }
   };
 
   const handleEndDateChange = (date) => {
-   
+
     date = formatEndDate(date);
-    if(date != null) {
+    if (date != null) {
       setEndDate(date);
     }
   };
@@ -121,7 +128,7 @@ const IdpsDataTable = ({
   }
 
   if (loginsPerIpd.isLoading
-      || loginsPerIpd.isFetching) {
+    || loginsPerIpd.isFetching) {
     return (<Spinner/>)
   }
 
@@ -137,12 +144,12 @@ const IdpsDataTable = ({
                           minDate={minDate}
                           dateFormat="dd/MM/yyyy"
                           onChange={handleStartDateChange}
-                          />
+      />
         To: <DatePicker selected={endDate}
                         minDate={minDate}
                         dateFormat="dd/MM/yyyy"
                         onChange={handleEndDateChange}
-                        />
+      />
         {/* Probably add a tooltip here that both fields are required */}
         <Button variant="light"
                 disabled={startDate == undefined || endDate == undefined}

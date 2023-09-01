@@ -27,6 +27,7 @@ const SpsDataTable = ({
                         startDate,
                         endDate
                       }) => {
+  const controller = new AbortController
   const [cookies, setCookie] = useCookies();
   const permissions = cookies.permissions
   const tenant = window.tenant
@@ -44,7 +45,8 @@ const SpsDataTable = ({
       'idp': idpId,
       'tenenv_id': tenenvId,
       'unique_logins': uniqueLogins
-    }
+    },
+    signal: controller.signal
   }
 
   const loginsPerSp = useQuery(
@@ -63,7 +65,8 @@ const SpsDataTable = ({
         'idp': idpId,
         'tenenv_id': tenenvId,
         'unique_logins': uniqueLogins
-      }
+      },
+      signal: controller.signal
     }
 
     try {
@@ -71,6 +74,10 @@ const SpsDataTable = ({
     } catch (error) {
       // todo: Here we can handle any authentication or authorization errors
       console.log(error)
+    }
+
+    return () => {
+      controller.abort()
     }
 
   }, [uniqueLogins, btnPressed])
@@ -97,24 +104,24 @@ const SpsDataTable = ({
   }, [loginsPerSp.isSuccess])
 
   const handleStartDateChange = (date) => {
-   
+
     date = formatStartDate(date);
-    if(date != null) {
+    if (date != null) {
       setStartDate(date);
     }
   };
 
   const handleEndDateChange = (date) => {
-   
+
     date = formatEndDate(date);
-    if(date != null) {
+    if (date != null) {
       setEndDate(date);
     }
   };
 
 
   if (loginsPerSp.isLoading
-      || loginsPerSp.isFetching) {
+    || loginsPerSp.isFetching) {
     return (<Spinner/>)
   }
 
@@ -130,12 +137,12 @@ const SpsDataTable = ({
                           minDate={minDate}
                           dateFormat="dd/MM/yyyy"
                           onChange={handleStartDateChange}
-                          />
+      />
         To: <DatePicker selected={endDate}
                         minDate={minDate}
                         dateFormat="dd/MM/yyyy"
                         onChange={handleEndDateChange}
-                        />
+      />
         {/* Probably add a tooltip here that both fields are required */}
         <Button variant="light"
                 disabled={startDate == undefined || endDate == undefined}
