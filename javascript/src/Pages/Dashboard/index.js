@@ -1,5 +1,4 @@
-import React, {useState, useEffect, useContext} from "react";
-import {useNavigate} from "react-router-dom";
+import React, {useState, useEffect} from "react";
 import Form from 'react-bootstrap/Form';
 import LoginDataTable from "../../components/Dashboard/loginDataTable";
 import LoginIdpPieChart from "../../components/Dashboard/loginIdpPieChart";
@@ -15,6 +14,7 @@ import {Container} from "react-bootstrap";
 import {useQuery} from "react-query";
 import {tenenvKey} from "../../utils/queryKeys";
 import {getTenenv} from "../../utils/queries";
+import {useNavigate} from "react-router-dom";
 
 const Dashboard = () => {
   const [startDate, setStartDate] = useState("");
@@ -40,7 +40,9 @@ const Dashboard = () => {
   const handleChange = event => {
     setUniqueLogins(event.target.checked);
   }
+
   let navigate = useNavigate();
+
   const goToSpecificProvider = (id, provider) => {
     const path = provider === "sp" ?
       `/metrics/services/${id}` :

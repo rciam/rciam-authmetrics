@@ -1,7 +1,6 @@
-import React, {useState, useEffect, useContext} from "react";
-import {useParams} from "react-router-dom";
+import React, {useState, useEffect} from "react";
+import {useNavigate, useParams} from "react-router-dom";
 import {Tab, Tabs, TabList, TabPanel} from 'react-tabs';
-import {useNavigate} from "react-router-dom";
 import LoginLineChart from "../../components/Dashboard/loginLineChart";
 import LoginSpPieChart from "../../components/Dashboard/loginSpPieChart";
 import LoginTiles from "../../components/Dashboard/loginTiles";
@@ -18,6 +17,7 @@ import 'react-tabs/style/react-tabs.css';
 import {useQuery} from "react-query";
 import {tenenvKey} from "../../utils/queryKeys";
 import {getTenenv} from "../../utils/queries";
+
 const Idp = () => {
   const {id} = useParams();
   const [tenenvId, setTenenvId] = useState(0);
@@ -46,7 +46,9 @@ const Idp = () => {
   const handleChange = event => {
     setUniqueLogins(event.target.checked);
   }
+
   let navigate = useNavigate();
+
   const goToSpecificProvider = (id, provider) => {
     const path = provider === "sp" ?
       `/metrics/services/${id}` :

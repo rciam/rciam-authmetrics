@@ -1,5 +1,4 @@
-import React, {useState, useContext, useEffect} from "react";
-import {useNavigate} from "react-router-dom";
+import React, {useState, useEffect} from "react";
 import Container from "react-bootstrap/Container";
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -11,6 +10,7 @@ import Header from "../../components/Common/header";
 import {useQuery} from "react-query";
 import {tenenvKey} from "../../utils/queryKeys";
 import {getTenenv} from "../../utils/queries";
+import {useNavigate} from "react-router-dom";
 
 const Sps = () => {
 
@@ -37,11 +37,16 @@ const Sps = () => {
   const handleChange = event => {
     setUniqueLogins(event.target.checked);
   }
+
   let navigate = useNavigate();
+
   const goToSpecificProvider = (id, provider) => {
-    const path = provider === "sp" ? `/services/${id}` : `/identity-providers/${id}`
+    const path = provider === "sp" ?
+      `/metrics/services/${id}` :
+      `/metrics/identity-providers/${id}`
     navigate(path);
   }
+
   if (tenenvId == undefined || tenenvId == 0 || tenenvId == "") return
 
   return (
