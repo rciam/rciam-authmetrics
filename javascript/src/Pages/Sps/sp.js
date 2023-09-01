@@ -1,7 +1,6 @@
-import React, {useState, useEffect, useContext} from "react";
-import {useParams} from "react-router-dom";
+import React, {useState, useEffect} from "react";
+import {useNavigate, useParams} from "react-router-dom";
 import {Tab, Tabs, TabList, TabPanel} from 'react-tabs';
-import {useNavigate} from "react-router-dom";
 import LoginLineChart from "../../components/Dashboard/loginLineChart";
 import LoginTiles from "../../components/Dashboard/loginTiles";
 import Form from 'react-bootstrap/Form';
@@ -48,7 +47,9 @@ const Sp = () => {
   const handleChange = event => {
     setUniqueLogins(event.target.checked);
   }
+
   let navigate = useNavigate();
+
   const goToSpecificProvider = (id, provider) => {
     const path = provider === "sp" ?
       `/metrics/services/${id}` :

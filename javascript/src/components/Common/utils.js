@@ -1,5 +1,6 @@
 import $ from "jquery";
 import {options} from "../../utils/helpers/enums";
+import {useNavigate} from "react-router-dom";
 
 export function convertDateByGroup(jsDate, groupBy) {
   var month = (jsDate.getMonth() + 1).toString()
@@ -200,7 +201,7 @@ export function parseDateWithoutTimezone(dateString, type) {
 
 export function formatStartDate(date) {
   // Check if a valid date object is received
-  if (date instanceof Date && !isNaN(date.getTime())) {   
+  if (date instanceof Date && !isNaN(date.getTime())) {
     // Set the time to midnight (00:00:00)
     date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
     date.setHours(0, 0, 0, 0);
@@ -211,7 +212,7 @@ export function formatStartDate(date) {
 
 export function formatEndDate(date) {
   // Check if a valid date object is received
-  if (date instanceof Date && !isNaN(date.getTime())) {    
+  if (date instanceof Date && !isNaN(date.getTime())) {
     // Set the time to midnight (23:59:59)
     date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
     date.setHours(23, 59, 59, 59);
