@@ -24,6 +24,8 @@ const CommunitiesDataTable = ({tenenvId}) => {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [groupBy, setGroupBy] = useState("month")
+  const controller = new AbortController
+
 
   const queryClient = useQueryClient();
 
@@ -32,7 +34,8 @@ const CommunitiesDataTable = ({tenenvId}) => {
       'startDate': !startDate ? null : format(startDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"),
       'endDate': !endDate ? null : format(endDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"),
       'tenenv_id': tenenvId
-    }
+    },
+    signal: controller.signal
   }
 
   const communitiesGroupBy = useQuery(
@@ -49,7 +52,8 @@ const CommunitiesDataTable = ({tenenvId}) => {
         'startDate': !startDate ? null : format(startDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"),
         'endDate': !endDate ? null : format(endDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"),
         'tenenv_id': tenenvId
-      }
+      },
+      signal: controller.signal
     }
 
     try {
@@ -59,6 +63,9 @@ const CommunitiesDataTable = ({tenenvId}) => {
       console.log(error)
     }
 
+    return () => {
+      controller.abort()
+    }
   }, [groupBy])
 
 

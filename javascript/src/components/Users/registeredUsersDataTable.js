@@ -2,7 +2,6 @@ import React, {useState, useEffect} from "react";
 import "jquery/dist/jquery.min.js";
 import $ from "jquery";
 import Datatable from "../datatable";
-import dateFormat from 'dateformat';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import DatePicker from "react-datepicker";
@@ -32,6 +31,7 @@ const RegisteredUsersDataTable = ({
   const [minDate, setMinDate] = useState("");
   const [groupBy, setGroupBy] = useState("month")
   const queryClient = useQueryClient();
+  const controller = new AbortController();
 
 
   let params = {
@@ -56,7 +56,8 @@ const RegisteredUsersDataTable = ({
         'startDate': !startDate ? null : format(startDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"),
         'endDate': !endDate ? null : format(endDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"),
         'tenenv_id': tenenvId
-      }
+      },
+      signal: controller.signal
     }
 
     try {
@@ -67,6 +68,10 @@ const RegisteredUsersDataTable = ({
     } catch (error) {
       // todo: Here we can handle any authentication or authorization errors
       console.log(error)
+    }
+
+    return () => {
+      controller.abort()
     }
 
   }, [groupBy])

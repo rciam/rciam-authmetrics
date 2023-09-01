@@ -14,15 +14,16 @@ const LoginLineChart = ({
                           tenenvId,
                           uniqueLogins
                         }) => {
+  const controller = new AbortController
   const queryClient = useQueryClient();
-  const [lineData, setLineData] = useState([["Date", "Logins"], ['', 0]]
-  )
+  const [lineData, setLineData] = useState([["Date", "Logins"], ['', 0]])
 
   let params = {
     params: {
       tenenv_id: tenenvId,
       unique_logins: uniqueLogins
-    }
+    },
+    signal: controller.signal
   }
 
   const loginsGroupByDay = useQuery(
@@ -38,7 +39,8 @@ const LoginLineChart = ({
       params: {
         tenenv_id: tenenvId,
         unique_logins: uniqueLogins
-      }
+      },
+      signal: controller.signal
     }
 
     if (type) {
@@ -51,6 +53,10 @@ const LoginLineChart = ({
     } catch (error) {
       // todo: Here we can handle any authentication or authorization errors
       console.log(error)
+    }
+
+    return () => {
+      controller.abort()
     }
   }, [uniqueLogins])
 
@@ -69,17 +75,17 @@ const LoginLineChart = ({
   && !loginsGroupByDay.isFetching
   && loginsGroupByDay.isSuccess])
 
-    // XXX Google Chart will not work if we return empty and then
-    //     try to reload
-    if (loginsGroupByDay.isLoading
-      || loginsGroupByDay.isFetching
-    ) {
-      return (<Spinner />)
-    }
+  // XXX Google Chart will not work if we return empty and then
+  //     try to reload
+  if (loginsGroupByDay.isLoading
+    || loginsGroupByDay.isFetching
+  ) {
+    return (<Spinner/>)
+  }
 
-    if(lineData?.length <= 2) {
-      return null
-    }
+  if (lineData?.length <= 2) {
+    return null
+  }
 
   return (
     <Row>

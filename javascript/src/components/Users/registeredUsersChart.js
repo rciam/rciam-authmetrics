@@ -24,13 +24,15 @@ const RegisteredUsersChart = ({
   const [registeredUsers, setRegisteredUsers] = useState([]);
   const [global_options, setGlobalOptions] = useState();
   const queryClient = useQueryClient();
+  const controller = new AbortController
 
   let params = {
     params: {
       'interval': selected,
       'count_interval': regUsersOptions[selected]["count_interval"],
       'tenenv_id': tenenvId
-    }
+    },
+    signa: controller.signal
   }
 
   const registeredUsersGroup = useQuery(
@@ -47,7 +49,8 @@ const RegisteredUsersChart = ({
         'interval': selected,
         'count_interval': regUsersOptions[selected]["count_interval"],
         'tenenv_id': tenenvId,
-      }
+      },
+      signal: controller.signal
     }
 
     try {
@@ -55,6 +58,10 @@ const RegisteredUsersChart = ({
     } catch (error) {
       // todo: Here we can handle any authentication or authorization errors
       console.log(error)
+    }
+
+    return () => {
+      controller.abort()
     }
 
   }, [selected, tenenvId])

@@ -16,13 +16,15 @@ const RegisteredUsersMap = ({
                               tenenvId
                             }) => {
   const queryClient = useQueryClient();
+  const controller = new AbortController
 
   let params = {
     params: {
       'startDate': !startDate ? null : format(startDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"),
       'endDate': !endDate ? null : format(endDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"),
       'tenenv_id': tenenvId,
-    }
+    },
+    signal: controller.signal
   }
 
   const registeredUsersByCountry = useQuery(
@@ -39,15 +41,19 @@ const RegisteredUsersMap = ({
     } catch (error) {
       console.log(error)
     }
+
+    return () => {
+      controller.abort()
+    }
   }, [startDate, endDate, tenenvId])
 
   if (registeredUsersByCountry.isLoading
-      || registeredUsersByCountry.isFetching
-      || registeredUsersByCountry.isRefetching) {
+    || registeredUsersByCountry.isFetching
+    || registeredUsersByCountry.isRefetching) {
     return (<Spinner/>)
   }
 
-  if(registeredUsersByCountry.isIdle) {
+  if (registeredUsersByCountry.isIdle) {
     return null
   }
 
