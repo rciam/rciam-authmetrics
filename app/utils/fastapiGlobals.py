@@ -135,5 +135,4 @@ class GlobalsMiddleware(BaseHTTPMiddleware):  # noqa
     def __init__(self, app: ASGIApp) -> None:
         super().__init__(app, globals_middleware_dispatch)
 
-
 g = Globals()

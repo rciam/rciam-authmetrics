@@ -142,7 +142,6 @@ def permissionsCalculation(authorize_file, user_info=None):
             for view, config_actions in role_actions.items():
                 for item in config_actions.split(","):
                     actions[view][item] = True
-
     return {
         'roles': roles,
         'actions': actions
