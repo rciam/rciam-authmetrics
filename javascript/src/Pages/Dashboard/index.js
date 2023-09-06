@@ -74,8 +74,8 @@ const Dashboard = () => {
           </Col>
         </Col>
       </Row>
-      <LoginTiles tenenvId={tenenvId}
-                  uniqueLogins={uniqueLogins}/>
+      {/* <LoginTiles tenenvId={tenenvId}
+                  uniqueLogins={uniqueLogins}/> */}
       <LoginLineChart tenenvId={tenenvId}
                       uniqueLogins={uniqueLogins}/>
       <LoginIdpPieChart tenenvId={tenenvId}
