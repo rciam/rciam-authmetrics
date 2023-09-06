@@ -88,10 +88,10 @@ const Dashboard = () => {
                       endDateHandler={setEndDate}
                       tenenvId={tenenvId}
                       uniqueLogins={uniqueLogins}/>
-      <LoginsMap startDate={startDate}
+      {/* <LoginsMap startDate={startDate}
                  endDate={endDate}
                  tenenvId={tenenvId}
-                 uniqueLogins={uniqueLogins}/>
+                 uniqueLogins={uniqueLogins}/> */}
       <Footer/>
     </Container>
   )
