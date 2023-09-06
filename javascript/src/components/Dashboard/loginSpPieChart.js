@@ -10,6 +10,7 @@ import {loginsPerSpKey} from "../../utils/queryKeys";
 import {getLoginsPerSP} from "../../utils/queries";
 import {useQuery} from "react-query";
 import {optionsPieChart} from "../../utils/helpers/enums";
+import {convertDateByGroup, formatStartDate, formatEndDate} from "../Common/utils";
 
 var spsArray = [];
 
@@ -21,13 +22,22 @@ const LoginSpPieChart = ({
                          }) => {
   let spsChartArray = [["Service Provider", "Logins"]];
   const [sps, setSps] = useState(spsChartArray);
+  const oneYearAgo = new Date();
+  oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+  formatStartDate(oneYearAgo)
+
+  const today = new Date();
+  today.setDate(today.getDate() - 1);
+  formatEndDate(today)
 
   const params = {
     params:
       {
         tenenv_id: tenenvId,
         unique_logins: uniqueLogins,
-        idp: idpId
+        idp: idpId,
+        'startDate': oneYearAgo,
+        'endDate': today
       }
   }
 

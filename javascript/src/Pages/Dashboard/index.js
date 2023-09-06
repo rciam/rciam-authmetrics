@@ -76,8 +76,8 @@ const Dashboard = () => {
       </Row>
       {/* <LoginTiles tenenvId={tenenvId}
                   uniqueLogins={uniqueLogins}/> */}
-      <LoginLineChart tenenvId={tenenvId}
-                      uniqueLogins={uniqueLogins}/>
+      {/* <LoginLineChart tenenvId={tenenvId}
+                      uniqueLogins={uniqueLogins}/> */}
       <LoginIdpPieChart tenenvId={tenenvId}
                         uniqueLogins={uniqueLogins}
                         goToSpecificProviderHandler={goToSpecificProvider}/>

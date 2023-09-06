@@ -10,6 +10,7 @@ import {useQuery} from "react-query";
 import {loginsPerIdpKey} from "../../utils/queryKeys";
 import {getLoginsPerIdp} from "../../utils/queries";
 import {optionsPieChart} from "../../utils/helpers/enums";
+import {convertDateByGroup, formatStartDate, formatEndDate} from "../Common/utils";
 
 var idpsArray = [];
 const LoginIdpPieChart = ({
@@ -18,6 +19,14 @@ const LoginIdpPieChart = ({
                             uniqueLogins,
                             goToSpecificProviderHandler
                           }) => {
+  const oneYearAgo = new Date();
+  oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+  formatStartDate(oneYearAgo)
+
+  const today = new Date();
+  today.setDate(today.getDate() - 1);
+  formatEndDate(today)
+  
   let idpsChartArray = [["Identity Provider", "Logins"], ['', 0]];
   const [idps, setIdps] = useState(idpsChartArray);
 
@@ -25,7 +34,9 @@ const LoginIdpPieChart = ({
     params: {
       'tenenv_id': tenenvId,
       'unique_logins': uniqueLogins,
-      'sp': spId
+      'sp': spId,
+      'startDate': oneYearAgo,
+      'endDate': today
     }
   }
 
