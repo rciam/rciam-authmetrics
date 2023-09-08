@@ -171,7 +171,7 @@ async def read_logins_per_country(
     unique_logins_subquery = ""
     if unique_logins:
         unique_logins_subquery = "AND hasheduserid != 'unknown'"
-        
+
     interval_subquery = ""
     entity_subquery = ""
     sp_subquery = ""
