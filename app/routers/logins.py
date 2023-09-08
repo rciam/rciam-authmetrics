@@ -297,7 +297,6 @@ async def read_logins_countby(
         ).all()
     return logins
 
-
 @router.get("/logins_groupby/{group_by}")
 async def read_logins_groupby(
         *,
