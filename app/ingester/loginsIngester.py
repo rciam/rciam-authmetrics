@@ -214,7 +214,7 @@ class LoginDataIngester:
                     ON CONFLICT (date, hasheduserid, sourceidpid, serviceid, countryid, tenenv_id)
                     DO UPDATE SET count = statistics_country_hashed.count + 1
                     """.format(
-                        login[0]["date"], hashlib.md5(login[0]['voPersonId'].encode()).hexdigest(), idpId[0], spId[0], countryId[0], 1, login[0]['tenenvId']
+                        login[0]["date"], login[0]['voPersonId'], idpId[0], spId[0], countryId[0], 1, login[0]['tenenvId']
                     )
                 )
                 session.commit()

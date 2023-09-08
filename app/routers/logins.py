@@ -57,7 +57,10 @@ async def read_logins_per_idp(
             """.format(
             sp, tenenv_id
         )
-
+    unique_logins_subquery = ""
+    if unique_logins:
+        unique_logins_subquery = "AND hasheduserid != 'unknown'"
+ 
     if startDate and endDate:
         interval_subquery = """
             AND date BETWEEN '{0}' AND '{1}'
@@ -70,6 +73,8 @@ async def read_logins_per_idp(
         sub_select = """
             count(DISTINCT hasheduserid) as count
         """
+
+        
     logins = session.exec("""
         select identityprovidersmap.id, identityprovidersmap.name, entityid, sourceidpid, {0}
         from statistics_country_hashed
@@ -77,11 +82,11 @@ async def read_logins_per_idp(
             AND identityprovidersmap.tenenv_id=statistics_country_hashed.tenenv_id
         {1}
         WHERE statistics_country_hashed.tenenv_id = {2}
-        {3}
+        {3} {4}
         GROUP BY identityprovidersmap.id, sourceidpid, identityprovidersmap.name, entityid
         ORDER BY count DESC
         """.format(
-        sub_select, sp_subquery_join, tenenv_id, interval_subquery
+        sub_select, sp_subquery_join, tenenv_id, interval_subquery, unique_logins_subquery
     )
     ).all()
 
@@ -100,6 +105,10 @@ async def read_logins_per_sp(
         tenenv_id: int,
         unique_logins: Union[boolean, None] = False,
 ):
+    unique_logins_subquery = ""
+    if unique_logins:
+        unique_logins_subquery = "AND hasheduserid != 'unknown'"
+      
     interval_subquery = ""
     idp_subquery_join = ""
     if idp:
@@ -137,11 +146,11 @@ async def read_logins_per_sp(
                 AND serviceprovidersmap.tenenv_id=statistics_country_hashed.tenenv_id
             {1}
             WHERE statistics_country_hashed.tenenv_id = {2}
-            {3}
+            {3} {4}
             GROUP BY serviceprovidersmap.id, serviceid, serviceprovidersmap.name, identifier
             ORDER BY count DESC
         """.format(
-        sub_select, idp_subquery_join, tenenv_id, interval_subquery
+        sub_select, idp_subquery_join, tenenv_id, interval_subquery, unique_logins_subquery
     )
     ).all()
     return logins
@@ -160,6 +169,10 @@ async def read_logins_per_country(
         idpId: Union[int, None] = None,
         spId: Union[int, None] = None,
 ):
+    unique_logins_subquery = ""
+    if unique_logins:
+        unique_logins_subquery = "AND hasheduserid != 'unknown'"
+        
     interval_subquery = ""
     entity_subquery = ""
     sp_subquery = ""
@@ -194,7 +207,7 @@ async def read_logins_per_country(
             from statistics_country_hashed
             JOIN country_codes ON countryid=country_codes.id
             WHERE tenenv_id = {3}
-            {4} {5} {6}
+            {4} {5} {6} {7}
             GROUP BY range_date, country
             ORDER BY range_date,country ASC
             ) country_logins
@@ -207,6 +220,7 @@ async def read_logins_per_country(
             interval_subquery,
             entity_subquery,
             sp_subquery,
+            unique_logins_subquery
         )
         ).all()
     else:
@@ -249,6 +263,7 @@ async def read_logins_countby(
         idpId: Union[int, None] = None,
         spId: Union[int, None] = None,
 ):
+
     interval_subquery = ""
     idp_subquery = ""
     sp_subquery = ""
@@ -266,7 +281,7 @@ async def read_logins_countby(
     if unique_logins == False:
         logins = session.exec("""
             select sum(count) as count
-            from statistics_country_hashed WHERE tenenv_id={0}
+            from statistics_country_hashed WHERE tenenv_id={0} 
             {1} {2} {3}
         """.format(
             tenenv_id, interval_subquery, idp_subquery, sp_subquery
@@ -275,7 +290,7 @@ async def read_logins_countby(
     else:
         logins = session.exec("""
             select count(DISTINCT hasheduserid) as count
-            from statistics_country_hashed WHERE tenenv_id={0}
+            from statistics_country_hashed WHERE tenenv_id={0} AND hasheduserid != 'unknown'
             {1} {2} {3}
         """.format(
             tenenv_id, interval_subquery, idp_subquery, sp_subquery
@@ -296,17 +311,20 @@ async def read_logins_groupby(
         tenenv_id: int,
         unique_logins: Union[boolean, None] = False,
 ):
+    days_seq_subquery = ""
+    if unique_logins:
+        days_seq_subquery = " AND hasheduserid != 'unknown'"
     days_seq_table = """
         with days as (select generate_series(
                                  (select date_trunc('day', min(date))
                                   from statistics_country_hashed
-                                  where statistics_country_hashed.tenenv_id = {0})::timestamp,
+                                  where statistics_country_hashed.tenenv_id = {0} {1})::timestamp,
                                  (select date_trunc('day', max(date))
                                   from statistics_country_hashed
-                                  where statistics_country_hashed.tenenv_id = {0}),
+                                  where statistics_country_hashed.tenenv_id = {0} {1}),
                                  '1 day'::interval
                              ) as day)
-    """.format(tenenv_id)
+    """.format(tenenv_id, days_seq_subquery)
 
     interval_subquery = ""
     if idp != None:
@@ -348,10 +366,10 @@ async def read_logins_groupby(
         logins_count_raw = """
             select count(DISTINCT hasheduserid) as count, date_trunc('{0}', date) as date
             from statistics_country_hashed
-            {1}
+            {1} {2}
             GROUP BY date_trunc('{0}', date)
             ORDER BY date_trunc('{0}', date) ASC
-        """.format(group_by, interval_subquery)
+        """.format(group_by, interval_subquery, days_seq_subquery)
 
     # print("""
     #         {0},

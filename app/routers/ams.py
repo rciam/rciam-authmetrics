@@ -1,5 +1,6 @@
 import base64
 import json
+import hashlib
 from fastapi import APIRouter, Depends, HTTPException, Response, Request, Body, Header, Security
 from sqlmodel import Field, Session, SQLModel, create_engine, select
 from typing import Union
@@ -106,6 +107,9 @@ def process_data(data, session):
         data["countryCode"] = countryData[0]
         data["countryName"] = countryData[1]
         del data["ipAddress"]
+    if "voPersonId" in data:
+        # hash voPersonId
+        data["voPersonId"] = hashlib.md5(data['voPersonId'].encode()).hexdigest()
     print(data)
     session.exec(
         """
