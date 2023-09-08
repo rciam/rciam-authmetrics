@@ -73,8 +73,7 @@ async def read_logins_per_idp(
         sub_select = """
             count(DISTINCT hasheduserid) as count
         """
-
-        
+   
     logins = session.exec("""
         select identityprovidersmap.id, identityprovidersmap.name, entityid, sourceidpid, {0}
         from statistics_country_hashed
