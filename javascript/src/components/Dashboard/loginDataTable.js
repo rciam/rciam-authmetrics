@@ -41,7 +41,7 @@ const LoginDataTable = ({
   const [startDate, setStartDate] = useState(oneYearAgo);
   const [dropdownOptionsState, setDropdownOptions] = useState(dropdownOptions);
   const queryClient = useQueryClient();
-  const controller = new AbortController
+
 
   let params = {
     params: {
@@ -51,7 +51,6 @@ const LoginDataTable = ({
       'tenenv_id': tenenvId,
       'unique_logins': uniqueLogins
     },
-    signal: controller.signal
   }
 
   const loginsPerCountry = useQuery(
@@ -81,7 +80,6 @@ const LoginDataTable = ({
         'tenenv_id': tenenvId,
         'unique_logins': uniqueLogins
       },
-      signal: controller.signal
     }
 
     try {
@@ -90,10 +88,6 @@ const LoginDataTable = ({
     } catch (error) {
       // todo: Here we can handle any authentication or authorization errors
       console.log(error)
-    }
-
-    return () => {
-      controller.abort()
     }
 
   }, [uniqueLogins, groupBy])

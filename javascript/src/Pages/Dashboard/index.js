@@ -74,10 +74,10 @@ const Dashboard = () => {
           </Col>
         </Col>
       </Row>
-      {/* <LoginTiles tenenvId={tenenvId}
-                  uniqueLogins={uniqueLogins}/> */}
-      {/* <LoginLineChart tenenvId={tenenvId}
-                      uniqueLogins={uniqueLogins}/> */}
+      <LoginTiles tenenvId={tenenvId}
+                  uniqueLogins={uniqueLogins}/>
+      <LoginLineChart tenenvId={tenenvId}
+                      uniqueLogins={uniqueLogins}/>
       <LoginIdpPieChart tenenvId={tenenvId}
                         uniqueLogins={uniqueLogins}
                         goToSpecificProviderHandler={goToSpecificProvider}/>
@@ -88,10 +88,10 @@ const Dashboard = () => {
                       endDateHandler={setEndDate}
                       tenenvId={tenenvId}
                       uniqueLogins={uniqueLogins}/>
-      {/* <LoginsMap startDate={startDate}
+      <LoginsMap startDate={startDate}
                  endDate={endDate}
                  tenenvId={tenenvId}
-                 uniqueLogins={uniqueLogins}/> */}
+                 uniqueLogins={uniqueLogins}/>
       <Footer/>
     </Container>
   )

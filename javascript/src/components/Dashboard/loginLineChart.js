@@ -14,7 +14,7 @@ const LoginLineChart = ({
                           tenenvId,
                           uniqueLogins
                         }) => {
-  const controller = new AbortController
+  
   const queryClient = useQueryClient();
   const [lineData, setLineData] = useState([["Date", "Logins"], ['', 0]])
 
@@ -23,7 +23,7 @@ const LoginLineChart = ({
       tenenv_id: tenenvId,
       unique_logins: uniqueLogins
     },
-    signal: controller.signal
+   
   }
 
   const loginsGroupByDay = useQuery(
@@ -41,7 +41,7 @@ const LoginLineChart = ({
         tenenv_id: tenenvId,
         unique_logins: uniqueLogins
       },
-      signal: controller.signal
+     
     }
 
     if (type) {
@@ -56,9 +56,6 @@ const LoginLineChart = ({
       console.log(error)
     }
 
-    return () => {
-      controller.abort()
-    }
   }, [uniqueLogins])
 
   // Construct the data required for the chart
