@@ -27,7 +27,6 @@ const SpsDataTable = ({
                         startDate,
                         endDate
                       }) => {
-  const controller = new AbortController
   const [cookies, setCookie] = useCookies();
   const permissions = cookies.permissions
   const tenant = window.tenant
@@ -46,7 +45,6 @@ const SpsDataTable = ({
       'tenenv_id': tenenvId,
       'unique_logins': uniqueLogins
     },
-    signal: controller.signal
   }
 
   const loginsPerSp = useQuery(
@@ -75,7 +73,6 @@ const SpsDataTable = ({
         'tenenv_id': tenenvId,
         'unique_logins': uniqueLogins
       },
-      signal: controller.signal
     }
 
     try {
@@ -84,10 +81,6 @@ const SpsDataTable = ({
     } catch (error) {
       // todo: Here we can handle any authentication or authorization errors
       console.log(error)
-    }
-
-    return () => {
-      controller.abort()
     }
 
   }, [uniqueLogins, btnPressed])

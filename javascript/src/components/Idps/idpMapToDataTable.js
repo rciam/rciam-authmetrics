@@ -21,8 +21,6 @@ const IdpMapToDataTable = ({
                            }) => {
   const [loginsPerCountryData, setLoginsPerCountryData] = useState([]);
   const queryClient = useQueryClient();
-  const controller = new AbortController
-
 
   let params = {
     params: {
@@ -32,7 +30,7 @@ const IdpMapToDataTable = ({
       'unique_logins': uniqueLogins,
       'idpId': idpId
     },
-    signal: controller.signal
+
   }
 
   const loginsPerCountry = useQuery(
@@ -53,7 +51,7 @@ const IdpMapToDataTable = ({
         'unique_logins': uniqueLogins,
         'idpId': idpId
       },
-      signal: controller.signal
+
     }
 
     try {
@@ -62,9 +60,7 @@ const IdpMapToDataTable = ({
       // todo: Here we can handle any authentication or authorization errors
       console.log(error)
     }
-    return () => {
-      controller.abort()
-    }
+
   }, [uniqueLogins])
 
   // Construct the data required for the datatable

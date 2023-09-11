@@ -30,7 +30,6 @@ const IdpsDataTable = ({
                        }) => {
   const [cookies, setCookie] = useCookies();
   const permissions = cookies.permissions
-  const controller = new AbortController
   const tenant = window.tenant
   const environment = window.environment
 
@@ -47,7 +46,6 @@ const IdpsDataTable = ({
       'tenenv_id': tenenvId,
       'unique_logins': uniqueLogins
     },
-      signal: controller.signal
   }
 
   const loginsPerIpd = useQuery(
@@ -77,7 +75,6 @@ const IdpsDataTable = ({
         'tenenv_id': tenenvId,
         'unique_logins': uniqueLogins
       },
-      signal: controller.signal
     }
 
     try {
@@ -86,10 +83,6 @@ const IdpsDataTable = ({
     } catch (error) {
       // todo: Here we can handle any authentication or authorization errors
       console.log(error)
-    }
-
-    return () => {
-      controller.abort()
     }
 
   }, [uniqueLogins, btnPressed])
