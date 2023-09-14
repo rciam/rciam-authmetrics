@@ -64,7 +64,7 @@ const LoginLineChart = ({
       && !loginsGroupByDay.isFetching
       && loginsGroupByDay.isSuccess
       && loginsGroupByDay?.data?.map(element => ([new Date(element.date), element.count ?? 0]))
-
+    console.log("tataki2")
     if (!!loginsGroupByDay?.data && !!lineDataArray) {
       lineDataArray.unshift(["Date", "Logins"])
       setLineData(lineDataArray)
@@ -84,8 +84,7 @@ const LoginLineChart = ({
   if (lineData?.length <= 2) {
     return null
   }
-
-  return (
+  else return (
     <Row>
       <Col md={12} className="box">
         <div className="box-header with-border">
@@ -121,4 +120,8 @@ const LoginLineChart = ({
   );
 }
 
-export default LoginLineChart
+
+export default React.memo(LoginLineChart, (prevProps, nextProps) => {
+  // Prevent re-render if only `uniqueLogins` changes
+  return prevProps.uniqueLogins === nextProps.uniqueLogins;
+});

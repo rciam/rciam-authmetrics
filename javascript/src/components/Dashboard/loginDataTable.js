@@ -21,6 +21,7 @@ import {convertDateByGroup, formatStartDate, formatEndDate} from "../Common/util
 const LoginDataTable = ({
                           startDateHandler,
                           endDateHandler,
+                          minDateHandler,
                           tenenvId,
                           uniqueLogins
                         }) => {
@@ -111,6 +112,8 @@ const LoginDataTable = ({
       // min of the min dates.
       if (minDate == undefined || minDate == "") {
         setMinDate(!!minDateLogins?.data?.min_date ? new Date(minDateLogins?.data?.min_date) : null)
+        minDateHandler(!!minDateLogins?.data?.min_date ? new Date(minDateLogins?.data?.min_date) : null)
+       
       }
       $("#table-login").DataTable().destroy()
       setLoginsPerCountryPerPeriod(loginsPerCountryPerPeriodArray)

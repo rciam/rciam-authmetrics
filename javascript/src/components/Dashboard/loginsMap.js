@@ -3,9 +3,10 @@ import Col from 'react-bootstrap/Col';
 import 'jquery-mapael';
 import 'jquery-mapael/js/maps/world_countries_mercator.js';
 import {useQuery, useQueryClient} from "react-query";
-import {loginsPerCountryKey} from "../../utils/queryKeys";
-import {getLoginsPerCountry} from "../../utils/queries";
+import {loginsPerCountryKey, minDateLoginsKey} from "../../utils/queryKeys";
+import {getLoginsPerCountry, getMinDateLogins} from "../../utils/queries";
 import EarthMap from "../Common/earthMap";
+import DateRange from "../Common/dateRange";
 import Spinner from "../Common/spinner";
 import React from "react";
 import {format} from "date-fns";
@@ -34,6 +35,24 @@ const LoginsMap = ({
       refetchOnWindowFocus: false
     }
   )
+  
+  let paramsMinDate = {
+    params: {
+      'startDate': !startDate ? null : format(startDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"),
+      'endDate': !endDate ? null : format(endDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"),
+      'tenenv_id': tenenvId,
+      'unique_logins': true
+    }
+  }
+
+  const minDateLogins = useQuery(
+    [minDateLoginsKey, paramsMinDate],
+    getMinDateLogins,
+    {
+      enabled: false,
+      refetchOnWindowFocus: false
+    }
+  )
 
   if (loginsPerCountry.isLoading
     || loginsPerCountry.isFetching) {
@@ -48,7 +67,12 @@ const LoginsMap = ({
     <Row className="loginsByCountry">
       <Col md={12} className="box">
         <div className="box-header with-border">
-          <h3 className="box-title">Logins Per Country</h3>
+          <h3 className="box-title">
+            <DateRange startDate={startDate} endDate={endDate} 
+            minDate={!!minDateLogins?.data?.min_date ? new Date(minDateLogins?.data?.min_date) : null}
+            maxDate={!!minDateLogins?.data?.max_date ? new Date(minDateLogins?.data?.max_date) : null}
+            />
+          </h3>
         </div>
         <EarthMap datasetQuery={loginsPerCountry}
                   tooltipLabel="Logins"
