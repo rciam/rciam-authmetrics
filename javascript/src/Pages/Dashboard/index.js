@@ -15,10 +15,20 @@ import {useQuery} from "react-query";
 import {tenenvKey} from "../../utils/queryKeys";
 import {getTenenv} from "../../utils/queries";
 import {useNavigate} from "react-router-dom";
+import { formatEndDate, formatStartDate } from "../../components/Common/utils";
 
 const Dashboard = () => {
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+  const oneYearAgo = new Date();
+  oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+  formatStartDate(oneYearAgo)
+
+  const today = new Date();
+  today.setDate(today.getDate() - 1);
+  formatEndDate(today)
+
+  const [startDate, setStartDate] = useState(oneYearAgo);
+  const [endDate, setEndDate] = useState(today);
+  const [minDate, setMinDate] = useState(null);
   const [uniqueLogins, setUniqueLogins] = useState(false);
   const [tenenvId, setTenenvId] = useState(0);
 
@@ -86,6 +96,7 @@ const Dashboard = () => {
                        goToSpecificProviderHandler={goToSpecificProvider}/>
       <LoginDataTable startDateHandler={setStartDate}
                       endDateHandler={setEndDate}
+                      minDateHandler={setMinDate}
                       tenenvId={tenenvId}
                       uniqueLogins={uniqueLogins}/>
       <LoginsMap startDate={startDate}

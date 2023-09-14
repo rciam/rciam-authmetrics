@@ -64,7 +64,6 @@ const LoginLineChart = ({
       && !loginsGroupByDay.isFetching
       && loginsGroupByDay.isSuccess
       && loginsGroupByDay?.data?.map(element => ([new Date(element.date), element.count ?? 0]))
-    console.log("tataki2")
     if (!!loginsGroupByDay?.data && !!lineDataArray) {
       lineDataArray.unshift(["Date", "Logins"])
       setLineData(lineDataArray)
