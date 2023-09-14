@@ -23,11 +23,16 @@ async def read_min_date_logins(
         *,
         request: Request,
         session: Session = Depends(get_session),
-        tenenv_id: int
+        tenenv_id: int,
+        unique_logins: Union[boolean, None] = False,
 ):
-    min_date = session.exec("""SELECT min(date) as min_date 
+    unique_logins_subquery = ""
+    if unique_logins:
+        unique_logins_subquery = "AND hasheduserid != 'unknown'"
+
+    min_date = session.exec("""SELECT min(date) as min_date, max(date) as max_date 
                             FROM statistics_country_hashed 
-                            WHERE tenenv_id={0}""".format(tenenv_id)).one()
+                            WHERE tenenv_id={0} {1}""".format(tenenv_id, unique_logins_subquery)).one()
     return min_date
 
 @router.get("/logins_per_idp")
