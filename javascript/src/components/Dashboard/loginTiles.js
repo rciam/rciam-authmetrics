@@ -197,7 +197,7 @@ const LoginTiles = (parameters) => {
           <div className="small-box bg-aqua">
             <div className="inner">
               <h3>{tiles["days_1"]}</h3>
-              <p>Last 1 day Logins</p>
+              <p>Yesterday's Logins</p>
             </div>
           </div>
         </Col>
