@@ -35,8 +35,6 @@ const LoginIdpPieChart = ({
       'tenenv_id': tenenvId,
       'unique_logins': uniqueLogins,
       'sp': spId,
-      'startDate': oneYearAgo,
-      'endDate': today
     }
   }
 
