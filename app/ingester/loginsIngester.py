@@ -184,7 +184,7 @@ class LoginDataIngester:
             if (not login[0]['failedLogin']
                 and utilsIngester.validateTenenv(login[0]['tenenvId'], session)
                 and 'voPersonId' in login[0]
-                and utilsIngester.validateHashedUser(hashlib.md5(login[0]['voPersonId'].encode()).hexdigest(),
+                and utilsIngester.validateHashedUser(login[0]['voPersonId'],
                                                   login[0]['tenenvId'],
                                                   session)):
 
