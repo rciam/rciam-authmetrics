@@ -66,7 +66,7 @@ const LoginTiles = (parameters) => {
   const { refetch: getYesterdayLoginsCount } = useQuery(
     generateQueryKey({ 
       'interval': 'days',
-      'count_interval': '1',
+      'count_interval': '2',
       'tenenv_id': parameters['tenenvId'],
       'unique_logins': parameters['uniqueLogins'],
       'idpId': parameters['idpId'] !== undefined ? parameters['idpId'] : null,
@@ -130,7 +130,7 @@ const LoginTiles = (parameters) => {
             response, params:
             {
               'interval': 'days',
-              'count_interval': '1',
+              'count_interval': '2',
               'tenenv_id': parameters['tenenvId'],
               'unique_logins': parameters['uniqueLogins'],
               'idpId': parameters['idpId'] !== undefined ? parameters['idpId'] : null,
@@ -196,7 +196,7 @@ const LoginTiles = (parameters) => {
         <Col lg={3} xs={6}>
           <div className="small-box bg-aqua">
             <div className="inner">
-              <h3>{tiles["days_1"]}</h3>
+              <h3>{tiles["days_2"]}</h3>
               <p>Yesterday's Logins</p>
             </div>
           </div>
