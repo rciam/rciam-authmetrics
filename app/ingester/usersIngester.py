@@ -29,6 +29,8 @@ class UserDataIngester:
         userMappedItems = 0
         for user in usersNotMapped:
             cls.logger.info("""hasheduserid {0}""".format(user[0]))
+            if (user[0]['type'] == 'registration' and 'status' not in user[0]):
+                user[0]['status'] = 'A'
             if (user[0]['status'] not in ['A', 'S', 'D']):
                 cls.logger.error("""
                     user status '{0}' is not valid """.format(user[0]['status']))
