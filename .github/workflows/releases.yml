@@ -24,6 +24,7 @@ jobs:
       - name: Set matrix data
         id: set-matrix
         working-directory: inventory/rciam-metrics-dev/files/all/tenants
+        #  https://www.jitsejan.com/use-github-actions-with-json-file-as-matrix
         run: |
           ls
           cat ./config.json
