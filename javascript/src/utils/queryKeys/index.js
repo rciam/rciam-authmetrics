@@ -1,4 +1,3 @@
-// Tenenv
 export const tenenvKey = "tenenv"
 export const loginsPerSpKey = "logins_per_sp"
 export const loginsPerIdpKey = "logins_per_idp"
