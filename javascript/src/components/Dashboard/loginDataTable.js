@@ -151,7 +151,9 @@ const LoginDataTable = ({
     if(groupBy!=''){
       handleAddOption()
     }
-    date = formatEndDate(date);
+
+    //date = formatEndDate(date);
+
     if(date != null) {
       if(endDate!=date){
         setGroupBy("")  

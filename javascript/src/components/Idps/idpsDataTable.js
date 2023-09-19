@@ -119,7 +119,7 @@ const IdpsDataTable = ({
 
   const handleEndDateChange = (date) => {
 
-    date = formatEndDate(date);
+    //date = formatEndDate(date);
     if (date != null) {
       setEndDate(date);
     }
