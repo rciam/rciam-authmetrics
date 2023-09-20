@@ -86,7 +86,6 @@ jobs:
         # The tenant specific config file, i.e. config.tenant.environment.json, becomes plain config.json
         run: |
           mv ${{ github.workspace }}/inventory/rciam-metrics-dev/files/config.${{ matrix.tenant }}.json ${{ github.workspace }}/metrics-app-${{matrix.tenant}}/javascript/src/config.json
-          ls -la ${{ github.workspace }}/metrics-app-${{matrix.tenant}}/javascript/src
       - name: List files in metrics-app-${{matrix.tenant}} javascript
         # The tenant specific config file, i.e. config.tenant.environment.json, becomes plain config.json
         run: |
@@ -110,7 +109,7 @@ jobs:
       # Share artifact inside workflow
       - name: List files in the repository
         run: |
-          ls ${{ github.workspace }}
+          ls ${{ github.workspace }}/metrics-app-${{matrix.tenant}}
       - name: Create release branch
         run: cd ${{ github.workspace }}/metrics-app-${{matrix.tenant}}/; git checkout -b ${{ env.RELEASE_ID }}
       - name: Initialize mandatory git config
