@@ -153,6 +153,7 @@ jobs:
       - name: Get artifact
         uses: actions/download-artifact@v3
         with:
+          path: ./metrics-app-${{matrix.tenant}}
           name: react-github-actions-build-${{matrix.tenant}}
       - name: List files
         run: |
