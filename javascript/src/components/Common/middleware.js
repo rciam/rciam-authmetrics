@@ -19,6 +19,8 @@ const Middleware = ({elementName}) => {
   // rerender in case we do not.
   useEffect(() => {
     // XXX We set the environment and tenant globally
+    console.log('config tenant', config.tenant)
+    console.log('config environment', config.environment)
     setCookie('x-tenant', config.tenant, {path: '/'});
     setCookie('x-environment', config.environment, {path: '/'});
   }, []);
