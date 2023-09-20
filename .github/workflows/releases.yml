@@ -126,7 +126,7 @@ jobs:
       - name: Share artifact inside workflow
         uses: actions/upload-artifact@v3
         with:
-          name: react-github-actions-build
+          name: react-github-actions-build-${{matrix.tenant}}
           path: |
             ${{ github.workspace }}/metrics-app-${{matrix.tenant}}/javascript/build
             ${{ github.workspace }}/metrics-app-${{matrix.tenant}}/javascript/CHANGELOG.md
@@ -144,14 +144,10 @@ jobs:
     needs: [checkout, configure]
     steps:
       # Download previously shared build
-      - name: List files in metrics-app-${{matrix.tenant}}
-        # The tenant specific config file, i.e. config.tenant.environment.json, becomes plain config.json
-        run: |
-          ls -la ./metrics-app-${{matrix.tenant}}
       - name: Get artifact
         uses: actions/download-artifact@v3
         with:
-          name: react-github-actions-build
+          name: react-github-actions-build-${{matrix.tenant}}
       - name: Compress action step
         uses: a7ul/tar-action@v1.1.0
         id: compress
