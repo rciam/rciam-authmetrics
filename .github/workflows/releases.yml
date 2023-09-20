@@ -187,7 +187,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           artifacts: "frontend-${{matrix.tenant}}-release-build.tar.gz"
-          bodyFile: "../metrics-app-${{matrix.tenant}}/javascript/CHANGELOG.md"
+          bodyFile: "./metrics-app-${{matrix.tenant}}/javascript/CHANGELOG.md"
           tag: "frontend-${{matrix.tenant}}-${{ github.ref_name }}-${{ env.RELEASE_ID }}"
           makeLatest: true
           generateReleaseNotes: true
