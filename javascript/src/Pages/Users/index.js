@@ -12,6 +12,7 @@ import {useQuery} from "react-query";
 import {tenenvKey} from "../../utils/queryKeys";
 import {getTenenv} from "../../utils/queries";
 import {formatStartDate, formatEndDate} from "../../components/Common/utils";
+import {useCookies} from "react-cookie";
 
 const Users = () => {
   const oneYearAgo = new Date();
@@ -24,9 +25,10 @@ const Users = () => {
   const [tenenvId, setTenenvId] = useState(0);
   const [startDate, setStartDate] = useState(oneYearAgo);
   const [endDate, setEndDate] = useState(today);
+  const [cookies, setCookie] = useCookies();
 
-  const tenant = window.tenant
-  const environment = window.environment
+  const tenant = cookies['x-tenant']
+  const environment = cookies['x-environment']
 
 
   const tenenv = useQuery(

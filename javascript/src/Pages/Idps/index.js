@@ -12,6 +12,7 @@ import {tenenvKey} from "../../utils/queryKeys";
 import {getTenenv} from "../../utils/queries";
 import {useNavigate} from "react-router-dom";
 import {formatStartDate, formatEndDate} from "../../components/Common/utils";
+import {useCookies} from "react-cookie";
 
 const Idps = () => {
   const oneYearAgo = new Date();
@@ -25,9 +26,11 @@ const Idps = () => {
   const [tenenvId, setTenenvId] = useState(0);
   const [endDate, setEndDate] = useState(today);
   const [startDate, setStartDate] = useState(oneYearAgo);
+  const [cookies, setCookie] = useCookies();
 
-  const tenant = window.tenant
-  const environment = window.environment
+  const tenant = cookies['x-tenant']
+  const environment = cookies['x-environment']
+
 
   const tenenv = useQuery(
     [tenenvKey, {tenantId: tenant, environment: environment}],

@@ -11,8 +11,10 @@ const SideNav = ({
                    permissions
                  }) => {
   const [reload, setReload] = useState(false)
-  const environment = window.environment
-  const tenant = window.tenant
+  const [cookies, setCookie] = useCookies();
+
+  const tenant = cookies['x-tenant']
+  const environment = cookies['x-environment']
 
   useEffect(() => {
     setReload((prev) => !prev)
