@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import Communities from "../../Pages/Communities";
 import Users from "../../Pages/Users";
 import Dashboard from "../../Pages/Dashboard";
@@ -15,9 +15,13 @@ import config from '../../config.json'
 const Middleware = ({elementName}) => {
   const [cookies, setCookie] = useCookies();
 
-  // XXX We set the environment and tenant globally
-  window.environment = config.environment
-  window.tenant = config.tenant
+  // We only want to set the Cookies once since we will cause an infinite
+  // rerender in case we do not.
+  useEffect(() => {
+    // XXX We set the environment and tenant globally
+    setCookie('x-tenant', config.tenant, {path: '/'});
+    setCookie('x-environment', config.environment, {path: '/'});
+  }, []);
 
   const Component = elementName
   return (

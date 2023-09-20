@@ -17,6 +17,7 @@ import 'react-tabs/style/react-tabs.css';
 import {useQuery} from "react-query";
 import {tenenvKey} from "../../utils/queryKeys";
 import {getTenenv} from "../../utils/queries";
+import {useCookies} from "react-cookie";
 
 const Idp = () => {
   const {id} = useParams();
@@ -24,9 +25,11 @@ const Idp = () => {
   const [uniqueLogins, setUniqueLogins] = useState(false);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
+  const [cookies, setCookie] = useCookies();
 
-  const tenant = window.tenant
-  const environment = window.environment
+  const tenant = cookies['x-tenant']
+  const environment = cookies['x-environment']
+
 
   const tenenv = useQuery(
     [tenenvKey, {tenantId: tenant, environment: environment}],

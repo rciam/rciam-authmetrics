@@ -16,6 +16,7 @@ import {tenenvKey} from "../../utils/queryKeys";
 import {getTenenv} from "../../utils/queries";
 import {useNavigate} from "react-router-dom";
 import { formatEndDate, formatStartDate } from "../../components/Common/utils";
+import {useCookies} from "react-cookie";
 
 const Dashboard = () => {
   const oneYearAgo = new Date();
@@ -31,9 +32,11 @@ const Dashboard = () => {
   const [minDate, setMinDate] = useState(null);
   const [uniqueLogins, setUniqueLogins] = useState(false);
   const [tenenvId, setTenenvId] = useState(0);
+  const [cookies, setCookie] = useCookies();
 
-  const tenant = window.tenant
-  const environment = window.environment
+  const tenant = cookies['x-tenant']
+  const environment = cookies['x-environment']
+
 
   const tenenv = useQuery(
     [tenenvKey, {tenantId: tenant, environment: environment}],

@@ -11,12 +11,15 @@ import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import {tenenvKey} from '../../utils/queryKeys'
 import {getTenenv} from '../../utils/queries'
+import {useCookies} from "react-cookie";
 
 const Communities = () => {
   const [tenenvId, setTenenvId] = useState(0);
+  const [cookies, setCookie] = useCookies();
 
-  const tenant = window.tenant
-  const environment = window.environment
+  const tenant = cookies['x-tenant']
+  const environment = cookies['x-environment']
+
 
   const tenenv = useQuery(
     [tenenvKey, {tenantId: tenant, environment: environment}],

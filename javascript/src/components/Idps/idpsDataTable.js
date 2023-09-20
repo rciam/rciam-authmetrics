@@ -30,8 +30,8 @@ const IdpsDataTable = ({
                        }) => {
   const [cookies, setCookie] = useCookies();
   const permissions = cookies.permissions
-  const tenant = window.tenant
-  const environment = window.environment
+  const tenant = cookies['x-tenant']
+  const environment = cookies['x-environment']
 
   const [idpsLogins, setIdpsLogins] = useState([]);
   const [minDate, setMinDate] = useState("");

@@ -18,6 +18,7 @@ import {useQuery} from "react-query";
 import {tenenvKey} from "../../utils/queryKeys";
 import {getTenenv} from "../../utils/queries";
 import Spinner from "../../components/Common/spinner"
+import {useCookies} from "react-cookie";
 
 const Sp = () => {
   const {id} = useParams();
@@ -25,9 +26,10 @@ const Sp = () => {
   const [uniqueLogins, setUniqueLogins] = useState(false);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
+  const [cookies, setCookie] = useCookies();
 
-  const tenant = window.tenant
-  const environment = window.environment
+  const tenant = cookies['x-tenant']
+  const environment = cookies['x-environment']
 
   const tenenv = useQuery(
     [tenenvKey, {tenantId: tenant, environment: environment}],
