@@ -158,6 +158,7 @@ jobs:
         run: |
           ls -la ./
           ls -la ./javascript
+          ls -la ./javascript/build
       - name: Compress action step
         uses: a7ul/tar-action@v1.1.0
         id: compress
