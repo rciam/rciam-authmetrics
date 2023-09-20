@@ -123,7 +123,7 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: ${{ env.RELEASE_ID }}
           directory: ./metrics-app-${{matrix.tenant}}
-      - name: Share artifact inside workflow
+      - name: Share artifact inside workflow - ${{matrix.tenant}}
         uses: actions/upload-artifact@v3
         with:
           name: react-github-actions-build-${{matrix.tenant}}
@@ -148,6 +148,9 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: react-github-actions-build-${{matrix.tenant}}
+      - name: List files
+        run: |
+          ls -la ./
       - name: Compress action step
         uses: a7ul/tar-action@v1.1.0
         id: compress
