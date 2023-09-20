@@ -144,6 +144,10 @@ jobs:
     needs: [checkout, configure]
     steps:
       # Download previously shared build
+      - name: List files in metrics-app-${{matrix.tenant}} javascript
+        # The tenant specific config file, i.e. config.tenant.environment.json, becomes plain config.json
+        run: |
+          ls -la ${{ github.workspace }}/metrics-app-${{matrix.tenant}}/javascript
       - name: Get artifact
         uses: actions/download-artifact@v3
         with:
