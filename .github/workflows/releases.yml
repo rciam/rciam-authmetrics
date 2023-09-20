@@ -156,6 +156,7 @@ jobs:
           name: react-github-actions-build-${{matrix.tenant}}
       - name: List files
         run: |
+          pwd
           ls -la ./
           ls -la ./javascript
           ls -la ./javascript/build
