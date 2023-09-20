@@ -159,8 +159,9 @@ jobs:
         run: |
           pwd
           ls -la ./
-          ls -la ./javascript
-          ls -la ./javascript/build
+          ls -la ./metrics-app-${{matrix.tenant}}/
+          ls -la ./metrics-app-${{matrix.tenant}}/javascript
+          ls -la ./metrics-app-${{matrix.tenant}}/javascript/build
       - name: Compress action step
         uses: a7ul/tar-action@v1.1.0
         id: compress
