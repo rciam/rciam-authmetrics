@@ -41,7 +41,7 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v3
         with:
-          path: 'metrics-app'
+          path: 'metrics-app-${{ matrix.tenant }}'
           ref: 'deploy_changes'
       - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
       - run: echo "🖥️ The workflow is now ready to test your code on the runner."
@@ -82,32 +82,32 @@ jobs:
         # because the frontend lives under its own directory/path
         run: |
           ls -la ${{ github.workspace }}/inventory/rciam-metrics-dev/files
-          mv ${{ github.workspace }}/inventory/rciam-metrics-dev/files/config.${{ matrix.tenant }}.json ${{ github.workspace }}/metrics-app/javascript/src/config.json
-          ls -la ${{ github.workspace }}/metrics-app/javascript/src
+          mv ${{ github.workspace }}/inventory/rciam-metrics-dev/files/config.${{ matrix.tenant }}.json ${{ github.workspace }}/metrics-app-${{ matrix.tenant }}/javascript/src/config.json
+          ls -la ${{ github.workspace }}/metrics-app-${{ matrix.tenant }}/javascript/src
       - name: Share artifact inside workflow
         uses: actions/upload-artifact@v3
         with:
           name: react-application
           path: |
-            ${{ github.workspace }}/metrics-app
+            ${{ github.workspace }}/metrics-app-${{ matrix.tenant }}
       - name: Use Node.js ${{ env.NODE_VERSION }}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ env.NODE_VERSION }}
       - name: Install dependencies
         run: |
-          cd ${{ github.workspace }}/metrics-app/javascript; npm install
+          cd ${{ github.workspace }}/metrics-app-${{ matrix.tenant }}/javascript; npm install
       - name: Build React application
         run: |
-          cd ${{ github.workspace }}/metrics-app/javascript; CI=false npm run build
+          cd ${{ github.workspace }}/metrics-app-${{ matrix.tenant }}/javascript; CI=false npm run build
       # Share artifact inside workflow
       - name: List files in the repository
         run: |
           ls ${{ github.workspace }}
       - name: Create release branch
-        run: cd ${{ github.workspace }}/metrics-app/; git checkout -b ${{ env.RELEASE_ID }}
+        run: cd ${{ github.workspace }}/metrics-app-${{ matrix.tenant }}/; git checkout -b ${{ env.RELEASE_ID }}
       - name: Initialize mandatory git config
-        working-directory: ./metrics-app
+        working-directory: ./metrics-app-${{ matrix.tenant }}
         run: |
           git config user.name "GitHub Actions"  
           git config user.email noreply@github.com
@@ -116,17 +116,17 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: ${{ env.RELEASE_ID }}
-          directory: ./metrics-app
+          directory: ./metrics-app-${{ matrix.tenant }}
       - name: Share artifact inside workflow
         uses: actions/upload-artifact@v3
         with:
           name: react-github-actions-build
           path: |
-            ${{ github.workspace }}/metrics-app/javascript/build
-            ${{ github.workspace }}/metrics-app/javascript/CHANGELOG.md
-            ${{ github.workspace }}/metrics-app/app
-            ${{ github.workspace }}/metrics-app/requirements.txt
-            ${{ github.workspace }}/metrics-app/CHANGELOG.md
+            ${{ github.workspace }}/metrics-app-${{ matrix.tenant }}/javascript/build
+            ${{ github.workspace }}/metrics-app-${{ matrix.tenant }}/javascript/CHANGELOG.md
+            ${{ github.workspace }}/metrics-app-${{ matrix.tenant }}/app
+            ${{ github.workspace }}/metrics-app-${{ matrix.tenant }}/requirements.txt
+            ${{ github.workspace }}/metrics-app-${{ matrix.tenant }}/CHANGELOG.md
       - run: echo "🍏 This job's status is ${{ job.status }}."
   frontend_release:
     runs-on: ubuntu-latest
