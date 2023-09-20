@@ -114,7 +114,7 @@ jobs:
       - name: Create release branch
         run: cd ${{ github.workspace }}/metrics-app-${{matrix.tenant}}/; git checkout -b ${{ env.RELEASE_ID }}
       - name: Initialize mandatory git config
-        working-directory: ${{ github.workspace }}/metrics-app-${{matrix.tenant}}
+        working-directory: ./metrics-app-${{matrix.tenant}}
         run: |
           git config user.name "GitHub Actions"  
           git config user.email noreply@github.com
@@ -123,7 +123,7 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: ${{ env.RELEASE_ID }}
-          directory: ${{ github.workspace }}/metrics-app-${{matrix.tenant}}
+          directory: ./metrics-app-${{matrix.tenant}}
       - name: Share artifact inside workflow
         uses: actions/upload-artifact@v3
         with:
@@ -157,7 +157,7 @@ jobs:
         # the action is not smart enough to under asterisk (*)
         with:
           command: c
-          cwd: ${{ github.workspace }}/metrics-app-${{matrix.tenant}}/javascript/build
+          cwd: ./metrics-app-${{matrix.tenant}}/javascript/build
           files: |
                    asset-manifest.json
                    index.html
