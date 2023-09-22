@@ -22,7 +22,7 @@ async def read_tenenv_byname(
     tenenv = None
     if tenant_name and environment_name:
         tenenv = session.exec("""
-            SELECT * FROM tenenv_info 
+            SELECT tenenv_info.* FROM tenenv_info 
             JOIN tenant_info ON tenant_info.id=tenant_id
                 AND LOWER(tenant_info.name)=LOWER('{0}')
             JOIN environment_info ON environment_info.id=env_id
