@@ -134,6 +134,7 @@ dmypy.json
 /node_modules
 .npm/**
 javascript/.npm/**
+javascript/.bash_history
 .gnupg/**
 .idea/**
 .yarn/**
@@ -141,3 +142,4 @@ javascript/.npm/**
 .vscode/
 .DS_Store
 yarn-error.log
+

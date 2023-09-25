@@ -1,5 +1,5 @@
 ARG PYTHON_IMAGE_REPO=python
-FROM ${PYTHON_IMAGE_REPO}:3.8.15-bullseye
+FROM FROM ${PYTHON_IMAGE_REPO}:3.8.15-bullseye
 RUN curl -sL https://deb.nodesource.com/setup_18.x | sed "s/exec_cmd 'apt-get update'/exec_cmd 'apt-get --allow-releaseinfo-change update'/" | bash -
 RUN echo "deb https://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list
 RUN curl https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
@@ -18,6 +18,8 @@ RUN apt-get -qq --allow-releaseinfo-change update \
 
 # Create working directory
 ENV APP_HOME /app
+ENV API_ENVIRONMENT dev
+
 RUN mkdir -p $APP_HOME
 WORKDIR $APP_HOME
 
@@ -26,14 +28,17 @@ ARG APP_GID=1000
 
 RUN groupadd -g ${APP_GID} app
 RUN useradd -u ${APP_UID} -g ${APP_GID} -d $APP_HOME app
+RUN echo $(python3 -m site --user-base)
 
 # set environment variables
+ENV PATH $APP_HOME/.local/bin:${PATH}
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 ENV ENVIRONMENT dev
 ENV TESTING 0
 
 #COPY requirements* $APP_HOME
+RUN echo "fs.inotify.max_user_watches=524288" >> /etc/sysctl.conf
 
 USER app:app
 
