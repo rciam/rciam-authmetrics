@@ -72,7 +72,7 @@ jobs:
           directory: ./roles
           key: ${{ secrets.DEPLOY_READ_SECRET }}
           # Optional, encrypted vault password
-          vault_password: ${{secrets.VAULT_PASSWORD}}
+          vault_password: ${{secrets.VAULT_PASSWORD_DEVEL}}
           options: |
             --inventory ${{ github.workspace }}/inventory/rciam-metrics-dev/hosts.ini
             --tags rciam-metrics:config-local
@@ -257,7 +257,7 @@ jobs:
           directory: ./roles
           key: ${{ secrets.DEPLOY_READ_SECRET }}
           # Optional, encrypted vault password
-          vault_password: ${{secrets.VAULT_PASSWORD}}
+          vault_password: ${{secrets.VAULT_PASSWORD_DEVEL}}
           options: |
             --inventory ${{ github.workspace }}/inventory/rciam-metrics-dev/hosts.ini
             --tags rciam-metrics:config
@@ -296,7 +296,7 @@ jobs:
           directory: ./roles
           key: ${{ secrets.DEPLOY_READ_SECRET }}
           # Optional, encrypted vault password
-          vault_password: ${{secrets.VAULT_PASSWORD}}
+          vault_password: ${{secrets.VAULT_PASSWORD_DEVEL}}
           options: |
             --inventory ${{ github.workspace }}/inventory/rciam-metrics-dev/hosts.ini
             --tags rciam-metrics:config-front
