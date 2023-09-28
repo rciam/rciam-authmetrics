@@ -33,10 +33,8 @@ const Dashboard = () => {
   const [uniqueLogins, setUniqueLogins] = useState(false);
   const [tenenvId, setTenenvId] = useState(0);
   const [cookies, setCookie] = useCookies();
-
   const tenant = cookies['x-tenant']
   const environment = cookies['x-environment']
-
 
   const tenenv = useQuery(
     [tenenvKey, {tenantId: tenant, environment: environment}],
