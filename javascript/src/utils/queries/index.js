@@ -1,43 +1,245 @@
-import { client as apiClient } from '../api';
+import {
+  client as apiClient,
+  deleteCookie,
+  handleError
+} from '../api';
+
+
+// Tenenv
+export const getTenenv = async ({queryKey}) => {
+  const [_, params] = queryKey
+  try {
+    const response = await apiClient.get("tenenv/" + params.tenantId + "/" + params.environment)
+    return response.data
+  } catch (error) {
+    console.log('error', error)
+    handleError(error)
+    return error.response
+  }
+}
+
+// Logins
+export const getLoginsPerSP = async ({queryKey}) => {
+  const [_, params] = queryKey
+  try {
+    const response = await apiClient.get("logins_per_sp", params)
+    return response.data
+  } catch (error) {
+    console.log('error', error)
+    handleError(error)
+    return error.response
+  }
+}
+
+export const getLoginsPerIdp = async ({queryKey}) => {
+  const [_, params] = queryKey
+  try {
+    const response = await apiClient.get("logins_per_idp", params)
+    return response.data
+  } catch (error) {
+    console.log('error', error)
+    handleError(error)
+    return error.response
+  }
+}
+
+export const getLoginsPerCountry = async ({queryKey}) => {
+  const [_, params] = queryKey
+  try {
+    const response = await apiClient.get("logins_per_country", params)
+    return response.data
+  } catch (error) {
+    console.log('error', error)
+    handleError(error)
+    return error.response
+  }
+}
+
+export const getMinDateLogins = async ({queryKey}) => {
+  const [_, params] = queryKey
+  try {
+    const response = await apiClient.get("min_date_logins", params)
+    return response.data
+  } catch (error) {
+    console.log('error', error)
+    handleError(error)
+    return error.response
+  }
+}
+
+export const getMinDateCommunities = async ({queryKey}) => {
+  const [_, params] = queryKey
+  try {
+    const response = await apiClient.get("min_date_communities", params)
+    return response.data
+  } catch (error) {
+    console.log('error', error)
+    handleError(error)
+    return error.response
+  }
+}
+
+export const getMinDateRegisteredUsers = async ({queryKey}) => {
+  const [_, params] = queryKey
+  try {
+    const response = await apiClient.get("min_date_registered_users", params)
+    return response.data
+  } catch (error) {
+    console.log('error', error)
+    handleError(error)
+    return error.response
+  }
+}
+
+export const getLoginsGroupByDay = async ({queryKey}) => {
+  const [_, params] = queryKey
+  try {
+    const response = await apiClient.get("logins_groupby/day", params)
+    return response.data
+  } catch (error) {
+    console.log('error', error)
+    handleError(error)
+    return error.response
+  }
+}
+
+export const getLoginsCountBy = async ({queryKey}) => {
+  const [_, params] = queryKey
+  try {
+    const response = await apiClient.get("logins_countby", params)
+    return response.data
+  } catch (error) {
+    console.log('error', error)
+    handleError(error)
+    return error.response
+  }
+}
+
+// Get Idps, Sps
+export const getIdps = async ({queryKey}) => {
+  const [_, params] = queryKey
+  try {
+    const response = await apiClient.get("idps", params)
+    return response.data
+  } catch (error) {
+    console.log('error', error)
+    handleError(error)
+    return error.response
+  }
+}
+
+export const getSps = async ({queryKey}) => {
+  const [_, params] = queryKey
+  try {
+    const response = await apiClient.get("sps", params)
+    return response.data
+  } catch (error) {
+    console.log('error', error)
+    handleError(error)
+    return error.response
+  }
+}
 
 // Users
-
-// GET Users
-export const getUsers = async ({queryKey}) => {
-    const [_, params] = queryKey
-    const response = await apiClient.get('/users')
+export const getRegisteredUsersCountby = async ({queryKey}) => {
+  const [_, params] = queryKey
+  try {
+    const response = await apiClient.get("registered_users_countby", params)
     return response.data
-}
-// GET User
-export const getUser = async({queryKey}) => {
-    const [_, params] = queryKey
-    const response = await apiClient.get('/users/' + params.userId)
-    return response.data
-}
-// Delete User
-export const delUser = async({queryKey}) => {
-    const [_, params] = queryKey
-    const response = await apiClient.delete('/users/' + params.userId)
-    return response.data
+  } catch (error) {
+    console.log('error', error)
+    handleError(error)
+    return error.response
+  }
 }
 
-// Communitiess
+export const getRegisteredUsersByCountry = async ({queryKey}) => {
+  const [_, params] = queryKey
+  try {
+    const response = await apiClient.get("registered_users_country", params)
+    return response.data
+  } catch (error) {
+    console.log('error', error)
+    handleError(error)
+    return error.response
+  }
+}
 
-// GET Communities
+// Communities
 export const getCommunities = async ({queryKey}) => {
-    const [_, params] = queryKey
-    const response = await apiClient.get('/communities')
+  const [_, params] = queryKey
+  try {
+    const response = await apiClient.get("communities", params)
     return response.data
+  } catch (error) {
+    console.log('error', error)
+    handleError(error)
+    return error.response
+  }
 }
-// GET Community
-export const getCommunity = async({queryKey}) => {
-    const [_, params] = queryKey
-    const response = await apiClient.get('/communities/' + params.communityId)
+
+export const getCommunityMembersByStatus = async ({queryKey}) => {
+  const [_, params] = queryKey
+  try {
+    const response = await apiClient.get("members_bystatus", params)
     return response.data
+  } catch (error) {
+    console.log('error', error)
+    handleError(error)
+    return error.response
+  }
 }
-// Delete Community
-export const delCommunity = async({queryKey}) => {
-    const [_, params] = queryKey
-    const response = await apiClient.delete('/communities/' + params.communityId)
+
+export const getCountryStatsByVo = async ({queryKey}) => {
+  const [_, params] = queryKey
+  try {
+    const response = await apiClient.get(`country_stats_by_vo/${params.countryId}`, params)
     return response.data
+  } catch (error) {
+    console.log('error', error)
+    handleError(error)
+    return error.response
+  }
+}
+
+export const getCommunitiesGroupBy = async ({queryKey}) => {
+  const [_, params] = queryKey
+  try {
+    const response = await apiClient.get(
+      `communities_groupby${(params.groupBy != undefined && params.groupBy != "") ? "/" + params.groupBy : ""}`
+      , params.params)
+    return response.data
+  } catch (error) {
+    console.log('error', error)
+    handleError(error)
+    return error.response
+  }
+}
+
+export const getRegisteredUsersPerCountryGroupBy = async ({queryKey}) => {
+  const [_, params] = queryKey
+  try {
+    const response = await apiClient.get(
+      `registered_users_country_group_by${(params.groupBy != undefined && params.groupBy != "") ? "/" + params.groupBy : ""}`
+      , params.params)
+    return response.data
+  } catch (error) {
+    console.log('error', error)
+    handleError(error)
+    return error.response
+  }
+}
+
+export const getRegisteredUsersGroupBy = async ({queryKey}) => {
+  const [_, params] = queryKey
+  try {
+    const response = await apiClient.get(
+      `registered_users_groupby${(params.groupBy != undefined && params.groupBy != "") ? "/" + params.groupBy : ""}`
+      , params.params)
+    return response.data
+  } catch (error) {
+    console.log('error', error)
+    handleError(error)
+    return error.response
+  }
 }
