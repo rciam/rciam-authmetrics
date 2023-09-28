@@ -3,8 +3,7 @@ run-name: ${{ github.actor }} is deploying at devel branch 🚀
 on:
   push:
     branches:
-      - devel
-      - deploy_changes
+      - develop
 env:
   RELEASE_ID: rc-${{ github.ref_name }}-${{ github.run_id }}
   NODE_VERSION: 16.x
