@@ -1,0 +1,304 @@
+name: CI at Devel Branch
+run-name: ${{ github.actor }} is deploying at devel branch 🚀
+on:
+  push:
+    branches:
+      - develop
+env:
+  RELEASE_ID: rc-${{ github.ref_name }}-${{ github.run_id }}
+  NODE_VERSION: 16.x
+jobs:
+  configure:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - name: Checkout to repository
+        uses: actions/checkout@v3
+        with:
+          repository: 'grnet/rciam-deploy-inv'
+          ref: 'master'
+          ssh-key: ${{ secrets.DEPLOY_READ_SECRET }}
+          path: 'inventory'
+      - name: Set matrix data
+        id: set-matrix
+        working-directory: inventory/rciam-metrics-dev/files/all/tenants
+        #  https://www.jitsejan.com/use-github-actions-with-json-file-as-matrix
+        run: |
+          ls
+          cat ./config.json
+          echo "matrix=$(jq -c . < ./config.json)" >> $GITHUB_OUTPUT
+  checkout:
+    runs-on: ubuntu-latest
+    needs: configure
+    strategy:
+      matrix: ${{ fromJson(needs.configure.outputs.matrix) }}
+    steps:
+      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
+      - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
+      - run: echo "🔎 The name of your branch is ${{ github.ref_name }} and your repository is ${{ github.repository }}."
+      - name: Check out repository code
+        uses: actions/checkout@v3
+        with:
+          path: 'metrics-app-${{matrix.tenant}}'
+          ref: 'develop'
+      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
+      - run: echo "💡 The ${{ github.sha }} commit processing started."
+      - run: echo "🖥️ The workflow is now ready to test your code on the runner."
+      - name: List files in the repository
+        run: |
+          ls ${{ github.workspace }}
+      - name: Download playbook
+        uses: actions/checkout@v3
+        with:
+          # Repository name with owner. For example, actions/checkout
+          # Default: ${{ github.repository }}
+          repository: 'rciam/rciam-deploy'
+          ref: 'devel'
+          path: 'roles'
+      - name: Download inventory
+        uses: actions/checkout@v3
+        with:
+          repository: 'grnet/rciam-deploy-inv'
+          ref: 'master'
+          ssh-key: ${{ secrets.DEPLOY_READ_SECRET }}
+          path: 'inventory'
+      - name: Run playbook (create react_config file)
+        uses: dawidd6/action-ansible-playbook@v2
+        with:
+          # Required, playbook filepath
+          playbook: metricsservers.yml
+          # Optional, directory where playbooks live
+          directory: ./roles
+          key: ${{ secrets.DEPLOY_READ_SECRET }}
+          # Optional, encrypted vault password
+          vault_password: ${{secrets.VAULT_PASSWORD_DEVEL}}
+          options: |
+            --inventory ${{ github.workspace }}/inventory/rciam-metrics-dev/hosts.ini
+            --tags rciam-metrics:config-local
+            -u debian
+      - name: List files in the repository
+        # The tenant specific config file, i.e. config.tenant.environment.json, becomes plain config.json
+        # because the frontend lives under its own directory/path
+        run: |
+          ls -la ${{ github.workspace }}/inventory/rciam-metrics-dev/files
+      - name: Move tenant config file to config.json
+        # The tenant specific config file, i.e. config.tenant.environment.json, becomes plain config.json
+        run: |
+          mv ${{ github.workspace }}/inventory/rciam-metrics-dev/files/config.${{ matrix.tenant }}.json ${{ github.workspace }}/metrics-app-${{matrix.tenant}}/javascript/src/config.json
+      - name: List files in metrics-app-${{matrix.tenant}} javascript
+        # The tenant specific config file, i.e. config.tenant.environment.json, becomes plain config.json
+        run: |
+          ls -la ${{ github.workspace }}/metrics-app-${{matrix.tenant}}/javascript/src
+      - name: Share artifact inside workflow (frontend)
+        uses: actions/upload-artifact@v3
+        with:
+          name: react-application
+          path: |
+            ${{ github.workspace }}/metrics-app-${{matrix.tenant}}
+      - name: Use Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - name: Install dependencies
+        run: |
+          cd ${{ github.workspace }}/metrics-app-${{matrix.tenant}}/javascript; npm install
+      - name: Build React application
+        run: |
+          cd ${{ github.workspace }}/metrics-app-${{matrix.tenant}}/javascript; CI=false npm run build
+      # Share artifact inside workflow
+      - name: List files in the repository
+        run: |
+          ls ${{ github.workspace }}/metrics-app-${{matrix.tenant}}
+      - name: Create release branch
+        run: cd ${{ github.workspace }}/metrics-app-${{matrix.tenant}}/; git checkout -b ${{ env.RELEASE_ID }}
+      - name: Initialize mandatory git config
+        working-directory: ./metrics-app-${{matrix.tenant}}
+        run: |
+          git config user.name "GitHub Actions"  
+          git config user.email noreply@github.com
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ env.RELEASE_ID }}
+          directory: ./metrics-app-${{matrix.tenant}}
+      - name: Share artifact inside workflow - ${{matrix.tenant}}
+        uses: actions/upload-artifact@v3
+        with:
+          name: react-github-actions-build-${{matrix.tenant}}
+          path: |
+            ${{ github.workspace }}/metrics-app-${{matrix.tenant}}/javascript/build
+            ${{ github.workspace }}/metrics-app-${{matrix.tenant}}/javascript/CHANGELOG.md
+            ${{ github.workspace }}/metrics-app-${{matrix.tenant}}/CHANGELOG.md
+      - name: Share artifact inside workflow - backend
+        uses: actions/upload-artifact@v3
+        with:
+          name: react-github-actions-build-backend
+          path: |
+            ${{ github.workspace }}/metrics-app-${{matrix.tenant}}/app
+            ${{ github.workspace }}/metrics-app-${{matrix.tenant}}/requirements.txt
+            ${{ github.workspace }}/metrics-app-${{matrix.tenant}}/CHANGELOG.md
+      - run: echo "🍏 This job's status is ${{ job.status }}."
+  frontend_release:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: ${{ fromJson(needs.configure.outputs.matrix) }}
+    # We specify that deploys needs to
+    # finish before we create a release
+    # Job outputs are available to all downstream jobs that depend on this job.
+    needs: [checkout, configure]
+    steps:
+      # Download previously shared build
+      - name: Get artifact
+        uses: actions/download-artifact@v3
+        with:
+          path: ./metrics-app-${{matrix.tenant}}
+          name: react-github-actions-build-${{matrix.tenant}}
+      - name: List files
+        run: |
+          pwd
+          ls -la ./
+          ls -la ./metrics-app-${{matrix.tenant}}/
+          ls -la ./metrics-app-${{matrix.tenant}}/javascript
+          ls -la ./metrics-app-${{matrix.tenant}}/javascript/build
+      - name: Compress action step
+        uses: a7ul/tar-action@v1.1.0
+        id: compress
+        # The frontend release is only the javascript/build
+        # We need to include all the files and directories since
+        # the action is not smart enough to under asterisk (*)
+        with:
+          command: c
+          cwd: ./metrics-app-${{matrix.tenant}}/javascript/build
+          files: |
+                   asset-manifest.json
+                   index.html
+                   static
+          outPath: frontend-${{matrix.tenant}}-release-build.tar.gz
+      # Upload as an artifact of the current workflow
+      - name: Upload frontend build zip artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: frontend-${{matrix.tenant}}-release-build.tar.gz
+          path: frontend-${{matrix.tenant}}-release-build.tar.gz
+      - name: Create Release
+        uses: ncipollo/release-action@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          artifacts: "frontend-${{matrix.tenant}}-release-build.tar.gz"
+          bodyFile: "./metrics-app-${{matrix.tenant}}/javascript/CHANGELOG.md"
+          tag: "frontend-${{matrix.tenant}}-${{ github.ref_name }}-${{ env.RELEASE_ID }}"
+          makeLatest: true
+          generateReleaseNotes: true
+  backend_release:
+    runs-on: ubuntu-latest
+    # We specify that deploys needs to
+    # finish before we create a release
+    # Job outputs are available to all downstream jobs that depend on this job.
+    needs: [checkout, configure]
+    steps:
+      # Download previously shared build
+      - name: Get artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: react-github-actions-build-backend
+      - name: Compress action step
+        uses: a7ul/tar-action@v1.1.0
+        id: compress
+        with:
+          command: c
+          cwd: ./
+          files: |
+                   app/
+                   requirements.txt
+          outPath: backend-release-build.tar.gz
+      - name: Upload backend build zip artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: backend-release-build.tar.gz
+          path: backend-release-build.tar.gz
+      - name: Create Release
+        uses: ncipollo/release-action@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          artifacts: "backend-release-build.tar.gz"
+          bodyFile: "CHANGELOG.md"
+          tag: "metrics-api-${{ github.ref_name }}-${{ env.RELEASE_ID }}"
+          makeLatest: true
+          generateReleaseNotes: true
+  deploy_backend:
+    runs-on: ubuntu-latest
+    # We specify that deploys needs to
+    # finish before we create a release
+    needs: backend_release
+    steps:
+      - name: Download playbook
+        uses: actions/checkout@v3
+        with:
+          # Repository name with owner. For example, actions/checkout
+          # Default: ${{ github.repository }}
+          repository: 'rciam/rciam-deploy'
+          ref: 'devel'
+          path: 'roles'
+      - name: Download inventory
+        uses: actions/checkout@v3
+        with:
+          repository: 'grnet/rciam-deploy-inv'
+          ref: 'master'
+          ssh-key: ${{ secrets.DEPLOY_READ_SECRET }}
+          path: 'inventory'
+      - name: Run playbook (deploy rciam-metrics) with release metrics-api-${{ github.ref_name }}-${{ env.RELEASE_ID }}
+        uses: dawidd6/action-ansible-playbook@v2
+        with:
+          # Required, playbook filepath
+          playbook: metricsservers.yml
+          # Optional, directory where playbooks live
+          directory: ./roles
+          key: ${{ secrets.DEPLOY_READ_SECRET }}
+          # Optional, encrypted vault password
+          vault_password: ${{secrets.VAULT_PASSWORD_DEVEL}}
+          options: |
+            --inventory ${{ github.workspace }}/inventory/rciam-metrics-dev/hosts.ini
+            --tags rciam-metrics:deploy-backend
+            -u debian
+            --extra-vars "metrics_release=metrics-api-${{ github.ref_name }}-${{ env.RELEASE_ID }}"
+  deploy_frontend:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: ${{ fromJson(needs.configure.outputs.matrix) }}
+    # We specify that deploys needs to
+    # finish before we create a release
+    # Job outputs are available to all downstream jobs that depend on this job.
+    needs: [frontend_release, configure]
+    steps:
+      - name: Download playbook
+        uses: actions/checkout@v3
+        with:
+          # Repository name with owner. For example, actions/checkout
+          # Default: ${{ github.repository }}
+          repository: 'rciam/rciam-deploy'
+          ref: 'devel'
+          path: 'roles'
+      - name: Download inventory
+        uses: actions/checkout@v3
+        with:
+          repository: 'grnet/rciam-deploy-inv'
+          ref: 'master'
+          ssh-key: ${{ secrets.DEPLOY_READ_SECRET }}
+          path: 'inventory'
+      - name: Run playbook (deploy rciam-metrics) with release frontend-${{matrix.tenant}}-${{ github.ref_name }}-${{ env.RELEASE_ID }}
+        uses: dawidd6/action-ansible-playbook@v2
+        with:
+          # Required, playbook filepath
+          playbook: metricsservers.yml
+          # Optional, directory where playbooks live
+          directory: ./roles
+          key: ${{ secrets.DEPLOY_READ_SECRET }}
+          # Optional, encrypted vault password
+          vault_password: ${{secrets.VAULT_PASSWORD_DEVEL}}
+          options: |
+            --inventory ${{ github.workspace }}/inventory/rciam-metrics-dev/hosts.ini
+            --tags rciam-metrics:deploy-frontend
+            -u debian
+            --extra-vars "metrics_release=frontend-${{matrix.tenant}}-${{ github.ref_name }}-${{ env.RELEASE_ID }} tenant_environment=${{matrix.tenant}}"
