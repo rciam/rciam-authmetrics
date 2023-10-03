@@ -90,6 +90,10 @@ jobs:
         # The tenant specific config file, i.e. config.tenant.environment.json, becomes plain config.json
         run: |
           ls -la ${{ github.workspace }}/metrics-app-${{matrix.tenant}}/javascript/src
+      - name: Cat config.json contents
+        # The tenant specific config file, i.e. config.tenant.environment.json, becomes plain config.json
+        run: |
+          cat ${{ github.workspace }}/metrics-app-${{matrix.tenant}}/javascript/src/config.json
       - name: Share artifact inside workflow (frontend)
         uses: actions/upload-artifact@v3
         with:

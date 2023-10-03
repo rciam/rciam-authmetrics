@@ -77,11 +77,7 @@ class LoginDataIngester:
             spId = session.exec(
                 """
                 INSERT INTO serviceprovidersmap (identifier, name, tenenv_id)
-                SELECT '{0}', '{1}', {2}
-                WHERE NOT EXISTS (
-                    SELECT 1 FROM serviceprovidersmap
-                    WHERE identifier = '{0}'
-                )
+                VALUES  ('{0}', '{1}', {2})
                 RETURNING id;
                 """.format(identifier, spName, tenenvId)
                 ).one()
