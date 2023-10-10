@@ -43,7 +43,7 @@ async def read_min_date_communities(
              WHERE tenenv_id={0}
           """.format(tenenv_id)).one()
     return min_date
-@router.get("/members_bystatus/")
+@router.get("/members_bystatus")
 async def read_members_bystatus(
         *,
         session: Session = Depends(get_session),
@@ -107,7 +107,7 @@ async def read_communities(
     return communities
 
 
-@router.get("/communities/")
+@router.get("/communities")
 async def read_community(
         *,
         session: Session = Depends(get_session),
