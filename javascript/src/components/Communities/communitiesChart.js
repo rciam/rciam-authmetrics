@@ -25,7 +25,6 @@ const CommunitiesChart = ({tenenvId}) => {
   const [communities, setCommunities] = useState();
   const [global_options, setGlobalOptions] = useState();
   const queryClient = useQueryClient();
-  const controller = new AbortController
 
 
   let params = {
@@ -33,8 +32,7 @@ const CommunitiesChart = ({tenenvId}) => {
       'interval': selected,
       'count_interval': options[selected]["count_interval"],
       'tenenv_id': tenenvId,
-    },
-    signal: controller.signal
+    }
   }
 
   const communitiesGroupBy = useQuery(
@@ -51,8 +49,7 @@ const CommunitiesChart = ({tenenvId}) => {
         'interval': selected,
         'count_interval': options[selected]["count_interval"],
         'tenenv_id': tenenvId,
-      },
-      signal: controller.signal
+      }
     }
 
     try {
@@ -60,10 +57,6 @@ const CommunitiesChart = ({tenenvId}) => {
     } catch (error) {
       // todo: Here we can handle any authentication or authorization errors
       console.log(error)
-    }
-
-    return () => {
-      controller.abort()
     }
   }, [selected, tenenvId])
 

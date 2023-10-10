@@ -33,7 +33,6 @@ const CommunitiesDataTable = ({tenenvId}) => {
   const [startDate, setStartDate] = useState(oneYearAgo);
   const [dropdownOptionsState, setDropdownOptions] = useState(dropdownOptions);
   const [groupBy, setGroupBy] = useState("month")
-  const controller = new AbortController
 
 
   const queryClient = useQueryClient();
@@ -43,8 +42,7 @@ const CommunitiesDataTable = ({tenenvId}) => {
       'startDate': !startDate ? oneYearAgo : format(startDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"),
       'endDate': !endDate ? today : format(endDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"),
       'tenenv_id': tenenvId
-    },
-    signal: controller.signal
+    }
   }
 
   const communitiesGroupBy = useQuery(
@@ -71,8 +69,7 @@ const CommunitiesDataTable = ({tenenvId}) => {
         'startDate': !startDate ? oneYearAgo : format(startDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"),
         'endDate': !endDate ? today : format(endDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"),
         'tenenv_id': tenenvId
-      },
-      signal: controller.signal
+      }
     }
 
     try {
@@ -81,10 +78,6 @@ const CommunitiesDataTable = ({tenenvId}) => {
     } catch (error) {
       // todo: Here we can handle any authentication or authorization errors
       console.log(error)
-    }
-
-    return () => {
-      controller.abort()
     }
   }, [groupBy])
 
