@@ -30,8 +30,7 @@ const RegisteredUsersChart = ({
       'interval': selected,
       'count_interval': regUsersOptions[selected]["count_interval"],
       'tenenv_id': tenenvId
-    },
-    signa: controller.signal
+    }
   }
 
   const registeredUsersGroup = useQuery(
