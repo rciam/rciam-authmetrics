@@ -33,7 +33,6 @@ const RegisteredUsersDataTable = ({
   const [minDate, setMinDate] = useState("");
   const [groupBy, setGroupBy] = useState("month")
   const queryClient = useQueryClient();
-  const controller = new AbortController();
 
 
   let params = {
@@ -73,8 +72,7 @@ const RegisteredUsersDataTable = ({
         'endDate': !endDate ? null : format(endDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"),
         'tenenv_id': tenenvId,
         'groupBy': groupBy
-      },
-      signal: controller.signal
+      }
     }
 
     try {
@@ -88,11 +86,6 @@ const RegisteredUsersDataTable = ({
       // todo: Here we can handle any authentication or authorization errors
       console.log(error)
     }
-
-    return () => {
-      controller.abort()
-    }
-
   }, [groupBy])
 
   // Construct the data required for the datatable
