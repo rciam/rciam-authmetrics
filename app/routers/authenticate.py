@@ -1,4 +1,5 @@
 from pprint import pprint
+from app.logger import log
 from typing import Annotated, Any
 
 from fastapi import APIRouter, Depends, HTTPException, status, Security, Request
@@ -17,6 +18,8 @@ router = APIRouter(
     # dependencies=[Depends(get_token_header)],
     # responses={404: {"description": "Not found"}},
 )
+
+logger = log.get_logger("authenticate")
 
 def initializeAuthOb():
     config_file = 'config.' + g.tenant + '.' + g.environment + '.py'
@@ -119,7 +122,7 @@ async def authorize_rciam(
 
         # Authorization
         authorize_file = 'authorize.' + g.tenant + '.' + g.environment + '.py'
-        permissions = permissionsCalculation(authorize_file, user_info_data)
+        permissions = permissionsCalculation(logger, authorize_file, user_info_data)
         permissions_json = json.dumps(permissions).replace(" ", "").replace("\n", "")
 
         # Set the permissions cookie.
