@@ -1,4 +1,4 @@
-from pprint import pprint
+from app.logger import log
 import requests as reqs
 from fastapi import Depends, FastAPI, HTTPException, Query, Request, HTTPException, status, Response
 import json, jwt
@@ -10,6 +10,8 @@ from app.utils.fastapiGlobals import g
 
 # https://www.fastapitutorial.com/blog/class-based-dependency-injection/
 class AuthNZCheck:
+    logger = log.get_logger("AuthNZCheck")
+
     def __init__(self, tag: str = "", skip: bool = False):
         self.skip = skip
         self.tag = tag
@@ -20,6 +22,9 @@ class AuthNZCheck:
         authorize_file = 'authorize.' + g.tenant + '.' + g.environment + '.py'
         config_file = 'config.' + g.tenant + '.' + g.environment + '.py'
         oidc_config = configParser.getConfig('oidc_client', config_file)
+
+        self.logger.debug("""Authorize Config File Name: {0}""".format(authorize_file))
+        self.logger.debug("""Config File Name: {0}""".format(config_file))
 
         self.oauth.register(
             'rciam',
@@ -43,7 +48,7 @@ class AuthNZCheck:
         if resp.status_code == 401:
             # For now we skip logins and dashboard routes
             if (self.tag == 'logins' or self.tag == 'dashboard') and self.skip:
-                permissions = permissionsCalculation(authorize_file)
+                permissions = permissionsCalculation(self.logger, authorize_file)
                 permissions_json = json.dumps(permissions).replace(" ", "").replace("\n", "")
                 # pprint(permissions_json)
                 response.headers["X-Permissions"] = permissions_json
@@ -66,10 +71,12 @@ class AuthNZCheck:
                 data = resp.json()
             except Exception as er:
                 # TODO: Log here
+                self.logger.error("""error: {0}""" . format(str(er)))
                 raise HTTPException(status_code=500)
 
         # Authorization
-        permissions = permissionsCalculation(authorize_file, data)
+        permissions = permissionsCalculation(self.logger, authorize_file, data)
+        self.logger.debug("""permissions: {0}""" . format(permissions))
         permissions_json = json.dumps(permissions).replace(" ", "").replace("\n", "")
 
         # Add the permission to a custom header field
@@ -82,7 +89,7 @@ class AuthNZCheck:
                 HTTPException(status_code=403)
 
 
-def permissionsCalculation(authorize_file, user_info=None):
+def permissionsCalculation(logger, authorize_file, user_info=None):
     entitlements_config = configParser.getConfig('entitlements', authorize_file)
     user_entitlements = {}
     if user_info is not None:
@@ -94,6 +101,9 @@ def permissionsCalculation(authorize_file, user_info=None):
         'administrator': False
     }
 
+    logger.debug("""Entitlements Config: {0}""" . format(str(entitlements_config)))
+    logger.debug("""User Entitlements Config: {0}""" . format(str(user_entitlements)))
+
     for ent, role in entitlements_config.items():
         if user_entitlements is not None and ent in user_entitlements:
             # Reset the default anonymous role
@@ -103,7 +113,7 @@ def permissionsCalculation(authorize_file, user_info=None):
             for item_role in role.split(","):
                 roles[item_role] = True
 
-    # pprint(roles)
+    logger.debug("""roles: {0}""" . format(str(roles)))
 
     actions = {
         'dashboard': {
