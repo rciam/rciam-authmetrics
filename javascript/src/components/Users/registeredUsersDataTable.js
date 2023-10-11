@@ -90,7 +90,6 @@ const RegisteredUsersDataTable = ({
 
   // Construct the data required for the datatable
   useEffect(() => {
-    console.log(registeredUsersPerCountryGroup)
     const perPeriod = registeredUsersPerCountryGroup?.data?.map(user => ({
         "Date": !!user?.range_date ? convertDateByGroup(new Date(user?.range_date), groupBy): null,
         "Number of Registered Users": user?.count,

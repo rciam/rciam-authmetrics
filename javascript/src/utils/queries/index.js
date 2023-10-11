@@ -13,6 +13,7 @@ export const getTenenv = async ({queryKey}) => {
     return response.data
   } catch (error) {
     console.log('error', error)
+    console.log('queryKeys', queryKeys)
     handleError(error)
     return error.response
   }
@@ -26,6 +27,7 @@ export const getLoginsPerSP = async ({queryKey}) => {
     return response.data
   } catch (error) {
     console.log('error', error)
+    console.log('queryKeys', queryKeys)
     handleError(error)
     return error.response
   }
@@ -38,6 +40,7 @@ export const getLoginsPerIdp = async ({queryKey}) => {
     return response.data
   } catch (error) {
     console.log('error', error)
+    console.log('queryKeys', queryKeys)
     handleError(error)
     return error.response
   }
@@ -50,6 +53,7 @@ export const getLoginsPerCountry = async ({queryKey}) => {
     return response.data
   } catch (error) {
     console.log('error', error)
+    console.log('queryKeys', queryKeys)
     handleError(error)
     return error.response
   }
@@ -62,6 +66,7 @@ export const getMinDateLogins = async ({queryKey}) => {
     return response.data
   } catch (error) {
     console.log('error', error)
+    console.log('queryKeys', queryKeys)
     handleError(error)
     return error.response
   }
@@ -74,6 +79,7 @@ export const getMinDateCommunities = async ({queryKey}) => {
     return response.data
   } catch (error) {
     console.log('error', error)
+    console.log('queryKeys', queryKeys)
     handleError(error)
     return error.response
   }
@@ -86,6 +92,7 @@ export const getMinDateRegisteredUsers = async ({queryKey}) => {
     return response.data
   } catch (error) {
     console.log('error', error)
+    console.log('queryKeys', queryKeys)
     handleError(error)
     return error.response
   }
@@ -98,6 +105,7 @@ export const getLoginsGroupByDay = async ({queryKey}) => {
     return response.data
   } catch (error) {
     console.log('error', error)
+    console.log('queryKeys', queryKeys)
     handleError(error)
     return error.response
   }
@@ -110,6 +118,7 @@ export const getLoginsCountBy = async ({queryKey}) => {
     return response.data
   } catch (error) {
     console.log('error', error)
+    console.log('queryKeys', queryKeys)
     handleError(error)
     return error.response
   }
@@ -123,6 +132,7 @@ export const getIdps = async ({queryKey}) => {
     return response.data
   } catch (error) {
     console.log('error', error)
+    console.log('queryKeys', queryKeys)
     handleError(error)
     return error.response
   }
@@ -135,6 +145,7 @@ export const getSps = async ({queryKey}) => {
     return response.data
   } catch (error) {
     console.log('error', error)
+    console.log('queryKeys', queryKeys)
     handleError(error)
     return error.response
   }
@@ -148,6 +159,7 @@ export const getRegisteredUsersCountby = async ({queryKey}) => {
     return response.data
   } catch (error) {
     console.log('error', error)
+    console.log('queryKeys', queryKeys)
     handleError(error)
     return error.response
   }
@@ -160,6 +172,7 @@ export const getRegisteredUsersByCountry = async ({queryKey}) => {
     return response.data
   } catch (error) {
     console.log('error', error)
+    console.log('queryKeys', queryKeys)
     handleError(error)
     return error.response
   }
@@ -173,6 +186,7 @@ export const getCommunities = async ({queryKey}) => {
     return response.data
   } catch (error) {
     console.log('error', error)
+    console.log('queryKeys', queryKeys)
     handleError(error)
     return error.response
   }
@@ -185,6 +199,7 @@ export const getCommunityMembersByStatus = async ({queryKey}) => {
     return response.data
   } catch (error) {
     console.log('error', error)
+    console.log('queryKeys', queryKeys)
     handleError(error)
     return error.response
   }
@@ -197,6 +212,7 @@ export const getCountryStatsByVo = async ({queryKey}) => {
     return response.data
   } catch (error) {
     console.log('error', error)
+    console.log('queryKeys', queryKeys)
     handleError(error)
     return error.response
   }
@@ -211,6 +227,7 @@ export const getCommunitiesGroupBy = async ({queryKey}) => {
     return response.data
   } catch (error) {
     console.log('error', error)
+    console.log('queryKeys', queryKeys)
     handleError(error)
     return error.response
   }
@@ -225,6 +242,7 @@ export const getRegisteredUsersPerCountryGroupBy = async ({queryKey}) => {
     return response.data
   } catch (error) {
     console.log('error', error)
+    console.log('queryKeys', queryKeys)
     handleError(error)
     return error.response
   }
@@ -239,6 +257,7 @@ export const getRegisteredUsersGroupBy = async ({queryKey}) => {
     return response.data
   } catch (error) {
     console.log('error', error)
+    console.log('queryKeys', queryKeys)
     handleError(error)
     return error.response
   }

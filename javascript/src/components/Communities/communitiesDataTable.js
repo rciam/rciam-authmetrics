@@ -101,7 +101,6 @@ const CommunitiesDataTable = ({tenenvId}) => {
       // We only keep the first date because the backend returns the dataset sorted and we only care about the
       // min of the min dates.
       if (minDate == undefined || minDate == "") {
-        console.log(minDateCommunities?.data?.min_date)
         setMinDate(!!minDateCommunities?.data?.min_date ? new Date(minDateCommunities?.data?.min_date) : null)
       }
       $("#table-community").DataTable().destroy()
