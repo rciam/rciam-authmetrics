@@ -81,7 +81,6 @@ const RegisteredUsersDataTable = ({
         params: params
       }])
       queryClient.refetchQueries([minDateRegisteredUsersKey, {params:{tenenv_id: tenenvId}}])
-      console.log(params)
     } catch (error) {
       // todo: Here we can handle any authentication or authorization errors
       console.log(error)
