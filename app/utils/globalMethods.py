@@ -56,6 +56,7 @@ class AuthNZCheck:
                 response.headers["X-Redirect"] = "false"
                 return
 
+            self.logger.debug("""Unauthorized request""")
             raise HTTPException(
                 status_code=401,
                 detail="Authentication failed",
@@ -71,12 +72,13 @@ class AuthNZCheck:
                 data = resp.json()
             except Exception as er:
                 # TODO: Log here
-                self.logger.error("""error: {0}""" . format(str(er)))
+                self.logger.error("""error: {0}""".format(str(er)))
                 raise HTTPException(status_code=500)
 
+        self.logger.debug("""User Info Response: {0}""" . format(data))
         # Authorization
         permissions = permissionsCalculation(self.logger, authorize_file, data)
-        self.logger.debug("""permissions: {0}""" . format(permissions))
+        self.logger.debug("""permissions: {0}""".format(permissions))
         permissions_json = json.dumps(permissions).replace(" ", "").replace("\n", "")
 
         # Add the permission to a custom header field
@@ -101,8 +103,8 @@ def permissionsCalculation(logger, authorize_file, user_info=None):
         'administrator': False
     }
 
-    logger.debug("""Entitlements Config: {0}""" . format(str(entitlements_config)))
-    logger.debug("""User Entitlements Config: {0}""" . format(str(user_entitlements)))
+    logger.debug("""Entitlements Config: {0}""".format(str(entitlements_config)))
+    logger.debug("""User Entitlements Config: {0}""".format(str(user_entitlements)))
 
     for ent, role in entitlements_config.items():
         if user_entitlements is not None and ent in user_entitlements:
@@ -113,7 +115,7 @@ def permissionsCalculation(logger, authorize_file, user_info=None):
             for item_role in role.split(","):
                 roles[item_role] = True
 
-    logger.debug("""roles: {0}""" . format(str(roles)))
+    logger.debug("""roles: {0}""".format(str(roles)))
 
     actions = {
         'dashboard': {
