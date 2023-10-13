@@ -43,6 +43,7 @@ class AuthNZCheck:
 
         headers = {'Authorization': f'Bearer {access_token}'}
         resp = reqs.get(metadata['userinfo_endpoint'], headers=headers)
+        self.logger.debug("""User Info Endpoint Respnse: {0}""" . format(resp))
 
         # Authentication
         if resp.status_code == 401:
@@ -56,7 +57,7 @@ class AuthNZCheck:
                 response.headers["X-Redirect"] = "false"
                 return
 
-            self.logger.debug("""Unauthorized request""")
+            self.logger.debug("""Unauthorized request to User Info endpoint""")
             raise HTTPException(
                 status_code=401,
                 detail="Authentication failed",
