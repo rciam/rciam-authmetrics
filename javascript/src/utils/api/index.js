@@ -37,12 +37,12 @@ const handleError = (error) => {
     && error?.response?.headers?.['x-authenticated'] == "false"
     && error?.response?.headers?.['x-redirect'] == "true"
   ) {
-    deleteCookie('idtoken', '/', window.location.hostname)
-    deleteCookie('atoken', '/', window.location.hostname)
-    deleteCookie('userinfo', '/', window.location.hostname)
-    // XXX it would be better if the root was / and not a path
-    //     Find a way to redirect to dashboard/root
-    window.location.href = `/metrics`
+    // deleteCookie('idtoken', '/', window.location.hostname)
+    // deleteCookie('atoken', '/', window.location.hostname)
+    // deleteCookie('userinfo', '/', window.location.hostname)
+    // // XXX it would be better if the root was / and not a path
+    // //     Find a way to redirect to dashboard/root
+    // window.location.href = `/metrics`
   }
 }
 
