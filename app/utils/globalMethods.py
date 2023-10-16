@@ -58,6 +58,8 @@ class AuthNZCheck:
                 return
 
             self.logger.debug("""Unauthorized request to User Info endpoint""")
+            self.logger.debug("""Response headers: {0}""" . format(resp.headers))
+            self.logger.debug("""Response body: {0}""" . format(resp.json()))
             raise HTTPException(
                 status_code=401,
                 detail="Authentication failed",
