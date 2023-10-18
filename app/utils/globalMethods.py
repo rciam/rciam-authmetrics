@@ -31,7 +31,7 @@ class AuthNZCheck:
         self.logger.debug("""{0}.{1}: Config File Name: {2}""".format(g.tenant, g.environment, config_file))
 
         self.oauth.register(
-            'rciam',
+            g.tenant + '.' + g.environment + '.rciam',
             client_id=oidc_config['client_id'],
             client_secret=oidc_config['client_secret'],
             server_metadata_url=oidc_config['issuer'] + "/.well-known/openid-configuration",
@@ -42,7 +42,7 @@ class AuthNZCheck:
 
         # permissions calculation
         access_token = request.headers.get('x-access-token')
-        rciam = self.oauth.create_client('rciam')
+        rciam = self.oauth.create_client(g.tenant + '.' + g.environment + '.rciam')
         metadata = await rciam.load_server_metadata()
 
         headers = {'Authorization': f'Bearer {access_token}'}
