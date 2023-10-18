@@ -19,8 +19,8 @@ class AuthNZCheck:
 
     async def __call__(self, request: Request, response: Response):
         self.logger.debug("""=============== Request Context =================""")
-        self.logger.debug("""Request Url: {0}""" . format(response.request.url))
-        self.logger.debug("""Request Body: {0}""" . format(response.request.body))
+        self.logger.debug("""Request Url: {0}""" . format(request.url))
+        self.logger.debug("""Request Headers: {0}""" . format(request.headers))
 
         # config
         authorize_file = 'authorize.' + g.tenant + '.' + g.environment + '.py'
@@ -46,7 +46,6 @@ class AuthNZCheck:
         metadata = await rciam.load_server_metadata()
 
         headers = {'Authorization': f'Bearer {access_token}'}
-        self.logger.debug("""Request Headers: {0}""" . format(headers))
 
         resp = reqs.get(metadata['userinfo_endpoint'], headers=headers)
         self.logger.debug("""User Info Endpoint Response: {0}""" . format(resp))
