@@ -19,16 +19,16 @@ class AuthNZCheck:
 
     async def __call__(self, request: Request, response: Response):
         self.logger.debug("""=============== Request Context =================""")
-        self.logger.debug("""Request Url: {0}""" . format(request.url))
-        self.logger.debug("""Request Headers: {0}""" . format(request.headers))
+        self.logger.debug("""{0}.{1}: Request Url: {2}""" . format(g.tenant, g.environment, request.url))
+        self.logger.debug("""{0}.{1}: Request Headers: {2}""" . format(g.tenant, g.environment, request.headers))
 
         # config
         authorize_file = 'authorize.' + g.tenant + '.' + g.environment + '.py'
         config_file = 'config.' + g.tenant + '.' + g.environment + '.py'
         oidc_config = configParser.getConfig('oidc_client', config_file)
 
-        self.logger.debug("""Authorize Config File Name: {0}""".format(authorize_file))
-        self.logger.debug("""Config File Name: {0}""".format(config_file))
+        self.logger.debug("""{0}.{1}: Authorize Config File Name: {2}""".format(g.tenant, g.environment, authorize_file))
+        self.logger.debug("""{0}.{1}: Config File Name: {2}""".format(g.tenant, g.environment, config_file))
 
         self.oauth.register(
             'rciam',
@@ -48,7 +48,7 @@ class AuthNZCheck:
         headers = {'Authorization': f'Bearer {access_token}'}
 
         resp = reqs.get(metadata['userinfo_endpoint'], headers=headers)
-        self.logger.debug("""User Info Endpoint Response: {0}""" . format(resp))
+        self.logger.debug("""{0}.{1}: User Info Endpoint Response: {2}""" . format(g.tenant, g.environment, resp))
 
         # Authentication
         if resp.status_code == 401:
@@ -62,9 +62,9 @@ class AuthNZCheck:
                 response.headers["X-Redirect"] = "false"
                 return
 
-            self.logger.debug("""Unauthorized request to User Info endpoint""")
-            self.logger.debug("""Response headers: {0}""" . format(resp.headers))
-            self.logger.debug("""Response body: {0}""" . format(resp.json()))
+            self.logger.debug("""{0}.{1}: Unauthorized request to User Info endpoint""")
+            self.logger.debug("""{0}.{1}: Response headers: {2}""" . format(g.tenant, g.environment, resp.headers))
+            self.logger.debug("""{0}.{1}: Response body: {2}""" . format(g.tenant, g.environment, resp.json()))
             raise HTTPException(
                 status_code=401,
                 detail="Authentication failed",
@@ -80,13 +80,13 @@ class AuthNZCheck:
                 data = resp.json()
             except Exception as er:
                 # TODO: Log here
-                self.logger.error("""error: {0}""".format(str(er)))
+                self.logger.error("""{0}.{1}: error: {2}""".format(g.tenant, g.environment, er))
                 raise HTTPException(status_code=500)
 
-        self.logger.debug("""User Info Response: {0}""" . format(data))
+        self.logger.debug("""{0}.{1}: User Info Response: {2}""" . format(g.tenant, g.environment, data))
         # Authorization
         permissions = permissionsCalculation(self.logger, authorize_file, data)
-        self.logger.debug("""permissions: {0}""".format(permissions))
+        self.logger.debug("""{0}.{1}:  permissions: {2}""".format(g.tenant, g.environment, permissions))
         permissions_json = json.dumps(permissions).replace(" ", "").replace("\n", "")
 
         # Add the permission to a custom header field
@@ -111,8 +111,8 @@ def permissionsCalculation(logger, authorize_file, user_info=None):
         'administrator': False
     }
 
-    logger.debug("""Entitlements Config: {0}""".format(str(entitlements_config)))
-    logger.debug("""User Entitlements Config: {0}""".format(str(user_entitlements)))
+    logger.debug("""{0}.{1}: Entitlements Config: {2}""".format(g.tenant, g.environment, entitlements_config))
+    logger.debug("""{0}.{1}: User Entitlements Config: {2}""".format(g.tenant, g.environment, user_entitlements))
 
     for ent, role in entitlements_config.items():
         if user_entitlements is not None and ent in user_entitlements:
@@ -123,7 +123,7 @@ def permissionsCalculation(logger, authorize_file, user_info=None):
             for item_role in role.split(","):
                 roles[item_role] = True
 
-    logger.debug("""roles: {0}""".format(str(roles)))
+    logger.debug("""{0}.{1}: roles: {2}""".format(g.tenant, g.environment, roles))
 
     actions = {
         'dashboard': {
