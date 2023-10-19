@@ -117,7 +117,7 @@ async def read_community(
     if community_id:
         sql_subquery = 'id={0} and'.format(community_id)
     community = session.exec("""
-        SELECT * FROM community_info WHERE {0} tenenv_id={1}
+        SELECT * FROM community_info WHERE {0} tenenv_id={1} ORDER BY name ASC
     """.format(sql_subquery, tenenv_id)).all()
     # statement = select(Community).options(selectinload(Community.community_info))
     # result = session.exec(statement)
@@ -127,7 +127,7 @@ async def read_community(
     return community
 
 
-@router.get("/communities_info/", response_model=List[Community_InfoRead])
+@router.get("/communities_info", response_model=List[Community_InfoRead])
 async def read_communities_info(
         *,
         session: Session = Depends(get_session),

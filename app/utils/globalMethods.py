@@ -1,4 +1,4 @@
-from pprint import pprint
+from app.logger import log
 import requests as reqs
 from fastapi import Depends, FastAPI, HTTPException, Query, Request, HTTPException, status, Response
 import json, jwt
@@ -10,19 +10,28 @@ from app.utils.fastapiGlobals import g
 
 # https://www.fastapitutorial.com/blog/class-based-dependency-injection/
 class AuthNZCheck:
+    logger = log.get_logger("AuthNZCheck")
+
     def __init__(self, tag: str = "", skip: bool = False):
         self.skip = skip
         self.tag = tag
         self.oauth = OAuth()
 
     async def __call__(self, request: Request, response: Response):
+        self.logger.debug("""=============== Request Context =================""")
+        self.logger.debug("""{0}.{1}: Request Url: {2}""" . format(g.tenant, g.environment, request.url))
+        self.logger.debug("""{0}.{1}: Request Headers: {2}""" . format(g.tenant, g.environment, request.headers))
+
         # config
         authorize_file = 'authorize.' + g.tenant + '.' + g.environment + '.py'
         config_file = 'config.' + g.tenant + '.' + g.environment + '.py'
         oidc_config = configParser.getConfig('oidc_client', config_file)
 
+        self.logger.debug("""{0}.{1}: Authorize Config File Name: {2}""".format(g.tenant, g.environment, authorize_file))
+        self.logger.debug("""{0}.{1}: Config File Name: {2}""".format(g.tenant, g.environment, config_file))
+
         self.oauth.register(
-            'rciam',
+            g.tenant + '.' + g.environment + '.rciam',
             client_id=oidc_config['client_id'],
             client_secret=oidc_config['client_secret'],
             server_metadata_url=oidc_config['issuer'] + "/.well-known/openid-configuration",
@@ -33,17 +42,19 @@ class AuthNZCheck:
 
         # permissions calculation
         access_token = request.headers.get('x-access-token')
-        rciam = self.oauth.create_client('rciam')
+        rciam = self.oauth.create_client(g.tenant + '.' + g.environment + '.rciam')
         metadata = await rciam.load_server_metadata()
 
         headers = {'Authorization': f'Bearer {access_token}'}
+
         resp = reqs.get(metadata['userinfo_endpoint'], headers=headers)
+        self.logger.debug("""{0}.{1}: User Info Endpoint Response: {2}""" . format(g.tenant, g.environment, resp))
 
         # Authentication
         if resp.status_code == 401:
             # For now we skip logins and dashboard routes
             if (self.tag == 'logins' or self.tag == 'dashboard') and self.skip:
-                permissions = permissionsCalculation(authorize_file)
+                permissions = permissionsCalculation(self.logger, authorize_file)
                 permissions_json = json.dumps(permissions).replace(" ", "").replace("\n", "")
                 # pprint(permissions_json)
                 response.headers["X-Permissions"] = permissions_json
@@ -51,6 +62,9 @@ class AuthNZCheck:
                 response.headers["X-Redirect"] = "false"
                 return
 
+            self.logger.debug("""{0}.{1}: Unauthorized request to User Info endpoint""")
+            self.logger.debug("""{0}.{1}: Response headers: {2}""" . format(g.tenant, g.environment, resp.headers))
+            self.logger.debug("""{0}.{1}: Response body: {2}""" . format(g.tenant, g.environment, resp.json()))
             raise HTTPException(
                 status_code=401,
                 detail="Authentication failed",
@@ -66,10 +80,13 @@ class AuthNZCheck:
                 data = resp.json()
             except Exception as er:
                 # TODO: Log here
+                self.logger.error("""{0}.{1}: error: {2}""".format(g.tenant, g.environment, er))
                 raise HTTPException(status_code=500)
 
+        self.logger.debug("""{0}.{1}: User Info Response: {2}""" . format(g.tenant, g.environment, data))
         # Authorization
-        permissions = permissionsCalculation(authorize_file, data)
+        permissions = permissionsCalculation(self.logger, authorize_file, data)
+        self.logger.debug("""{0}.{1}:  permissions: {2}""".format(g.tenant, g.environment, permissions))
         permissions_json = json.dumps(permissions).replace(" ", "").replace("\n", "")
 
         # Add the permission to a custom header field
@@ -82,7 +99,7 @@ class AuthNZCheck:
                 HTTPException(status_code=403)
 
 
-def permissionsCalculation(authorize_file, user_info=None):
+def permissionsCalculation(logger, authorize_file, user_info=None):
     entitlements_config = configParser.getConfig('entitlements', authorize_file)
     user_entitlements = {}
     if user_info is not None:
@@ -94,6 +111,9 @@ def permissionsCalculation(authorize_file, user_info=None):
         'administrator': False
     }
 
+    logger.debug("""{0}.{1}: Entitlements Config: {2}""".format(g.tenant, g.environment, entitlements_config))
+    logger.debug("""{0}.{1}: User Entitlements Config: {2}""".format(g.tenant, g.environment, user_entitlements))
+
     for ent, role in entitlements_config.items():
         if user_entitlements is not None and ent in user_entitlements:
             # Reset the default anonymous role
@@ -103,7 +123,7 @@ def permissionsCalculation(authorize_file, user_info=None):
             for item_role in role.split(","):
                 roles[item_role] = True
 
-    # pprint(roles)
+    logger.debug("""{0}.{1}: roles: {2}""".format(g.tenant, g.environment, roles))
 
     actions = {
         'dashboard': {

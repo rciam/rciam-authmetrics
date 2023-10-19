@@ -1,4 +1,5 @@
 from pprint import pprint
+from app.logger import log
 from typing import Annotated, Any
 
 from fastapi import APIRouter, Depends, HTTPException, status, Security, Request
@@ -18,13 +19,15 @@ router = APIRouter(
     # responses={404: {"description": "Not found"}},
 )
 
+logger = log.get_logger("authenticate")
+
 def initializeAuthOb():
     config_file = 'config.' + g.tenant + '.' + g.environment + '.py'
     oidc_config = configParser.getConfig('oidc_client', config_file)
     oauth = OAuth()
 
     oauth.register(
-        'rciam',
+        g.tenant + '.' + g.environment + '.rciam',
         client_id=oidc_config['client_id'],
         client_secret=oidc_config['client_secret'],
         server_metadata_url=oidc_config['issuer'] + "/.well-known/openid-configuration",
@@ -43,7 +46,7 @@ async def login_endpoint(
         request: Request,
         oauth_ob= Depends(initializeAuthOb),
         server_config= Depends(getServerConfig)):
-    rciam = oauth_ob.create_client('rciam')
+    rciam = oauth_ob.create_client(g.tenant + '.' + g.environment + '.rciam')
     redirect_uri = server_config['protocol'] + "://" + server_config['host'] + server_config['api_path'] + "/auth"
     return await rciam.authorize_redirect(request, redirect_uri)
 
@@ -68,7 +71,7 @@ async def authorize_rciam(
     response = RedirectResponse(url=urllib.parse.unquote(login_start_url))
     response.delete_cookie("login_start")
 
-    rciam = oauth_ob.create_client('rciam')
+    rciam = oauth_ob.create_client(g.tenant + '.' + g.environment + '.rciam')
     try:
         token = await rciam.authorize_access_token(request)
     except OAuthError as error:
@@ -119,7 +122,7 @@ async def authorize_rciam(
 
         # Authorization
         authorize_file = 'authorize.' + g.tenant + '.' + g.environment + '.py'
-        permissions = permissionsCalculation(authorize_file, user_info_data)
+        permissions = permissionsCalculation(logger, authorize_file, user_info_data)
         permissions_json = json.dumps(permissions).replace(" ", "").replace("\n", "")
 
         # Set the permissions cookie.
@@ -145,7 +148,7 @@ async def logout(
         oauth_ob= Depends(initializeAuthOb),
         server_config=Depends(getServerConfig)
 ):
-    rciam = oauth_ob.create_client('rciam')
+    rciam = oauth_ob.create_client(g.tenant + '.' + g.environment + '.rciam')
     metadata = await rciam.load_server_metadata()
     # todo: Fix this after we complete the multitenacy
     redirect_uri = server_config['protocol'] + "://" + server_config['client'] +"/metrics"

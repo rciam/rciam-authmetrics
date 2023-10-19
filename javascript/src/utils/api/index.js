@@ -33,7 +33,6 @@ const deleteCookie = (name, path, domain) => {
 
 const handleError = (error) => {
   console.log('error', error)
-  // debugger
   if (error?.response?.status == 401
     && error?.response?.headers?.['x-authenticated'] == "false"
     && error?.response?.headers?.['x-redirect'] == "true"
@@ -54,7 +53,7 @@ const client = axios.create({
     "Content-type": "application/json",
     'x-access-token': `${getCookie('atoken')}`,
     'x-tenant': `${config.tenant}`,
-    'x-environment': `${config.environment}`,
+    'x-environment': `${config.environment}`
   },
   validateStatus: function (status) {
     return status >= 200 && status < 300; // default
