@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Field, Session, SQLModel, create_engine, select
 from typing import Union
 
-from app.database import get_session
+from app.database import db
 from app.models.community_info_model import *
 from app.models.community_model import *
 from app.models.member_model import MembersReadWithCommunityInfo
@@ -20,7 +20,7 @@ router = APIRouter(
 @router.get("/members/", response_model=List[MembersReadWithCommunityInfo])
 async def read_members(
         *,
-        session: Session = Depends(get_session),
+        session: Session = Depends(db.get_session),
         offset: int = 0,
         # community_id: Union[None, int] = None
 ):
@@ -33,7 +33,7 @@ async def read_members(
 @router.get("/min_date_communities")
 async def read_min_date_communities(
         *,
-        session: Session = Depends(get_session),
+        session: Session = Depends(db.get_session),
         offset: int = 0,
         tenenv_id: int,
 ):
@@ -46,7 +46,7 @@ async def read_min_date_communities(
 @router.get("/members_bystatus")
 async def read_members_bystatus(
         *,
-        session: Session = Depends(get_session),
+        session: Session = Depends(db.get_session),
         offset: int = 0,
         community_id: Union[None, int] = None,
         tenenv_id: int,
@@ -67,7 +67,7 @@ async def read_members_bystatus(
 @router.get("/communities_groupby/{group_by}")
 async def read_communities(
         *,
-        session: Session = Depends(get_session),
+        session: Session = Depends(db.get_session),
         offset: int = 0,
         group_by: str,
         tenenv_id: int,
@@ -110,7 +110,7 @@ async def read_communities(
 @router.get("/communities")
 async def read_community(
         *,
-        session: Session = Depends(get_session),
+        session: Session = Depends(db.get_session),
         community_id: Union[None, int] = None,
         tenenv_id: int):
     sql_subquery = ''
@@ -130,7 +130,7 @@ async def read_community(
 @router.get("/communities_info", response_model=List[Community_InfoRead])
 async def read_communities_info(
         *,
-        session: Session = Depends(get_session),
+        session: Session = Depends(db.get_session),
         offset: int = 0
 ):
     communities = session.exec(select(Community_Info).offset(offset)).all()

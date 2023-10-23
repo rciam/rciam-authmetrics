@@ -11,7 +11,6 @@ from sqlmodel import Field, Session, SQLModel, create_engine, select
 from sqlalchemy import func
 from sqlalchemy.orm import selectinload
 
-from app.database import get_session
 from app.models.community_info_model import *
 from app.models.community_model import *
 from app.models.member_model import *

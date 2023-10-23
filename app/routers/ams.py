@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends, HTTPException, Response, Request, Body, 
 from sqlmodel import Field, Session, SQLModel, create_engine, select
 from typing import Union
 from app.utils import configParser, globalMethods
-from app.database import get_session
+from app.database import db
 from app.utils.globalMethods import AuthNZCheck
 from fastapi.responses import PlainTextResponse
 from app.logger import log
@@ -44,7 +44,7 @@ async def verify_authorization_header(Authorization: Optional[str] = Header(None
 
 @router.post("/ams_stats")
 async def get_ams_stats(*,
-    session: Session = Depends(get_session),
+    session: Session = Depends(db.get_session),
     request: Request,
     response: Response,
     body = Body(..., example={"name": "Item Name"}),

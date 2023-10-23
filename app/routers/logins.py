@@ -7,7 +7,7 @@ from sqlalchemy.exc import NoResultFound
 from typing import Union
 from xmlrpc.client import boolean
 
-from app.database import get_session
+from app.database import db
 from app.utils.globalMethods import AuthNZCheck
 
 
@@ -22,7 +22,7 @@ router = APIRouter(
 async def read_min_date_logins(
         *,
         request: Request,
-        session: Session = Depends(get_session),
+        session: Session = Depends(db.get_session),
         tenenv_id: int,
         unique_logins: Union[boolean, None] = False,
 ):
@@ -39,7 +39,7 @@ async def read_min_date_logins(
 async def read_logins_per_idp(
         *,
         request: Request,
-        session: Session = Depends(get_session),
+        session: Session = Depends(db.get_session),
         offset: int = 0,
         sp: str = None,  # type: ignore
         startDate: str = None,  # type: ignore
@@ -100,7 +100,7 @@ async def read_logins_per_idp(
 @router.get("/logins_per_sp")
 async def read_logins_per_sp(
         *,
-        session: Session = Depends(get_session),
+        session: Session = Depends(db.get_session),
         request: Request,
         offset: int = 0,
         idp: str = None,
@@ -163,7 +163,7 @@ async def read_logins_per_sp(
 @router.get("/logins_per_country")
 async def read_logins_per_country(
         *,
-        session: Session = Depends(get_session),
+        session: Session = Depends(db.get_session),
         offset: int = 0,
         group_by: Union[str, None] = None,
         startDate: str = None,
@@ -258,7 +258,7 @@ async def read_logins_per_country(
 @router.get("/logins_countby")
 async def read_logins_countby(
         *,
-        session: Session = Depends(get_session),
+        session: Session = Depends(db.get_session),
         offset: int = 0,
         interval: Union[str, None] = None,
         count_interval: int = None,
@@ -305,7 +305,7 @@ async def read_logins_countby(
 @router.get("/logins_groupby/{group_by}")
 async def read_logins_groupby(
         *,
-        session: Session = Depends(get_session),
+        session: Session = Depends(db.get_session),
         request: Request,
         offset: int = 0,
         group_by: str,
