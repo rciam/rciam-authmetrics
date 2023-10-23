@@ -3,7 +3,7 @@ from sqlmodel import Field, Session, SQLModel, create_engine, select
 from typing import Union
 from xmlrpc.client import boolean
 
-from app.database import get_session
+from app.database import  db
 from app.utils.globalMethods import AuthNZCheck
 
 router = APIRouter(
@@ -14,7 +14,7 @@ router = APIRouter(
 @router.get("/tenenv/{tenant_name}/{environment_name}")
 async def read_tenenv_byname(
         *,
-        session: Session = Depends(get_session),
+        session: Session = Depends(db.get_session),
         offset: int = 0,
         tenant_name: str,
         environment_name: str
@@ -34,7 +34,7 @@ async def read_tenenv_byname(
 @router.get("/environment_byname/{environment_name}")
 async def read_environment_byname(
         *,
-        session: Session = Depends(get_session),
+        session: Session = Depends(db.get_session),
         offset: int = 0,
         environment_name: str
 ):
@@ -50,7 +50,7 @@ async def read_environment_byname(
 @router.get("/idps")
 async def read_idps(
         *,
-        session: Session = Depends(get_session),
+        session: Session = Depends(db.get_session),
         tenenv_id: int,
         idpId: int = None
 ):
@@ -69,7 +69,7 @@ async def read_idps(
 @router.get("/sps")
 async def read_sps(
         *,
-        session: Session = Depends(get_session),
+        session: Session = Depends(db.get_session),
         tenenv_id: int,
         spId: int = None
 ):

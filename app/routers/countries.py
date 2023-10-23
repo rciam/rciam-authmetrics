@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
-from app.database import get_session
+from app.database import db
 from sqlmodel import Field, Session, SQLModel, create_engine, select
 from typing import Union
 
@@ -20,7 +20,7 @@ router = APIRouter(
 @router.get("/countries/", response_model=List[Country_CodesRead])
 async def read_countries(
         *,
-        session: Session = Depends(get_session),
+        session: Session = Depends(db.get_session),
         offset: int = 0
 ):
     countries = session.exec(select(Country_Codes).offset(offset)).all()
@@ -30,7 +30,7 @@ async def read_countries(
 @router.get("/country_stats/", response_model=List[Statistics_Country_HashedwithInfo])
 async def read_country_stats(
         *,
-        session: Session = Depends(get_session),
+        session: Session = Depends(db.get_session),
         offset: int = 0
 ):
     stats = session.exec(
@@ -41,7 +41,7 @@ async def read_country_stats(
 @router.get("/country_stats_by_vo/{community_id}")
 async def read_country_stats_by_vo(
         *,
-        session: Session = Depends(get_session),
+        session: Session = Depends(db.get_session),
         offset: int = 0,
         community_id: Union[None, int] = None
 ):
