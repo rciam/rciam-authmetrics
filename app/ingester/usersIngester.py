@@ -1,5 +1,4 @@
 from app.logger import log
-from ..database import get_session
 from .utilsIngester import utilsIngester
 
 
@@ -48,9 +47,7 @@ class UserDataIngester:
                 {0} users ingested or updated""".format(userMappedItems))
 
     @classmethod
-    def ingestUserData(cls):
-        session_generator = get_session()
-        session = next(session_generator)
+    def ingestUserData(cls, session):
         tenenvIds = session.exec("""SELECT id FROM tenenv_info""").all()
         # for each tenenv on database try to ingest UserData
         # from statistics_raw table

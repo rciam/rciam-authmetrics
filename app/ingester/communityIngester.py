@@ -1,5 +1,5 @@
 from app.logger import log
-from ..database import get_session
+
 from sqlalchemy.exc import NoResultFound
 from .utilsIngester import utilsIngester
 
@@ -77,9 +77,8 @@ class CommunityDataIngester:
                         format(communityMappedItems))
 
     @classmethod
-    def ingestCommunityData(cls):
-        session_generator = get_session()
-        session = next(session_generator)
+    def ingestCommunityData(cls, session):
+       
         tenenvIds = session.exec("""SELECT id FROM tenenv_info""").all()
         # for each tenenv on database try to ingest CommunityData
         # from statistics_raw table

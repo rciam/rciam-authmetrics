@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Field, Session, SQLModel, create_engine, select
 from typing import Union
 
-from app.database import get_session
+from app.database import db
 from app.utils.globalMethods import AuthNZCheck
 
 
@@ -17,7 +17,7 @@ router = APIRouter(
 @router.get("/min_date_registered_users")
 async def read_min_date_registered_users(
         *,
-        session: Session = Depends(get_session),
+        session: Session = Depends(db.get_session),
         tenenv_id: int
 ):
     min_date = session.exec("""
@@ -29,7 +29,7 @@ async def read_min_date_registered_users(
 @router.get("/registered_users_country")
 async def read_users_country(
         *,
-        session: Session = Depends(get_session),
+        session: Session = Depends(db.get_session),
         offset: int = 0,
         startDate: str = None,
         endDate: str = None,
@@ -72,7 +72,7 @@ async def read_users_country(
 @router.get("/registered_users_country_group_by/{group_by}")
 async def read_users_country_groupby(
         *,
-        session: Session = Depends(get_session),
+        session: Session = Depends(db.get_session),
         offset: int = 0,
         group_by: str,
         startDate: str = None,
@@ -121,7 +121,7 @@ async def read_users_country_groupby(
 @router.get("/registered_users_groupby/{group_by}")
 async def read_users_groupby(
         *,
-        session: Session = Depends(get_session),
+        session: Session = Depends(db.get_session),
         offset: int = 0,
         group_by: str,
         interval: Union[str, None] = None,
@@ -154,7 +154,7 @@ async def read_users_groupby(
 @router.get("/registered_users_countby")
 async def read_users_countby(
         *,
-        session: Session = Depends(get_session),
+        session: Session = Depends(db.get_session),
         offset: int = 0,
         interval: Union[str, None] = None,
         count_interval: int = None,

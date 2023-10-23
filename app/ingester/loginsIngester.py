@@ -1,5 +1,4 @@
 from app.logger import log
-from ..database import get_session
 from app.utils.ipDatabase import geoip2Database
 from sqlalchemy.exc import NoResultFound
 from .utilsIngester import utilsIngester
@@ -222,9 +221,7 @@ class LoginDataIngester:
             {0} new logins ingested""".format(loginMappedItems))
 
     @classmethod
-    def ingestLoginData(cls):
-        session_generator = get_session()
-        session = next(session_generator)
+    def ingestLoginData(cls, session):
         tenenvIds = session.exec("""SELECT id FROM tenenv_info""").all()
         for tenenvId in tenenvIds:
             LoginDataIngester.ingestLoginDataPerTenenv(tenenvId[0], session)
