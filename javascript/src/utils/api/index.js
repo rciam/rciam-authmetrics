@@ -32,7 +32,7 @@ const deleteCookie = (name, path, domain) => {
 }
 
 const handleError = (error) => {
-  console.log('error', error)
+  console.error('API::index.js::' + handleError.name + ' error', error)
   if (error?.response?.status == 401
     && error?.response?.headers?.['x-authenticated'] == "false"
     && error?.response?.headers?.['x-redirect'] == "true"

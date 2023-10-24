@@ -53,7 +53,7 @@ const LoginLineChart = ({
       const response = queryClient.refetchQueries([loginsGroupByDayKey, params])
     } catch (error) {
       // todo: Here we can handle any authentication or authorization errors
-      console.log(error)
+      console.error(LoginLineChart.name + " error: " + error)
     }
 
   }, [uniqueLogins])

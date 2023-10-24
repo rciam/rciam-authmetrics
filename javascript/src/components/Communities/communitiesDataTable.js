@@ -77,7 +77,7 @@ const CommunitiesDataTable = ({tenenvId}) => {
       queryClient.refetchQueries([minDateCommunitiesKey, {params:{tenenv_id: tenenvId}}])
     } catch (error) {
       // todo: Here we can handle any authentication or authorization errors
-      console.log(error)
+      console.error(CommunitiesDataTable.name + " error: " + error)
     }
   }, [groupBy])
 

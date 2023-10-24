@@ -58,7 +58,7 @@ const IdpMapToDataTable = ({
       const response = queryClient.refetchQueries([loginsPerCountryKey, params])
     } catch (error) {
       // todo: Here we can handle any authentication or authorization errors
-      console.log(error)
+      console.error(IdpMapToDataTable.name + " error: " + error)
     }
 
   }, [uniqueLogins])

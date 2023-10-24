@@ -82,7 +82,7 @@ const IdpsDataTable = ({
       queryClient.refetchQueries([minDateLoginsKey, {params:{tenenv_id: tenenvId}}])
     } catch (error) {
       // todo: Here we can handle any authentication or authorization errors
-      console.log(error)
+      console.error(IdpsDataTable.name + " error: " + error)
     }
 
   }, [uniqueLogins, btnPressed])

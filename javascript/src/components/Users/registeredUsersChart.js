@@ -55,7 +55,7 @@ const RegisteredUsersChart = ({
       const response = queryClient.refetchQueries([registeredUsersGroupByKey, {groupBy: selected, params: params}])
     } catch (error) {
       // todo: Here we can handle any authentication or authorization errors
-      console.log(error)
+      console.error(RegisteredUsersChart.name + " error: " + error)
     }
   }, [selected, tenenvId])
 

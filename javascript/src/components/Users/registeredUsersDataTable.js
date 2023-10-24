@@ -83,7 +83,7 @@ const RegisteredUsersDataTable = ({
       queryClient.refetchQueries([minDateRegisteredUsersKey, {params:{tenenv_id: tenenvId}}])
     } catch (error) {
       // todo: Here we can handle any authentication or authorization errors
-      console.log(error)
+      console.log(RegisteredUsersDataTable.name + " error: " + error)
     }
   }, [groupBy])
 

@@ -38,7 +38,7 @@ const RegisteredUsersMap = ({
     try {
       var response = queryClient.refetchQueries([registeredUsersByCountryKey, params])
     } catch (error) {
-      console.log(error)
+      console.error(RegisteredUsersMap.name + " error: " + error)
     }
   }, [startDate, endDate, tenenvId])
 
