@@ -56,7 +56,7 @@ const CommunitiesChart = ({tenenvId}) => {
       const response = queryClient.refetchQueries([communitiesGroupByKey, {groupBy: selected, params: params}])
     } catch (error) {
       // todo: Here we can handle any authentication or authorization errors
-      console.log(error)
+      console.error(CommunitiesChart.name + " error: " + error)
     }
   }, [selected, tenenvId])
 

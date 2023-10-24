@@ -66,7 +66,7 @@ const CommunitiesMap = ({tenenvId}) => {
       }])
     } catch (error) {
       // todo: Here we can handle any authentication or authorization errors
-      console.log(error)
+      console.error(CommunitiesMap.name + " error: " + error)
     }
   }
 
