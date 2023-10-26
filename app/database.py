@@ -7,7 +7,7 @@ from sqlalchemy.pool import NullPool
 
 
 class Database:
-    logger = log.get_logger("authenticate")
+    logger = log.get_logger("database")
 
     def __init__(self):
 
