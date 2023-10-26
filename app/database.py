@@ -1,10 +1,14 @@
 from app.utils import configParser
+from app.logger import log
 from sqlalchemy import create_engine
 from sqlmodel import Session
 from sqlalchemy.exc import OperationalError
+from sqlalchemy.pool import NullPool
 
 
 class Database:
+    logger = log.get_logger("authenticate")
+
     def __init__(self):
 
         config_file = 'config.global.py'
@@ -14,7 +18,7 @@ class Database:
         pool_size = int(db_params.get('pool_size', 25))
         max_overflow = int(db_params.get('max_overflow', 5))
 
-        self.engine = create_engine(url, pool_size=pool_size, max_overflow=max_overflow)
+        self.engine = create_engine(url, poolclass=NullPool)
 
     def check_database_connection(self):
         try: 
@@ -27,8 +31,15 @@ class Database:
             return False 
         
     def get_session(self):
-        with Session(self.engine) as session:
+        session = Session(self.engine)
+        try:
             yield session
+        except Exception:
+            self.logger.exception("Session rollback because of exception")
+            session.rollback()
+            raise
+        finally:
+            session.close()
 
     def create_session(self):
         return Session(self.engine)
