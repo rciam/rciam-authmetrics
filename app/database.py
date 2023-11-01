@@ -18,7 +18,7 @@ class Database:
         pool_size = int(db_params.get('pool_size', 25))
         max_overflow = int(db_params.get('max_overflow', 5))
 
-        self.engine = create_engine(url, poolclass=NullPool)
+        self.engine = create_engine(url, pool_size=pool_size, max_overflow=max_overflow)
 
     def check_database_connection(self):
         try: 
