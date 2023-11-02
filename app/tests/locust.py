@@ -15,3 +15,5 @@ class WebsiteUser(HttpUser):
         }
 
         self.client.get("/api/v1/tenenv/egi/devel", headers=headers)
+        self.client.get("/api/v1/tenenv/einfra/devel", headers=headers)
+       
