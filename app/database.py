@@ -1,10 +1,14 @@
 from app.utils import configParser
+from app.logger import log
 from sqlalchemy import create_engine
 from sqlmodel import Session
 from sqlalchemy.exc import OperationalError
+from sqlalchemy.pool import NullPool
 
 
 class Database:
+    logger = log.get_logger("database")
+
     def __init__(self):
 
         config_file = 'config.global.py'
@@ -27,8 +31,15 @@ class Database:
             return False 
         
     def get_session(self):
-        with Session(self.engine) as session:
+        session = Session(self.engine)
+        try:
             yield session
+        except Exception:
+            self.logger.exception("Session rollback because of exception")
+            session.rollback()
+            raise
+        finally:
+            session.close()
 
     def create_session(self):
         return Session(self.engine)

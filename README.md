@@ -10,7 +10,7 @@ docker-compose pull
 
 ### Install python dependencies
 docker-compose run --rm --no-deps web pip install --upgrade pip
-docker-compose run --rm --no-deps web pip3 install --no-cache-dir -r requirements.txt
+docker-compose run --rm --no-deps web pip3 install --no-cache-dir -r requirements_dev.txt
 
 ### Install nodejs dependencies
 docker-compose run --rm --no-deps api npm install --prefer-online

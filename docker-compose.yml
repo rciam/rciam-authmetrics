@@ -50,6 +50,17 @@ services:
       # - ./javascript/node_modules
     tty: true
 
+  locust:
+    image: metricsrciam:latest
+    container_name: metrics.rciam.locust
+    command: locust -f app/tests/locust.py
+    ports:
+      - "8089:8089"
+      - "3100:3100"
+    volumes:
+      - .:/app
+    tty: true
+
 volumes:
   pgdata:
 
