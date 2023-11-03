@@ -30,7 +30,6 @@ def getConfig(section='source_database', config_file='config.py'):
       config[param[0]] = param[1]
 
   else:
-    raise Exception(
-      'Section {0} not found in the {1} file'.format(section, config_file))
+    return False
 
   return config

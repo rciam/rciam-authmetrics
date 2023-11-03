@@ -1,4 +1,5 @@
 from app.logger import log
+from app.utils import configParser
 from app.utils.ipDatabase import geoip2Database
 from sqlalchemy.exc import NoResultFound
 from .utilsIngester import utilsIngester
@@ -6,6 +7,7 @@ import hashlib
 
 class LoginDataIngester:
     logger = log.get_logger("LoginDataIngester")
+
 
     @classmethod
     def getIdpId(cls, entityid, idpName, tenenvId, session):
@@ -152,8 +154,20 @@ class LoginDataIngester:
         return countryId
 
     @classmethod
-    def ingestLoginDataPerTenenv(cls, tenenvId, session):
+    def ingestLoginDataPerTenenv(cls, tenenv, session):
+        tenenvId = tenenv['id']
+        tenant_name = tenenv['tenant_name']
+        environment_name = tenenv['environment_name']
+        hashed_user_ids = []
 
+        config_file = f'config.{tenant_name.lower()}.{environment_name.lower()}.py'
+
+        if (configParser.getConfig('user_id_blacklist', config_file) is not False and
+             'user_ids' in configParser.getConfig('user_id_blacklist', config_file)):
+            user_ids = configParser.getConfig('user_id_blacklist', config_file)['user_ids'].split('\n')
+            # Hash each value using SHA-256
+            hashed_user_ids = [hashlib.md5(value.strip().encode()).hexdigest() for value in user_ids]
+       
         # get dates not mapped for logi5ns data
         datesNotMapped = utilsIngester.getDatesNotMapped(
             "statistics_country_hashed",
@@ -175,7 +189,14 @@ class LoginDataIngester:
                 AND tenenv_id={0} {1}
         """.format(tenenvId, between)).all()
         loginMappedItems = 0
+
         for login in loginsNotMapped:
+
+            if (login[0]['voPersonId'] in hashed_user_ids):
+                cls.logger.info("""Ignore this user with
+                    hash {0} as he is at the blacklist""". format(login[0]['voPersonId']))
+                continue
+
             if (not login[0]['failedLogin']
                 and utilsIngester.validateTenenv(login[0]['tenenvId'], session)
                 and 'voPersonId' in login[0]
@@ -197,7 +218,7 @@ class LoginDataIngester:
                                           login[0]['spName'],
                                           login[0]['tenenvId'],
                                           session)
-                
+
                 if ('countryCode' in login[0] and 'countryName' in login[0]):
                     # find countryId
                     countryId = LoginDataIngester.getCountryFromCountryCode([login[0]['countryCode'], login[0]['countryName']], session)
@@ -222,6 +243,12 @@ class LoginDataIngester:
 
     @classmethod
     def ingestLoginData(cls, session):
-        tenenvIds = session.exec("""SELECT id FROM tenenv_info""").all()
-        for tenenvId in tenenvIds:
-            LoginDataIngester.ingestLoginDataPerTenenv(tenenvId[0], session)
+        tenenvIds = session.exec("""SELECT tenenv_info.id,
+                                  tenant_info.name AS tenant_name,
+                                  environment_info.name AS environment_name
+                                 FROM tenenv_info 
+                                 JOIN tenant_info ON tenant_id=tenant_info.id
+                                 JOIN environment_info ON env_id=environment_info.id
+                                 """).all()
+        for tenenv in tenenvIds:
+            LoginDataIngester.ingestLoginDataPerTenenv(tenenv, session)
