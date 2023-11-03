@@ -15,9 +15,9 @@ class UserDataIngester:
 
         config_file = f'config.{tenant_name.lower()}.{environment_name.lower()}.py'
 
-        if (configParser.getConfig('user_id_blacklist', config_file) is not False and
-           'user_ids' in configParser.getConfig('user_id_blacklist', config_file)):
-            user_ids = configParser.getConfig('user_id_blacklist', config_file)['user_ids'].split('\n')
+        if (configParser.getConfig('user_excludelist', config_file) is not False and
+           'user_ids' in configParser.getConfig('user_excludelist', config_file)):
+            user_ids = configParser.getConfig('user_excludelist', config_file)['user_ids'].split('\n')
             # Hash each value using SHA-256
             hashed_user_ids = [hashlib.md5(value.strip().encode()).hexdigest() for value in user_ids]
 
