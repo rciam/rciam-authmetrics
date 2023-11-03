@@ -7,8 +7,6 @@ import hashlib
 
 class LoginDataIngester:
     logger = log.get_logger("LoginDataIngester")
-    tenant = ""
-    environment = ""
 
 
     @classmethod
