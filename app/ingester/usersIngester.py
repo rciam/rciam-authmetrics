@@ -1,12 +1,26 @@
 from app.logger import log
+from app.utils import configParser
 from .utilsIngester import utilsIngester
-
+import hashlib
 
 class UserDataIngester:
     logger = log.get_logger("UserDataIngester")
 
     @classmethod
-    def ingestUserDataPerTenenv(cls, tenenvId, session):
+    def ingestUserDataPerTenenv(cls, tenenv, session):
+        tenenvId = tenenv['id']
+        tenant_name = tenenv['tenant_name']
+        environment_name = tenenv['environment_name']
+        hashed_user_ids = []
+
+        config_file = f'config.{tenant_name.lower()}.{environment_name.lower()}.py'
+
+        if (configParser.getConfig('user_excludelist', config_file) is not False and
+           'user_ids' in configParser.getConfig('user_excludelist', config_file)):
+            user_ids = configParser.getConfig('user_excludelist', config_file)['user_ids'].split('\n')
+            # Hash each value using SHA-256
+            hashed_user_ids = [hashlib.md5(value.strip().encode()).hexdigest() for value in user_ids]
+
         # get dates not mapped for users data
         datesNotMapped = utilsIngester.getDatesNotMapped(
             "users",
@@ -34,6 +48,10 @@ class UserDataIngester:
                 cls.logger.error("""
                     user status '{0}' is not valid """.format(user[0]['status']))
                 continue
+            if (user[0]['voPersonId'] in hashed_user_ids):
+                cls.logger.info("""Ignore this user with
+                    hash {0} as he is at the blacklist""". format(user[0]['voPersonId']))
+                continue
             session.exec("""INSERT INTO users(hasheduserid, created, updated, status, tenenv_id)
                 VALUES ('{0}','{1}','{1}', '{2}', {3})
                 ON CONFLICT(hasheduserid, tenenv_id)
@@ -48,8 +66,14 @@ class UserDataIngester:
 
     @classmethod
     def ingestUserData(cls, session):
-        tenenvIds = session.exec("""SELECT id FROM tenenv_info""").all()
+        tenenvIds = session.exec("""SELECT tenenv_info.id,
+                                  tenant_info.name AS tenant_name,
+                                  environment_info.name AS environment_name
+                                 FROM tenenv_info 
+                                 JOIN tenant_info ON tenant_id=tenant_info.id
+                                 JOIN environment_info ON env_id=environment_info.id
+                                 """).all()
         # for each tenenv on database try to ingest UserData
         # from statistics_raw table
-        for tenenvId in tenenvIds:
-            UserDataIngester.ingestUserDataPerTenenv(tenenvId[0], session)
+        for tenenv in tenenvIds:
+            UserDataIngester.ingestUserDataPerTenenv(tenenv, session)
