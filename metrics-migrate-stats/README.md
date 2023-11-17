@@ -18,7 +18,7 @@ virtualenv -p python3 .venv
 source .venv/bin/activate
 (venv) pip3 install -r requirements.txt
 (venv) python3 -m Utils.install
-(venv) python3 migrateData.py
+(venv) python3 migrateData.py (or migrateData_noComanage.py)
 🍺
 ```
 
