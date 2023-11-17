@@ -1,0 +1,49 @@
+[source_database]
+
+host=localhost
+database=db_name
+user=db_user
+password=db_password
+
+[source_tables]
+
+statistics_detail=statistics_detail
+statistics=statistics
+ip_table=statistics_ip
+vos_comanage=cm_cous
+users_comanage=cm_co_people
+vo_memberships_comanage=cm_co_person_roles
+statistics_country_hashed_comanage=statistics_country_hashed
+identity_providers_map_proxy=identityprovidersmap
+service_providers_map_proxy=serviceprovidersmap
+
+[destination_database]
+
+host=localhost
+database=db_name
+user=db_user
+password=db_password
+
+[destination_tables]
+
+vos=community
+vos_information=community_info
+vo_memberships=members
+users=users
+identity_providers_map=identityprovidersmap
+service_providers_map=serviceprovidersmap
+statistics_country_hashed=statistics_country_hashed
+countries=country_codes
+tenants=tenant_info
+environments=environment_info
+projects=project_info
+tenenvs=tenenv_info
+
+[logging]
+
+level = INFO
+folder = log
+file = metricsMigrate.log
+
+[ip_database_file]
+db_filename = GeoLite2-Country.mmdb
