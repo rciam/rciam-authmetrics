@@ -1,0 +1,6 @@
+log/*
+__pycache__
+config.py
+.venv/*
+env
+databases/GeoLite2-Country.mmdb
