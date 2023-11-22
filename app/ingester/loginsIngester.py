@@ -192,7 +192,7 @@ class LoginDataIngester:
 
         for login in loginsNotMapped:
 
-            if (login[0]['voPersonId'] in hashed_user_ids):
+            if ('voPersonId' in login[0] and login[0]['voPersonId'] in hashed_user_ids):
                 cls.logger.info("""Ignore this user with
                     hash {0} as he is at the blacklist""". format(login[0]['voPersonId']))
                 continue
