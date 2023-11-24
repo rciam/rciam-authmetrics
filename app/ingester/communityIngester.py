@@ -78,7 +78,7 @@ class CommunityDataIngester:
 
     @classmethod
     def ingestCommunityData(cls, session):
-       
+
         tenenvIds = session.exec("""SELECT id FROM tenenv_info""").all()
         # for each tenenv on database try to ingest CommunityData
         # from statistics_raw table
