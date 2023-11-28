@@ -35,11 +35,11 @@ async def read_users_country(
         endDate: str = None,
         tenenv_id: int
 ):
-    interval_subquery = ""
+    interval_subquery = "WHERE tenenv_id = {0}".format(tenenv_id)
     if startDate and endDate:
         interval_subquery = """
-                WHERE users.created BETWEEN '{0}' AND '{1}'
-            """.format(startDate, endDate)
+                WHERE users.created BETWEEN '{0}' AND '{1}' AND tenenv_id = {2}
+            """.format(startDate, endDate, tenenv_id)
     users_countries = session.exec(
         """WITH users_countries AS (
         SELECT statistics_country_hashed.hasheduserid as userid, country, countrycode, count(*) as sum_count
@@ -80,11 +80,11 @@ async def read_users_country_groupby(
         tenenv_id: int
 ):
     if group_by:
-        interval_subquery = ""
+        interval_subquery = "WHERE tenenv_id = {0}".format(tenenv_id)
         if startDate and endDate:
             interval_subquery = """
-                WHERE users.created BETWEEN '{0}' AND '{1}'
-            """.format(startDate, endDate)
+                WHERE users.created BETWEEN '{0}' AND '{1}' AND tenenv_id={2}
+            """.format(startDate, endDate, tenenv_id)
         users = session.exec(
             """WITH users_countries AS (
         SELECT statistics_country_hashed.hasheduserid as userid, country, countrycode, count(*) as sum_count
@@ -114,6 +114,7 @@ async def read_users_country_groupby(
                 GROUP BY range_date, country,countrycode
                 ORDER BY range_date, country
             ) user_country_group_by
+
         GROUP BY range_date""".format(group_by, interval_subquery, tenenv_id)).all()
         return users
 
