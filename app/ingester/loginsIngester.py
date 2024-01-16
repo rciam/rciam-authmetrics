@@ -197,7 +197,7 @@ class LoginDataIngester:
                     hash {0} as he is at the blacklist""". format(login[0]['voPersonId']))
                 continue
 
-            if (not login[0]['failedLogin']
+            if ((not login[0]['failedLogin'] or login[0]['failedLogin'] == 'false')
                 and utilsIngester.validateTenenv(login[0]['tenenvId'], session)
                 and 'voPersonId' in login[0]
                 and utilsIngester.validateHashedUser(login[0]['voPersonId'],
@@ -237,6 +237,16 @@ class LoginDataIngester:
                 loginMappedItems += 1
             else:
                 cls.logger.warning("The record {0} was not imported due to validation errors".format(repr(login[0])))
+                cls.logger.warning("validateTenenv:")
+                cls.logger.warning(utilsIngester.validateTenenv(login[0]['tenenvId'], session))
+                cls.logger.warning("voPersonId in login[0]:")
+                cls.logger.warning('voPersonId' in login[0])
+                cls.logger.warning("validateHashedUser:")
+                cls.logger.warning(utilsIngester.validateHashedUser(login[0]['voPersonId'],
+                                                  login[0]['tenenvId'],
+                                                  session))
+                cls.logger.warning("validate if login is successful:")
+                cls.logger.warning(not login[0]['failedLogin'] or login[0]['failedLogin'] == 'false')
 
         cls.logger.info("""
             {0} new logins ingested""".format(loginMappedItems))
