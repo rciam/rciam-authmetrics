@@ -241,10 +241,11 @@ class LoginDataIngester:
                 cls.logger.warning(utilsIngester.validateTenenv(login[0]['tenenvId'], session))
                 cls.logger.warning("voPersonId in login[0]:")
                 cls.logger.warning('voPersonId' in login[0])
-                cls.logger.warning("validateHashedUser:")
-                cls.logger.warning(utilsIngester.validateHashedUser(login[0]['voPersonId'],
-                                                  login[0]['tenenvId'],
-                                                  session))
+                if ('voPersonId' in login[0] and utilsIngester.validateTenenv(login[0]['tenenvId'], session)):
+                    cls.logger.warning("validateHashedUser:")
+                    cls.logger.warning(utilsIngester.validateHashedUser(login[0]['voPersonId'],
+                                                      login[0]['tenenvId'],
+                                                      session))
                 cls.logger.warning("validate if login is successful:")
                 cls.logger.warning(not login[0]['failedLogin'] or login[0]['failedLogin'] == 'false')
 
