@@ -48,6 +48,9 @@ class UserDataIngester:
                 cls.logger.error("""
                     user status '{0}' is not valid """.format(user[0]['status']))
                 continue
+            if ('voPersonId' not in user[0]):
+                cls.logger.warning("""voPersonId not found at record. Ignoring...""")
+                continue
             if (user[0]['voPersonId'] in hashed_user_ids):
                 cls.logger.info("""Ignore this user with
                     hash {0} as he is at the blacklist""". format(user[0]['voPersonId']))
