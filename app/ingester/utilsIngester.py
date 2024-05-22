@@ -58,6 +58,14 @@ class utilsIngester:
                     )
             ).one()
         except NoResultFound:
-            cls.logger.info("User {0} not found".format(hashedUser))
-            return False
+            cls.logger.warning("""User {0} not found, we are going to create it
+                            with default values.""".format(hashedUser))
+            now = date.today().strftime('%Y-%m-%d %H:%M:%S')
+            session.exec("""INSERT INTO users(hasheduserid, created, updated,
+                         status, tenenv_id)
+                VALUES ('{0}','{1}','{1}', '{2}', {3})
+                """. format(
+                hashedUser, now, 'A',
+                tenenvId))
+            session.commit()
         return True
