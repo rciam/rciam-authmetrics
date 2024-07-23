@@ -141,20 +141,10 @@ export function calculateMinMax(dataArray) {
   return [min, max]
 }
 
-export const createAnchorElement = (title, link) => {
-  const anchor = document.createElement('a');
-  const linkText = document.createTextNode(title);
-  anchor.appendChild(linkText);
-  anchor.title = title;
-  anchor.href = link;
-
-  // FIXME:
-  // Trying to pass an object directly to the datatable will fail. We need to
-  // get the HTML string from the element. This causes inconsistent behavior
-  // which we need to solve. For now we leave it as is.
-  return anchor.outerHTML;
-  // return anchor;
-}
+export const createAnchorElement = (title, link) => ({
+  title,
+  link,
+});
 
 export const axisChartOptions = (title, hAxisFormat, hAxisTicks) => {
   return (
