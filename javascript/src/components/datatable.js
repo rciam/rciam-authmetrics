@@ -150,6 +150,7 @@ class Datatable extends Component {
   }
 
   listNames = (names, key) => {
+    //console.log("listNames called with:", names.title);
     if (this.props.columnSep && key == this.props.columnSep && typeof names === 'string') {
       return renderToString(
         <ul>
@@ -161,6 +162,10 @@ class Datatable extends Component {
 
         </ul>
       )
+    } else if (names && typeof names === 'object' && names.title && names.link) {
+      return renderToString(
+        <a href={names.link} title={names.title}>{names.title}</a>
+      );
     } else return (
       names
     )
