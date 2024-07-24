@@ -60,7 +60,7 @@
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "*"
   },
-  "homepage": ".",
+  "homepage": "https://aai-dev.egi.eu/",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
