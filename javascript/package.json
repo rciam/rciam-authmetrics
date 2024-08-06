@@ -60,7 +60,7 @@
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "*"
   },
-  "homepage": "./metrics/",
+  "homepage": "/metrics/",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
