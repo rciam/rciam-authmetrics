@@ -27,7 +27,7 @@ const LoginIdpPieChart = ({
   today.setDate(today.getDate() - 1);
   formatEndDate(today)
   
-  let idpsChartArray = [["Identity Provider", "Logins"], ['', 0]];
+  let idpsChartArray = [["Identity Provider", "Logins"]];
   const [idps, setIdps] = useState(idpsChartArray);
 
   const params = {
@@ -112,9 +112,9 @@ const LoginIdpPieChart = ({
 
                 function selectHandler() {
 
-                  var selection = chart.getSelection();
+                  var selection = chart.getSelection();              
                   if (selection.length) {
-                    var identifier = idpsArray[selection[0].row];
+                    var identifier = idpsArray[selection[0].row];            
                     goToSpecificProviderHandler(identifier[0])
                   }
                 }
