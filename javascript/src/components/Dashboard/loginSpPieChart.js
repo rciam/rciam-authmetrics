@@ -93,9 +93,10 @@ const LoginSpPieChart = ({
               callback: ({chartWrapper, google}) => {
                 const chart = chartWrapper.getChart();
 
-                
+                if (cookies.userinfo != undefined
+                  && !!permissions?.actions?.service_providers?.['view']) {
                   google.visualization.events.addListener(chart, 'click', selectHandler);
-                
+                }
                 google.visualization.events.addListener(chart, 'onmouseover', showTooltip);
                 google.visualization.events.addListener(chart, 'onmouseout', hideTooltip);
 
