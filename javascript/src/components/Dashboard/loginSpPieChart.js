@@ -12,7 +12,6 @@ import {useQuery} from "react-query";
 import {optionsPieChart} from "../../utils/helpers/enums";
 import {convertDateByGroup, formatStartDate, formatEndDate} from "../Common/utils";
 
-var spsArray = [];
 
 const LoginSpPieChart = ({
                            idpId,
@@ -21,7 +20,9 @@ const LoginSpPieChart = ({
                            goToSpecificProviderHandler
                          }) => {
   let spsChartArray = [["Service Provider", "Logins"]];
+  let spsArray = [];
   const [sps, setSps] = useState(spsChartArray);
+  const [spsAr, setSpsArray] = useState(spsArray);
   const oneYearAgo = new Date();
   oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
   formatStartDate(oneYearAgo)
@@ -59,6 +60,7 @@ const LoginSpPieChart = ({
           spsArray.push([element.id, element.name, element.identifier])
         })
         setSps(spsChartArray)
+        setSpsArray(spsArray)
       })
   }, [uniqueLogins])
 
@@ -112,7 +114,7 @@ const LoginSpPieChart = ({
                 function selectHandler() {
                   var selection = chart.getSelection();
                   if (selection.length) {
-                    var identifier = spsArray[selection[0].row];
+                    var identifier = spsAr[selection[0].row]; 
                     goToSpecificProviderHandler(identifier[0], "sp")
                   }
                 }

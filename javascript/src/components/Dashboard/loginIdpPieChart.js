@@ -12,7 +12,7 @@ import {getLoginsPerIdp} from "../../utils/queries";
 import {optionsPieChart} from "../../utils/helpers/enums";
 import {convertDateByGroup, formatStartDate, formatEndDate} from "../Common/utils";
 
-var idpsArray = [];
+
 const LoginIdpPieChart = ({
                             spId,
                             tenenvId,
@@ -27,9 +27,10 @@ const LoginIdpPieChart = ({
   today.setDate(today.getDate() - 1);
   formatEndDate(today)
   
-  let idpsChartArray = [["Identity Provider", "Logins"], ['', 0]];
+  let idpsChartArray = [["Identity Provider", "Logins"]];
+  let idpsArray = [];
   const [idps, setIdps] = useState(idpsChartArray);
-
+  const [idpsAr, setIdpsArray] = useState(idpsArray);
   const params = {
     params: {
       'tenenv_id': tenenvId,
@@ -57,6 +58,7 @@ const LoginIdpPieChart = ({
           idpsArray.push([element.id, element.name, element.identifier])
         })
         setIdps(idpsChartArray)
+        setIdpsArray(idpsArray)
       })
 
   }, [uniqueLogins])
@@ -91,8 +93,8 @@ const LoginIdpPieChart = ({
                 const chart = chartWrapper.getChart();
 
                 if (cookies.userinfo != undefined
-                    && !!permissions?.actions?.identity_providers?.['view']) {
-                  google.visualization.events.addListener(chart, 'click', selectHandler);
+                  && !!permissions?.actions?.identity_providers?.['view']) {
+                google.visualization.events.addListener(chart, 'click', selectHandler);
                 }
 
                 google.visualization.events.addListener(chart, 'onmouseover', showTooltip);
@@ -112,9 +114,9 @@ const LoginIdpPieChart = ({
 
                 function selectHandler() {
 
-                  var selection = chart.getSelection();
+                  var selection = chart.getSelection();              
                   if (selection.length) {
-                    var identifier = idpsArray[selection[0].row];
+                    var identifier = idpsAr[selection[0].row];       
                     goToSpecificProviderHandler(identifier[0])
                   }
                 }
