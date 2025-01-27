@@ -3,7 +3,7 @@
 ## 2025-01-27
 
 ### Added
-- Add EGI Production instance at Metrics
+- Add EGI Production instance at Metrics Prod
 
 ## 2023-01-12
 
