@@ -14,7 +14,7 @@ jobs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
       - name: Checkout to repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: 'grnet/rciam-deploy-inv'
           ref: 'master'
@@ -38,7 +38,7 @@ jobs:
       - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
       - run: echo "🔎 The name of your branch is ${{ github.ref_name }} and your repository is ${{ github.repository }}."
       - name: Check out repository code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           path: 'metrics-app-${{matrix.tenant}}'
           ref: 'develop'
@@ -49,7 +49,7 @@ jobs:
         run: |
           ls ${{ github.workspace }}
       - name: Download playbook
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           # Repository name with owner. For example, actions/checkout
           # Default: ${{ github.repository }}
@@ -57,7 +57,7 @@ jobs:
           ref: 'devel'
           path: 'roles'
       - name: Download inventory
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: 'grnet/rciam-deploy-inv'
           ref: 'master'
@@ -277,7 +277,7 @@ jobs:
     needs: [frontend_release, configure]
     steps:
       - name: Download playbook
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           # Repository name with owner. For example, actions/checkout
           # Default: ${{ github.repository }}
@@ -285,7 +285,7 @@ jobs:
           ref: 'devel'
           path: 'roles'
       - name: Download inventory
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: 'grnet/rciam-deploy-inv'
           ref: 'master'
