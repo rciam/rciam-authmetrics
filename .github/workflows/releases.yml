@@ -155,7 +155,7 @@ jobs:
     steps:
       # Download previously shared build
       - name: Get artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           path: ./metrics-app-${{matrix.tenant}}
           name: react-github-actions-build-${{matrix.tenant}}
@@ -204,7 +204,7 @@ jobs:
     steps:
       # Download previously shared build
       - name: Get artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: react-github-actions-build-backend
       - name: Compress action step
