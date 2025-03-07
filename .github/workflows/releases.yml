@@ -238,7 +238,7 @@ jobs:
     needs: backend_release
     steps:
       - name: Download playbook
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           # Repository name with owner. For example, actions/checkout
           # Default: ${{ github.repository }}
@@ -246,7 +246,7 @@ jobs:
           ref: 'devel'
           path: 'roles'
       - name: Download inventory
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: 'grnet/rciam-deploy-inv'
           ref: 'master'

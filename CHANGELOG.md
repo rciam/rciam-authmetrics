@@ -4,6 +4,7 @@
 
 ### Changed
 - Change api url for AMS (Devel)
+- Update versions of the actions at workflows
 
 ## 2025-01-27
 
