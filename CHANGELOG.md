@@ -1,5 +1,10 @@
 ### Changelog
 
+## 2025-03-07
+
+### Changed
+- Change api url for AMS (Devel)
+
 ## 2025-01-27
 
 ### Added
