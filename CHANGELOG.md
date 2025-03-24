@@ -1,5 +1,10 @@
 ### Changelog
 
+## 2025-03-24
+
+### Fixed
+- Add check if "voPersonId" key exists in the membership record
+
 ## 2025-03-07
 
 ### Changed

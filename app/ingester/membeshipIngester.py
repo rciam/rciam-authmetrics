@@ -69,6 +69,11 @@ class MembershipDataIngester:
                 cls.logger.error("""
                     VO name '{0}' not found """.format(membership[0]['voName']))
                 continue
+            if "voPersonId" not in membership[0]:
+                cls.logger.error("""
+                    voPersonId not found in membership record for VO '{0}'
+                """.format(membership[0]['voName']))
+                continue
             if (membership[0]['voPersonId'] in hashed_user_ids):
                 cls.logger.info("""Ignore this user with
                     hash {0} as he is at the blacklist""". format(membership[0]['voPersonId']))
