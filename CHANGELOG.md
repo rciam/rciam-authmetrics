@@ -1,5 +1,10 @@
 ### Changelog
 
+## 2025-04-04
+
+### Fixed
+- Fix problem with the size of a cookie
+
 ## 2025-03-24
 
 ### Fixed
