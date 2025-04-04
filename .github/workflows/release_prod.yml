@@ -14,7 +14,7 @@ jobs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
       - name: Checkout to repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: 'grnet/rciam-deploy-inv'
           ref: 'master'
@@ -38,7 +38,7 @@ jobs:
       - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
       - run: echo "🔎 The name of your branch is ${{ github.ref_name }} and your repository is ${{ github.repository }}."
       - name: Check out repository code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           path: 'metrics-app-${{matrix.tenant}}'
           ref: 'main'
@@ -49,7 +49,7 @@ jobs:
         run: |
           ls ${{ github.workspace }}
       - name: Download playbook
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           # Repository name with owner. For example, actions/checkout
           # Default: ${{ github.repository }}
@@ -57,7 +57,7 @@ jobs:
           ref: 'master'
           path: 'roles'
       - name: Download inventory
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: 'grnet/rciam-deploy-inv'
           ref: 'master'
@@ -95,7 +95,7 @@ jobs:
         run: |
           cat ${{ github.workspace }}/metrics-app-${{matrix.tenant}}/javascript/src/config.json
       - name: Share artifact inside workflow (frontend)
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: react-application
           path: |
@@ -128,7 +128,7 @@ jobs:
           branch: ${{ env.RELEASE_ID }}
           directory: ./metrics-app-${{matrix.tenant}}
       - name: Share artifact inside workflow - ${{matrix.tenant}}
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: react-github-actions-build-${{matrix.tenant}}
           path: |
@@ -136,7 +136,7 @@ jobs:
             ${{ github.workspace }}/metrics-app-${{matrix.tenant}}/javascript/CHANGELOG.md
             ${{ github.workspace }}/metrics-app-${{matrix.tenant}}/CHANGELOG.md
       - name: Share artifact inside workflow - backend
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: react-github-actions-build-backend
           path: |
@@ -155,7 +155,7 @@ jobs:
     steps:
       # Download previously shared build
       - name: Get artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           path: ./metrics-app-${{matrix.tenant}}
           name: react-github-actions-build-${{matrix.tenant}}
@@ -182,7 +182,7 @@ jobs:
           outPath: frontend-${{matrix.tenant}}-release-build.tar.gz
       # Upload as an artifact of the current workflow
       - name: Upload frontend build zip artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: frontend-${{matrix.tenant}}-release-build.tar.gz
           path: frontend-${{matrix.tenant}}-release-build.tar.gz
@@ -204,7 +204,7 @@ jobs:
     steps:
       # Download previously shared build
       - name: Get artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: react-github-actions-build-backend
       - name: Compress action step
@@ -218,7 +218,7 @@ jobs:
                    requirements.txt
           outPath: backend-release-build.tar.gz
       - name: Upload backend build zip artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: backend-release-build.tar.gz
           path: backend-release-build.tar.gz
@@ -238,7 +238,7 @@ jobs:
     needs: backend_release
     steps:
       - name: Download playbook
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           # Repository name with owner. For example, actions/checkout
           # Default: ${{ github.repository }}
@@ -246,7 +246,7 @@ jobs:
           ref: 'master'
           path: 'roles'
       - name: Download inventory
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: 'grnet/rciam-deploy-inv'
           ref: 'master'
@@ -277,7 +277,7 @@ jobs:
     needs: [frontend_release, configure]
     steps:
       - name: Download playbook
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           # Repository name with owner. For example, actions/checkout
           # Default: ${{ github.repository }}
@@ -285,7 +285,7 @@ jobs:
           ref: 'master'
           path: 'roles'
       - name: Download inventory
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: 'grnet/rciam-deploy-inv'
           ref: 'master'
