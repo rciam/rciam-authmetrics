@@ -1,5 +1,21 @@
 ### Changelog
 
+## 2025-04-04
+
+### Fixed
+- Fix problem with the size of a cookie
+
+## 2025-03-24
+
+### Fixed
+- Add check if "voPersonId" key exists in the membership record
+
+## 2025-03-07
+
+### Changed
+- Change api url for AMS (Devel)
+- Update versions of the actions at workflows
+
 ## 2025-01-27
 
 ### Added
