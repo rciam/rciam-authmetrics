@@ -92,7 +92,13 @@ async def authorize_rciam(
         user_info_data = user_info.json()
         # Encode the data to jwt
         # todo: the key could become configurable and per tenenv
-        jwt_user = jwt.encode(payload=user_info_data,
+        # Extract only the needed fields
+        filtered_user_data = {
+            "name": user_info_data.get("name"),
+            "email": user_info_data.get("email"),
+            "voperson_id": user_info_data.get("voperson_id")
+        }
+        jwt_user = jwt.encode(payload=filtered_user_data,
                               key="a custom key",
                               algorithm="HS256")
         # print(jwt_user)
