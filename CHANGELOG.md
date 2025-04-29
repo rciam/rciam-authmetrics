@@ -1,5 +1,10 @@
 ### Changelog
 
+## 2025-04-29
+
+### Changed
+- Change entitlement for administrator at Ni4os instance
+
 ## 2025-04-04
 
 ### Fixed
