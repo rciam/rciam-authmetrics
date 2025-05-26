@@ -57,7 +57,7 @@ class CommunityDataIngester:
                 DO UPDATE
                 set description='{1}'
                 RETURNING id;""".format(community[0]['voName'],
-                                        community[0]['voDescription'],
+                                        community[0].get('voDescription', ''),
                                         community[0]['source'],
                                         tenenvId)).one()
             session.commit()
