@@ -1,5 +1,10 @@
 ### Changelog
 
+## 2025-06-03
+
+### Fixed
+- Fix bug when country is "None"
+
 ## 2025-04-29
 
 ### Changed
