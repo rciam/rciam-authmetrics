@@ -86,18 +86,30 @@ class LoginDataIngester:
 
     @classmethod
     def getCountryFromCountryCode(cls, countryData, session):
+
+        countryCode, countryName = countryData
+
+        if not countryCode or len(str(countryCode).strip()) == 0:
+            countryCode = 'UN'
+        elif len(countryCode) > 2:
+            countryCode = countryCode[:2]
+
+        if not countryName or len(str(countryName).strip()) == 0:
+            countryName = 'Unknown'
+
         try:
             countryId = session.exec(
                 """
                 SELECT id FROM country_codes
                 WHERE countrycode = '{0}'
                 """.format(
-                    countryData[0]
+                    countryCode
                 )
             ).one()
         except NoResultFound:
             cls.logger.info("""Country with name {0}
-                               will be created""".format(countryData[1]))
+                               will be created""".format(countryName))
+
             countryId = session.exec(
               """
               INSERT INTO country_codes (countrycode, country)
@@ -107,7 +119,7 @@ class LoginDataIngester:
                   WHERE countrycode = '{0}'
               )
               RETURNING id;
-              """.format(countryData[0], countryData[1])
+              """.format(countryCode, countryName)
             ).one()
         return countryId
 
