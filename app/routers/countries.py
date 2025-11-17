@@ -17,7 +17,7 @@ router = APIRouter(
 )
 
 
-@router.get("/countries/", response_model=List[Country_CodesRead])
+@router.get("/countries_list/", response_model=List[Country_CodesRead])
 async def read_countries(
         *,
         session: Session = Depends(db.get_session),
@@ -32,7 +32,8 @@ async def read_countries(
 async def read_country_stats(
         *,
         session: Session = Depends(db.get_session),
-        offset: int = 0
+        offset: int = 0,
+        tenenv_id: int
 ):
     stats = session.exec(
         select(Statistics_Country_Hashed).offset(offset)).all()
@@ -44,7 +45,8 @@ async def read_country_stats_by_vo(
         *,
         session: Session = Depends(db.get_session),
         offset: int = 0,
-        community_id: Union[None, int] = None
+        community_id: Union[None, int] = None,
+        tenenv_id: int
 ):
     stats_country = session.exec("""
     WITH users_countries AS (

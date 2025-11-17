@@ -267,7 +267,7 @@ export const getRegisteredUsersGroupBy = async ({queryKey}) => {
 export const getCountries = async ({queryKey}) => {
   const [_, params] = queryKey
   try {
-    const response = await apiClient.get("countries", params)
+    const response = await apiClient.get("countries_list", params)
     return response.data
   } catch (error) {
     console.error(getCountries.name + ' error', error)
