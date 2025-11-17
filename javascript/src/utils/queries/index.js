@@ -33,6 +33,19 @@ export const getLoginsPerSP = async ({queryKey}) => {
   }
 }
 
+export const getLoginsPerSPTotals = async ({queryKey}) => {
+  const [_, params] = queryKey
+  try {
+    const response = await apiClient.get("logins_per_sp_totals", params)
+    return response.data
+  } catch (error) {
+    console.error(getLoginsPerSPTotals.name + ' error', error)
+    console.log('queryKeys', queryKey)
+    handleError(error)
+    return error.response
+  }
+}
+
 export const getLoginsPerIdp = async ({queryKey}) => {
   const [_, params] = queryKey
   try {

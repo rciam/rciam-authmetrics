@@ -98,6 +98,70 @@ async def read_logins_per_idp(
     return logins
 
 
+@router.get("/logins_per_sp_totals")
+async def read_logins_per_sp_totals(
+        *,
+        session: Session = Depends(db.get_session),
+        request: Request,
+        offset: int = 0,
+        idp: str = None,
+        startDate: str = None,
+        endDate: str = None,
+        tenenv_id: int,
+        unique_logins: Union[boolean, None] = False,
+):
+    unique_logins_subquery = ""
+    if unique_logins:
+        unique_logins_subquery = "AND hasheduserid != 'unknown'"
+
+    interval_subquery = ""
+    idp_subquery_join = ""
+    if idp:
+        # Is the user authenticated?
+        AuthNZCheck("logins", False)
+
+        # Fetch the data
+        idp_subquery_join = """
+              JOIN identityprovidersmap ON identityprovidersmap.id=sourceidpid
+              AND identityprovidersmap.tenenv_id=statistics_country_hashed.tenenv_id
+              AND identityprovidersmap.tenenv_id={1}
+              AND identityprovidersmap.id = '{0}'
+              """.format(
+            idp, tenenv_id
+        )
+
+    if startDate and endDate:
+        interval_subquery = """
+            AND date BETWEEN '{0}' AND '{1}'
+        """.format(startDate, endDate)
+
+    if unique_logins == False:
+        sub_select = """
+            sum(count) as count
+        """
+    else:
+        sub_select = """
+            count(DISTINCT hasheduserid) as count
+        """
+
+    logins = session.exec("""
+            select serviceprovidersmap.id, serviceprovidersmap.name, identifier, serviceid, {0}
+            from statistics_country_hashed
+            join serviceprovidersmap ON serviceprovidersmap.id=serviceid
+                AND serviceprovidersmap.tenenv_id=statistics_country_hashed.tenenv_id
+            {1}
+            WHERE statistics_country_hashed.tenenv_id = {2}
+            {3} {4}
+            GROUP BY serviceprovidersmap.id, serviceid, serviceprovidersmap.name, identifier
+            ORDER BY count DESC
+        """.format(
+        sub_select, idp_subquery_join, tenenv_id, interval_subquery, unique_logins_subquery
+    )
+    ).all()
+
+    return [{"id": row[0], "name": row[1], "identifier": row[2], "count": row[4]} for row in logins]
+
+
 @router.get("/logins_per_sp")
 async def read_logins_per_sp(
         *,
@@ -136,85 +200,56 @@ async def read_logins_per_sp(
             AND date BETWEEN '{0}' AND '{1}'
         """.format(startDate, endDate)
 
-    if countries is None or countries == "":
-        # Return total counts per SP (for pie chart)
-        if unique_logins == False:
-            sub_select = """
-                sum(count) as count
-            """
-        else:
-            sub_select = """
-                count(DISTINCT hasheduserid) as count
-            """
-
-        logins = session.exec("""
-                select serviceprovidersmap.id, serviceprovidersmap.name, identifier, serviceid, {0}
-                from statistics_country_hashed
-                join serviceprovidersmap ON serviceprovidersmap.id=serviceid
-                    AND serviceprovidersmap.tenenv_id=statistics_country_hashed.tenenv_id
-                {1}
-                WHERE statistics_country_hashed.tenenv_id = {2}
-                {3} {4}
-                GROUP BY serviceprovidersmap.id, serviceid, serviceprovidersmap.name, identifier
-                ORDER BY count DESC
-            """.format(
-            sub_select, idp_subquery_join, tenenv_id, interval_subquery, unique_logins_subquery
-        )
-        ).all()
-
-        return [{"id": row[0], "name": row[1], "identifier": row[2], "count": row[4]} for row in logins]
+    if unique_logins == False:
+        sub_select = """
+            sum(count) as count
+        """
     else:
-        # Return grouped by country (for datatable)
-        if unique_logins == False:
-            sub_select = """
-                sum(count) as count
-            """
-        else:
-            sub_select = """
-                count(DISTINCT hasheduserid) as count
-            """
+        sub_select = """
+            count(DISTINCT hasheduserid) as count
+        """
 
-        logins = session.exec("""
-                select serviceprovidersmap.id, serviceprovidersmap.name, identifier, serviceid,
-                       country_codes.country, country_codes.countrycode, {0}
-                from statistics_country_hashed
-                join serviceprovidersmap ON serviceprovidersmap.id=serviceid
-                    AND serviceprovidersmap.tenenv_id=statistics_country_hashed.tenenv_id
-                join country_codes ON countryid=country_codes.id
-                {1}
-                WHERE statistics_country_hashed.tenenv_id = {2}
-                {3} {4}
-                GROUP BY serviceprovidersmap.id, serviceid, serviceprovidersmap.name, identifier,
-                         country_codes.country, country_codes.countrycode
-                ORDER BY serviceprovidersmap.id, count DESC
-            """.format(
-            sub_select, idp_subquery_join, tenenv_id, interval_subquery, unique_logins_subquery
-        )
-        ).all()
+    logins = session.exec("""
+            select serviceprovidersmap.id, serviceprovidersmap.name, identifier, serviceid,
+                   country_codes.country, country_codes.countrycode, {0}
+            from statistics_country_hashed
+            join serviceprovidersmap ON serviceprovidersmap.id=serviceid
+                AND serviceprovidersmap.tenenv_id=statistics_country_hashed.tenenv_id
+            join country_codes ON countryid=country_codes.id
+            {1}
+            WHERE statistics_country_hashed.tenenv_id = {2}
+            {3} {4}
+            GROUP BY serviceprovidersmap.id, serviceid, serviceprovidersmap.name, identifier,
+                     country_codes.country, country_codes.countrycode
+            ORDER BY serviceprovidersmap.id, count DESC
+        """.format(
+        sub_select, idp_subquery_join, tenenv_id, interval_subquery, unique_logins_subquery
+    )
+    ).all()
 
-        # Process results to group by SP
-        sp_data = defaultdict(lambda: {
-            'id': None,
-            'name': None,
-            'identifier': None,
-            'countries': []
+    # Process results to group by SP
+    sp_data = defaultdict(lambda: {
+        'id': None,
+        'name': None,
+        'identifier': None,
+        'countries': []
+    })
+
+    for row in logins:
+        sp_id = row[3]  # serviceid
+        if sp_data[sp_id]['id'] is None:
+            sp_data[sp_id]['id'] = row[0]
+            sp_data[sp_id]['name'] = row[1]
+            sp_data[sp_id]['identifier'] = row[2]
+        sp_data[sp_id]['countries'].append({
+            'country': row[4],
+            'countrycode': row[5],
+            'count': row[6]
         })
 
-        for row in logins:
-            sp_id = row[3]  # serviceid
-            if sp_data[sp_id]['id'] is None:
-                sp_data[sp_id]['id'] = row[0]
-                sp_data[sp_id]['name'] = row[1]
-                sp_data[sp_id]['identifier'] = row[2]
-            sp_data[sp_id]['countries'].append({
-                'country': row[4],
-                'countrycode': row[5],
-                'count': row[6]
-            })
-
-        # Convert to list
-        result = list(sp_data.values())
-        return result
+    # Convert to list
+    result = list(sp_data.values())
+    return result
 
 
 @router.get("/logins_per_country")

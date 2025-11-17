@@ -1,5 +1,6 @@
 export const tenenvKey = "tenenv"
 export const loginsPerSpKey = "logins_per_sp"
+export const loginsPerSpTotalsKey = "logins_per_sp_totals"
 export const loginsPerIdpKey = "logins_per_idp"
 export const loginsCountByKey = "logins_countby"
 export const loginsPerCountryKey = "logins_per_country"
