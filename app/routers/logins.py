@@ -1,4 +1,5 @@
 from pprint import pprint
+from collections import defaultdict
 
 from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlmodel import Field, Session, SQLModel, create_engine, select
@@ -112,7 +113,7 @@ async def read_logins_per_sp(
     unique_logins_subquery = ""
     if unique_logins:
         unique_logins_subquery = "AND hasheduserid != 'unknown'"
-      
+
     interval_subquery = ""
     idp_subquery_join = ""
     if idp:
@@ -143,21 +144,47 @@ async def read_logins_per_sp(
             count(DISTINCT hasheduserid) as count
         """
 
-    logins = session.exec("""    
-            select serviceprovidersmap.id, serviceprovidersmap.name, identifier, serviceid, {0}
+    logins = session.exec("""
+            select serviceprovidersmap.id, serviceprovidersmap.name, identifier, serviceid,
+                   country_codes.country, country_codes.countrycode, {0}
             from statistics_country_hashed
-            join serviceprovidersmap ON serviceprovidersmap.id=serviceid 
+            join serviceprovidersmap ON serviceprovidersmap.id=serviceid
                 AND serviceprovidersmap.tenenv_id=statistics_country_hashed.tenenv_id
+            join country_codes ON countryid=country_codes.id
             {1}
             WHERE statistics_country_hashed.tenenv_id = {2}
             {3} {4}
-            GROUP BY serviceprovidersmap.id, serviceid, serviceprovidersmap.name, identifier
-            ORDER BY count DESC
+            GROUP BY serviceprovidersmap.id, serviceid, serviceprovidersmap.name, identifier,
+                     country_codes.country, country_codes.countrycode
+            ORDER BY serviceprovidersmap.id, count DESC
         """.format(
         sub_select, idp_subquery_join, tenenv_id, interval_subquery, unique_logins_subquery
     )
     ).all()
-    return logins
+
+    # Process results to group by SP
+    sp_data = defaultdict(lambda: {
+        'id': None,
+        'name': None,
+        'identifier': None,
+        'countries': []
+    })
+
+    for row in logins:
+        sp_id = row[3]  # serviceid
+        if sp_data[sp_id]['id'] is None:
+            sp_data[sp_id]['id'] = row[0]
+            sp_data[sp_id]['name'] = row[1]
+            sp_data[sp_id]['identifier'] = row[2]
+        sp_data[sp_id]['countries'].append({
+            'country': row[4],
+            'countrycode': row[5],
+            'count': row[6]
+        })
+
+    # Convert to list
+    result = list(sp_data.values())
+    return result
 
 
 @router.get("/logins_per_country")
