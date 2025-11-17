@@ -206,7 +206,7 @@ jobs:
       - name: Get artifact
         uses: actions/download-artifact@v4
         with:
-          name: react-github-actions-build-backend
+          name: react-github-actions-build-backend-${{matrix.tenant}}
       - name: Compress action step
         uses: a7ul/tar-action@v1.1.0
         id: compress
