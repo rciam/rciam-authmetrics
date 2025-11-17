@@ -283,7 +283,7 @@ jobs:
     # We specify that deploys needs to
     # finish before we create a release
     # Job outputs are available to all downstream jobs that depend on this job.
-    needs: [frontend_release, configure]
+    needs: [frontend_release, configure, deploy_backend]
     steps:
       - name: Download playbook
         uses: actions/checkout@v4
