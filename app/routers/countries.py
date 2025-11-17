@@ -21,7 +21,8 @@ router = APIRouter(
 async def read_countries(
         *,
         session: Session = Depends(db.get_session),
-        offset: int = 0
+        offset: int = 0,
+        tenenv_id: int
 ):
     countries = session.exec(select(Country_Codes).offset(offset)).all()
     return countries
