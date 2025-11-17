@@ -97,7 +97,7 @@ jobs:
       - name: Share artifact inside workflow (frontend)
         uses: actions/upload-artifact@v4
         with:
-          name: react-application-${{matrix.tenant}}
+          name: react-application
           path: |
             ${{ github.workspace }}/metrics-app-${{matrix.tenant}}
       - name: Use Node.js ${{ env.NODE_VERSION }}
@@ -138,7 +138,7 @@ jobs:
       - name: Share artifact inside workflow - backend
         uses: actions/upload-artifact@v4
         with:
-          name: react-github-actions-build-backend-${{matrix.tenant}}
+          name: react-github-actions-build-backend
           path: |
             ${{ github.workspace }}/metrics-app-${{matrix.tenant}}/app
             ${{ github.workspace }}/metrics-app-${{matrix.tenant}}/requirements.txt
@@ -206,7 +206,7 @@ jobs:
       - name: Get artifact
         uses: actions/download-artifact@v4
         with:
-          name: react-github-actions-build-backend-${{matrix.tenant}}
+          name: react-github-actions-build-backend
       - name: Compress action step
         uses: a7ul/tar-action@v1.1.0
         id: compress
