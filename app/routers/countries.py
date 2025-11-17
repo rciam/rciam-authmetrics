@@ -17,7 +17,7 @@ router = APIRouter(
 )
 
 
-@router.get("/countries_list/", response_model=List[Country_CodesRead])
+@router.get("/countries_list", response_model=List[Country_CodesRead])
 async def read_countries(
         *,
         session: Session = Depends(db.get_session),
