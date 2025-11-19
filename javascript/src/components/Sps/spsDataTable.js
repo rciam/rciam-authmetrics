@@ -40,6 +40,7 @@ const SpsDataTable = ({
   const [selectedCountries, setSelectedCountries] = useState([]);
   const [tempSelectedCountries, setTempSelectedCountries] = useState([]);
   const [showCountryModal, setShowCountryModal] = useState(false);
+  const [shouldScroll, setShouldScroll] = useState(false);
   const [countrySearchQuery, setCountrySearchQuery] = useState("");
   const queryClient = useQueryClient();
 
@@ -134,8 +135,14 @@ const SpsDataTable = ({
           }).filter(Boolean) // Remove nulls
             .sort((a, b) => b.count - a.count); // Sort by count descending
 
-          // Format as plain text list (not HTML) for datatable processing
-          loginCount = countryCounts.map(item => item.display).join('||');
+          // Compute total sum for sorting
+          const totalSum = countryCounts.reduce((sum, item) => sum + item.count, 0);
+
+          // Format as object with display and sort
+          loginCount = {
+            display: countryCounts.map(item => item.display).join('||'),
+            sort: totalSum
+          };
         } else {
           // No countries selected - show total count from all countries
           loginCount = sp.countries.reduce((sum, country) => sum + country.count, 0);
@@ -156,13 +163,15 @@ const SpsDataTable = ({
         $("#" + dataTableId).DataTable().destroy()
         setSpsLogins(perSp)
 
-        // Scroll to the datatable after data is loaded
-        setTimeout(() => {
-          const tableElement = document.getElementById(dataTableId);
-          if (tableElement) {
-            tableElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }
-        }, 100);
+        if (shouldScroll) {
+          setTimeout(() => {
+            const tableElement = document.getElementById(dataTableId);
+            if (tableElement) {
+              tableElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+          }, 100);
+          setShouldScroll(false);
+        }
       }
     }
   }, [uniqueLogins, loginsPerSp.isSuccess && minDateLogins.isSuccess, selectedCountries])
@@ -195,6 +204,7 @@ const SpsDataTable = ({
     setSelectedCountries(tempSelectedCountries);
     setShowCountryModal(false);
     setCountrySearchQuery(""); // Reset search query
+    setShouldScroll(true);
   };
 
   const handleOpenCountryModal = () => {
@@ -217,6 +227,10 @@ const SpsDataTable = ({
     country.country?.toLowerCase().includes(countrySearchQuery.toLowerCase()) ||
     country.countrycode?.toLowerCase().includes(countrySearchQuery.toLowerCase())
   ) || [];
+  const handleFilterClick = () => {
+    setBtnPressed((prev) => !prev);
+    setShouldScroll(true);
+  };
 
   if (loginsPerSp.isLoading
     || loginsPerSp.isFetching) {
@@ -249,7 +263,7 @@ const SpsDataTable = ({
         {/* Probably add a tooltip here that both fields are required */}
         <Button variant="light"
                 disabled={startDate == undefined || endDate == undefined}
-                onClick={() => setBtnPressed((prev) => !prev)}>
+                onClick={handleFilterClick}>
           Filter
         </Button>
       </Col>
