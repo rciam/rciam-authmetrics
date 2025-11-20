@@ -1,5 +1,13 @@
 ### Changelog
 
+## 2025-11-20
+
+### Fixed
+- Fix logo url at EGI dev instance
+
+### Added
+- Logins per service per country
+
 ## 2025-06-03
 
 ### Fixed
