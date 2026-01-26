@@ -83,7 +83,7 @@ async def read_communities(
         date_trunc('{0}', CURRENT_DATE) - INTERVAL '{1} {2}'""".format(group_by, count_interval, interval)
         if startDate and endDate:
             interval_subquery = """
-                WHERE created BETWEEN '{0}' AND '{1}'
+                WHERE created BETWEEN DATE('{0}') AND DATE('{1}')
             """.format(startDate, endDate)
         if interval_subquery == "":
             interval_subquery = """

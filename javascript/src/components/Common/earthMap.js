@@ -35,8 +35,12 @@ const EarthMap = ({
     const mapStatsData = mapData?.stats ?? mapData
     const mapStatusData = mapData?.status
 
+    // Guard against undefined or non-array data
+    if (!Array.isArray(mapStatsData)) {
+      return;
+    }
 
-    mapStatsData?.forEach(function (mapRow) {
+    mapStatsData.forEach(function (mapRow) {
       let contentTooltip = `<span style="font-weight:bold;">${mapRow.country}</span><br />${tooltipLabel} : ${mapRow.sum}`
 
       // Handle status

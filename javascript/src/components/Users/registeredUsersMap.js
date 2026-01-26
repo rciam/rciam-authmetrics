@@ -8,9 +8,10 @@ import {getRegisteredUsersByCountry} from "../../utils/queries";
 import {registeredUsersByCountryKey} from "../../utils/queryKeys";
 import EarthMap from "../Common/earthMap";
 import Spinner from "../Common/spinner";
-import {format} from "date-fns";
+import {formatStartDate, formatEndDate} from "../Common/utils";
 
 const RegisteredUsersMap = ({
+                              showActiveOnly,
                               startDate,
                               endDate,
                               tenenvId
@@ -19,9 +20,10 @@ const RegisteredUsersMap = ({
 
   let params = {
     params: {
-      'startDate': !startDate ? null : format(startDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"),
-      'endDate': !endDate ? null : format(endDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"),
+      'startDate': !startDate ? null : formatStartDate(startDate),
+      'endDate': !endDate ? null : formatEndDate(endDate),
       'tenenv_id': tenenvId,
+      'status': showActiveOnly ? 'A' : null,
     }
   }
 
@@ -35,12 +37,15 @@ const RegisteredUsersMap = ({
   )
 
   useEffect(() => {
-    try {
-      var response = queryClient.refetchQueries([registeredUsersByCountryKey, params])
-    } catch (error) {
-      console.error(RegisteredUsersMap.name + " error: " + error)
+    const fetchData = async () => {
+      try {
+        const response = await queryClient.refetchQueries([registeredUsersByCountryKey, params])
+      } catch (error) {
+        console.error(RegisteredUsersMap.name + " error: " + error)
+      }
     }
-  }, [startDate, endDate, tenenvId])
+    fetchData();
+  }, [startDate, endDate, tenenvId, showActiveOnly])
 
   if (registeredUsersByCountry.isLoading
     || registeredUsersByCountry.isFetching

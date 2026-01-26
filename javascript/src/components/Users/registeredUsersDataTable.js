@@ -16,7 +16,6 @@ import {loginsPerIdpKey, minDateRegisteredUsersKey, registeredUsersPerCountryGro
 import {getMinDateRegisteredUsers, getRegisteredUsersPerCountryGroupBy} from "../../utils/queries";
 import {useCookies} from "react-cookie";
 import Spinner from "../Common/spinner";
-import {format} from "date-fns";
 import {convertDateByGroup, formatStartDate, formatEndDate} from "../Common/utils";
 
 const RegisteredUsersDataTable = ({
@@ -24,7 +23,8 @@ const RegisteredUsersDataTable = ({
                                     setStartDate,
                                     setEndDate,
                                     startDate,
-                                    endDate
+                                    endDate,
+                                    showActiveOnly
                                   }) => {
   const dropdownRef = useRef(null);
   const [cookies, setCookie] = useCookies();
@@ -37,9 +37,10 @@ const RegisteredUsersDataTable = ({
 
   let params = {
     params: {
-      'startDate': !startDate ? null : format(startDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"),
-      'endDate': !endDate ? null : format(endDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"),
-      'tenenv_id': tenenvId
+      'startDate': !startDate ? null : formatStartDate(startDate),
+      'endDate': !endDate ? null : formatEndDate(endDate),
+      'tenenv_id': tenenvId,
+      'status': showActiveOnly ? 'A' : null
     }
   }
 
@@ -63,47 +64,48 @@ const RegisteredUsersDataTable = ({
 
 
   useEffect(() => {
-    if (groupBy == '') {
-      return;
-    }
-    params = {
-      params: {
-        'startDate': !startDate ? null : format(startDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"),
-        'endDate': !endDate ? null : format(endDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"),
-        'tenenv_id': tenenvId,
-        'groupBy': groupBy
+    const fetchData = async () => {
+      params = {
+        params: {
+          'startDate': !startDate ? null : formatStartDate(startDate),
+          'endDate': !endDate ? null : formatEndDate(endDate),
+          'tenenv_id': tenenvId,
+          'groupBy': groupBy,
+          'status': showActiveOnly ? 'A' : null
+        }
+      }
+
+      try {
+        const response = await queryClient.refetchQueries([registeredUsersPerCountryGroupByKey, {
+          groupBy: groupBy,
+          params: params
+        }])
+        queryClient.refetchQueries([minDateRegisteredUsersKey, {params:{tenenv_id: tenenvId}}])
+      } catch (error) {
+        // todo: Here we can handle any authentication or authorization errors
+        console.log(RegisteredUsersDataTable.name + " error: " + error)
       }
     }
-
-    try {
-      const response = queryClient.refetchQueries([registeredUsersPerCountryGroupByKey, {
-        groupBy: groupBy,
-        params: params
-      }])
-      queryClient.refetchQueries([minDateRegisteredUsersKey, {params:{tenenv_id: tenenvId}}])
-    } catch (error) {
-      // todo: Here we can handle any authentication or authorization errors
-      console.log(RegisteredUsersDataTable.name + " error: " + error)
-    }
-  }, [groupBy])
+    fetchData();
+  }, [groupBy, showActiveOnly, startDate, endDate])
 
   // Construct the data required for the datatable
   useEffect(() => {
     const perPeriod = registeredUsersPerCountryGroup?.data?.map(user => ({
-        "Date": !!user?.range_date ? convertDateByGroup(new Date(user?.range_date), groupBy): null,
+        "Date": !!user?.range_date ? (groupBy ? convertDateByGroup(new Date(user?.range_date), groupBy) : user?.range_date) : null,
         "Number of Registered Users": user?.count,
         "Registered Users per country": user?.countries
       }))
 
     if (!!registeredUsersPerCountryGroup?.data && !!perPeriod) {
       // This is essential: We must destroy the datatable in order to be refreshed with the new data
-      if (minDate == undefined || minDate == "") {
-        setMinDate(!!minDateRegisteredUsers?.data?.min_date ? new Date(minDateRegisteredUsers?.data?.min_date) : null)
+      const table = $("#table-users");
+      if (table.length && table.DataTable() && typeof table.DataTable().destroy === 'function') {
+        table.DataTable().destroy()
       }
-      $("#table-users").DataTable().destroy()
       setUsersPerCountryPerPeriod(perPeriod)
     }
-  }, [registeredUsersPerCountryGroup.isSuccess && minDateRegisteredUsers.isSuccess, groupBy])
+  }, [registeredUsersPerCountryGroup.isSuccess && minDateRegisteredUsers.isSuccess, groupBy, startDate, endDate])
 
 
   const handleAddOption = () => {
@@ -121,7 +123,6 @@ const RegisteredUsersDataTable = ({
     if(groupBy!=''){
       handleAddOption()
     }
-    date = formatStartDate(date);
     if(date != null) {
       if(endDate!=date){
         setGroupBy("")
@@ -136,7 +137,6 @@ const RegisteredUsersDataTable = ({
     if(groupBy!=''){
       handleAddOption()
     }
-    //date = formatEndDate(date);
     if(date != null) {
       if(endDate!=date){
         setGroupBy("")  
@@ -159,7 +159,7 @@ const RegisteredUsersDataTable = ({
     <Row className="box">
       <Col md={12}>
         <div className="box-header with-border">
-          <h3 className="box-title">Number of logins</h3>
+          <h3 className="box-title">Registered Users per country</h3>
         </div>
       </Col>
       <Col lg={12} className="range_inputs">

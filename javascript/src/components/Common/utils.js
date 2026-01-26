@@ -191,22 +191,24 @@ export function parseDateWithoutTimezone(dateString, type) {
 
 export function formatStartDate(date) {
   // Check if a valid date object is received
+  // Returns date in YYYY-MM-DD format for timezone-agnostic comparison
   if (date instanceof Date && !isNaN(date.getTime())) {
-    // Set the time to midnight (00:00:00)
-    date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
-    date.setHours(0, 0, 0, 0);
-    return date;
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
   return null;
 }
 
 export function formatEndDate(date) {
   // Check if a valid date object is received
+  // Returns date in YYYY-MM-DD format for timezone-agnostic comparison
   if (date instanceof Date && !isNaN(date.getTime())) {
-    // Set the time to midnight (23:59:59)
-    date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
-    date.setHours(23, 59, 59, 59);
-    return date;
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
   return null;
 }

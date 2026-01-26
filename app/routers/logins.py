@@ -69,7 +69,7 @@ async def read_logins_per_idp(
  
     if startDate and endDate:
         interval_subquery = """
-            AND date BETWEEN '{0}' AND '{1}'
+            AND date BETWEEN DATE('{0}') AND DATE('{1}')
         """.format(startDate, endDate)
     if unique_logins == False:
         sub_select = """
@@ -79,7 +79,6 @@ async def read_logins_per_idp(
         sub_select = """
             count(DISTINCT hasheduserid) as count
         """
-   
     logins = session.exec("""
         select identityprovidersmap.id, identityprovidersmap.name, entityid, sourceidpid, {0}
         from statistics_country_hashed
@@ -132,7 +131,7 @@ async def read_logins_per_sp_totals(
 
     if startDate and endDate:
         interval_subquery = """
-            AND date BETWEEN '{0}' AND '{1}'
+            AND date BETWEEN DATE('{0}') AND DATE('{1}')
         """.format(startDate, endDate)
 
     if unique_logins == False:
@@ -197,7 +196,7 @@ async def read_logins_per_sp(
 
     if startDate and endDate:
         interval_subquery = """
-            AND date BETWEEN '{0}' AND '{1}'
+            AND date BETWEEN DATE('{0}') AND DATE('{1}')
         """.format(startDate, endDate)
 
     if unique_logins == False:
@@ -283,7 +282,7 @@ async def read_logins_per_country(
     if group_by:
         if startDate and endDate:
             interval_subquery = """
-                AND date BETWEEN '{0}' AND '{1}'
+                AND date BETWEEN DATE('{0}') AND DATE('{1}')
             """.format(startDate, endDate)
 
         if unique_logins == False:
@@ -322,7 +321,7 @@ async def read_logins_per_country(
     else:
         if startDate and endDate:
             interval_subquery = """
-                AND date BETWEEN '{0}' AND '{1}'
+                AND date BETWEEN DATE('{0}') AND DATE('{1}')
             """.format(startDate, endDate)
 
         if unique_logins == False:

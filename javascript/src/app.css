@@ -526,6 +526,42 @@ footer {
     font-size: 1.2rem;
 }
 
+.active-users {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding-right: 0;
+}
+
+.active-users-form {
+    background-color: #027dd5;
+    padding: 5px 10px;
+    border-radius: 5px;
+    height: 36px;
+}
+
+.active-users-form .form-check-label {
+    color: white;
+}
+
+.unique-logins {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding-right: 0;
+}
+
+.unique-logins-form {
+    background-color: #027dd5;
+    padding: 5px 10px;
+    border-radius: 5px;
+    height: 36px;
+}
+
+.unique-logins-form .form-check-label {
+    color: white;
+}
+
 #page-content-wrapper {
     min-width: 0;
     width: 100%;

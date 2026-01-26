@@ -18,6 +18,7 @@ import {registeredUsersGroupByKey} from "../../utils/queryKeys";
 import {getRegisteredUsersGroupBy} from "../../utils/queries";
 
 const RegisteredUsersChart = ({
+                                showActiveOnly,
                                 tenenvId
                               }) => {
   const [selected, setSelected] = useState(options_group_by[0].value);
@@ -29,7 +30,8 @@ const RegisteredUsersChart = ({
     params: {
       'interval': selected,
       'count_interval': regUsersOptions[selected]["count_interval"],
-      'tenenv_id': tenenvId
+      'tenenv_id': tenenvId,
+      'status': showActiveOnly ? 'A' : null,
     }
   }
 
@@ -43,21 +45,25 @@ const RegisteredUsersChart = ({
   )
 
   useEffect(() => {
-    params = {
-      params: {
-        'interval': selected,
-        'count_interval': regUsersOptions[selected]["count_interval"],
-        'tenenv_id': tenenvId,
+    const fetchData = async () => {
+      params = {
+        params: {
+          'interval': selected,
+          'count_interval': regUsersOptions[selected]["count_interval"],
+          'tenenv_id': tenenvId,
+          'status': showActiveOnly ? 'A' : null,
+        }
+      }
+
+      try {
+        const response = await queryClient.refetchQueries([registeredUsersGroupByKey, {groupBy: selected, params: params}])
+      } catch (error) {
+        // todo: Here we can handle any authentication or authorization errors
+        console.error(RegisteredUsersChart.name + " error: " + error)
       }
     }
-
-    try {
-      const response = queryClient.refetchQueries([registeredUsersGroupByKey, {groupBy: selected, params: params}])
-    } catch (error) {
-      // todo: Here we can handle any authentication or authorization errors
-      console.error(RegisteredUsersChart.name + " error: " + error)
-    }
-  }, [selected, tenenvId])
+    fetchData();
+  }, [selected, tenenvId, showActiveOnly])
 
 
   // Construct the data required for the datatable
@@ -87,7 +93,7 @@ const RegisteredUsersChart = ({
       const charData = registeredUsersGroup?.data?.map(element => ([
           new Date(element?.range_date),
           parseInt(element['count']),
-          `<div style="padding:5px 5px 5px 5px;">${convertDateByGroup(new Date(element?.range_date), selected)}<br/>Communities: ${parseInt(element['count'])}</div>`
+          `<div style="padding:5px 5px 5px 5px;">${convertDateByGroup(new Date(element?.range_date), selected)}<br/>Users: ${parseInt(element['count'])}</div>`
         ])
       )
 

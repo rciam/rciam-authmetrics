@@ -17,7 +17,6 @@ import {getLoginsPerSP, getMinDateLogins, getCountries} from "../../utils/querie
 import {useCookies} from "react-cookie";
 import {createAnchorElement, formatStartDate, formatEndDate} from "../Common/utils";
 import Spinner from "../Common/spinner";
-import {format} from "date-fns";
 
 const SpsDataTable = ({
                         idpId,
@@ -46,8 +45,8 @@ const SpsDataTable = ({
 
   let params = {
     params: {
-      'startDate': !startDate ? null : format(startDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"),
-      'endDate': !endDate ? null : format(endDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"),
+      'startDate': !startDate ? null : formatStartDate(startDate),
+      'endDate': !endDate ? null : formatEndDate(endDate),
       'idp': idpId,
       'tenenv_id': tenenvId,
       'unique_logins': uniqueLogins,
@@ -84,8 +83,8 @@ const SpsDataTable = ({
   useEffect(() => {
     params = {
       params: {
-        'startDate': !startDate ? null : format(startDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"),
-        'endDate': !endDate ? null : format(endDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"),
+        'startDate': !startDate ? null : formatStartDate(startDate),
+        'endDate': !endDate ? null : formatEndDate(endDate),
         'idp': idpId,
         'tenenv_id': tenenvId,
         'unique_logins': uniqueLogins,
@@ -177,8 +176,6 @@ const SpsDataTable = ({
   }, [uniqueLogins, loginsPerSp.isSuccess && minDateLogins.isSuccess, selectedCountries])
 
   const handleStartDateChange = (date) => {
-
-    date = formatStartDate(date);
     if (date != null) {
       setStartDate(date);
     }
