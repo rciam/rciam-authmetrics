@@ -111,41 +111,18 @@ const RegisteredUsersDataTable = ({
   }, [registeredUsersPerCountryGroup.isSuccess && minDateRegisteredUsers.isSuccess, groupBy, startDate, endDate])
 
 
-  const handleAddOption = () => {
-    // Create a new option dynamically
-    const newOption =  {value: '', label: 'Filter'};
-
-    // Check if the new option already exists in the options array
-    if (!dropdownOptionsState.some(option => option.value === newOption.value)) {
-      // If it doesn't exist, add it to the options array
-      setDropdownOptions([newOption, ...dropdownOptionsState]);
-    } 
-  };
-
   const handleStartDateChange = (date) => {
-    if(groupBy!=''){
-      handleAddOption()
-    }
     if(date != null) {
-      if(endDate!=date){
-        setGroupBy("")
-      }
       setStartDate(date);
-      dropdownRef.current.state.selected.label = 'Filter';
+      dropdownRef.current.state.selected.label = 'None';
     }
     
   };
 
   const handleEndDateChange = (date) => {
-    if(groupBy!=''){
-      handleAddOption()
-    }
     if(date != null) {
-      if(endDate!=date){
-        setGroupBy("")  
-      }
       setEndDate(date);
-      dropdownRef.current.state.selected.label = 'Filter';
+      dropdownRef.current.state.selected.label = 'None';
     }
     
   };
