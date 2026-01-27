@@ -173,7 +173,7 @@ async def read_users_country_groupby_no_groupby(
         WHERE (SELECT total FROM total_users) > (SELECT known_total FROM known_users_count)
     )
         SELECT
-            CONCAT('{3}', ' - ', '{4}') as range_date,
+            CONCAT('{3}', ' TO ', '{4}') as range_date,
             sum(country_total) as count,
             STRING_AGG(country_count, ' || ') as countries
         FROM (

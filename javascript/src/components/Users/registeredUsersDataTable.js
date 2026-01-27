@@ -29,9 +29,12 @@ const RegisteredUsersDataTable = ({
   const dropdownRef = useRef(null);
   const [cookies, setCookie] = useCookies();
   const [usersPerCountryPerPeriod, setUsersPerCountryPerPeriod] = useState([]);
-  const [dropdownOptionsState, setDropdownOptions] = useState(dropdownOptions);
+  const [dropdownOptionsState, setDropdownOptions] = useState([
+    {value: '', label: 'None'},
+    ...dropdownOptions
+  ]);
   const [minDate, setMinDate] = useState("");
-  const [groupBy, setGroupBy] = useState("month")
+  const [groupBy, setGroupBy] = useState("")
   const queryClient = useQueryClient();
 
 
@@ -171,7 +174,7 @@ const RegisteredUsersDataTable = ({
                         minDate={minDate}
                         dateFormat="dd/MM/yyyy"
                         onChange={handleEndDateChange}/>
-        <Dropdown placeholder='Filter'
+        <Dropdown placeholder='None'
                    options={dropdownOptionsState}
                    onChange={handleChange}
                    ref={dropdownRef}/>
