@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { renderToString } from 'react-dom/server';
+import $ from "jquery";
 import "jquery/dist/jquery.min.js";
 import "datatables.net-dt/js/dataTables.dataTables";
 import "datatables.net-dt/css/jquery.dataTables.min.css";
@@ -13,8 +14,6 @@ import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
-import $ from "jquery";
-
 
 var table;
 const title = '';
