@@ -35,6 +35,8 @@ const RegisteredUsersDataTable = ({
   ]);
   const [minDate, setMinDate] = useState("");
   const [groupBy, setGroupBy] = useState("")
+  const [isLoading, setIsLoading] = useState(false);
+  const [dataTableReady, setDataTableReady] = useState(true);
   const queryClient = useQueryClient();
 
 
@@ -79,12 +81,16 @@ const RegisteredUsersDataTable = ({
       }
 
       try {
+        setIsLoading(true);
+        setDataTableReady(false);
         const response = await queryClient.refetchQueries([registeredUsersPerCountryGroupByKey, {
           groupBy: groupBy,
           params: params
         }])
-        queryClient.refetchQueries([minDateRegisteredUsersKey, {params:{tenenv_id: tenenvId}}])
+        await queryClient.refetchQueries([minDateRegisteredUsersKey, {params:{tenenv_id: tenenvId}}])
       } catch (error) {
+        setIsLoading(false);
+        setDataTableReady(true);
         // todo: Here we can handle any authentication or authorization errors
         console.log(RegisteredUsersDataTable.name + " error: " + error)
       }
@@ -107,27 +113,34 @@ const RegisteredUsersDataTable = ({
         table.DataTable().destroy()
       }
       setUsersPerCountryPerPeriod(perPeriod)
+      
+      // Wait for DataTable to be fully initialized before enabling inputs
+      setTimeout(() => {
+        setIsLoading(false);
+        setDataTableReady(true);
+      }, 1000); // 2 second disabled state
     }
   }, [registeredUsersPerCountryGroup.isSuccess && minDateRegisteredUsers.isSuccess, groupBy, startDate, endDate])
 
 
   const handleStartDateChange = (date) => {
+    if(isLoading) return;
     if(date != null) {
       setStartDate(date);
-      dropdownRef.current.state.selected.label = 'None';
     }
     
   };
 
   const handleEndDateChange = (date) => {
+    if(isLoading) return;
     if(date != null) {
       setEndDate(date);
-      dropdownRef.current.state.selected.label = 'None';
     }
     
   };
 
   const handleChange = (event) => {
+    if(isLoading) return;
     if (!startDate || !endDate) {
       toast.warning("You have to fill both startDate and endDate")
       return
@@ -143,18 +156,34 @@ const RegisteredUsersDataTable = ({
         </div>
       </Col>
       <Col lg={12} className="range_inputs">
-        From: <DatePicker selected={startDate}
-                          minDate={minDate}
-                          dateFormat="dd/MM/yyyy"
-                          onChange={handleStartDateChange}/>
-        To: <DatePicker selected={endDate}
-                        minDate={minDate}
-                        dateFormat="dd/MM/yyyy"
-                        onChange={handleEndDateChange}/>
-        <Dropdown placeholder='None'
-                   options={dropdownOptionsState}
-                   onChange={handleChange}
-                   ref={dropdownRef}/>
+        <div className="d-flex align-items-center flex-wrap gap-2" style={isLoading ? {pointerEvents: 'none', opacity: 0.6} : {}}>
+          <div className="d-flex align-items-center">
+            <span className="me-2">From:</span>
+            <DatePicker selected={startDate}
+                              minDate={minDate}
+                              dateFormat="dd/MM/yyyy"
+                              onChange={handleStartDateChange}
+                              disabled={isLoading}
+                              readOnly={isLoading}/>
+          </div>
+          <div className="d-flex align-items-center">
+            <span className="me-2">To:</span>
+            <DatePicker selected={endDate}
+                            minDate={minDate}
+                            dateFormat="dd/MM/yyyy"
+                            onChange={handleEndDateChange}
+                            disabled={isLoading}
+                            readOnly={isLoading}/>
+          </div>
+          <div style={{minWidth: '150px', maxWidth: '200px'}}>
+            <Dropdown placeholder='None'
+                       options={dropdownOptionsState}
+                       onChange={handleChange}
+                       ref={dropdownRef}
+                       disabled={isLoading}
+                       className={isLoading ? 'dropdown-disabled' : ''}/>
+          </div>
+        </div>
       </Col>
       <Col lg={12}>
         {      
