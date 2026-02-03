@@ -247,3 +247,25 @@ export function formatEndDateWithTimezone(date) {
   }
   return null;
 }
+
+export function parseDateFromISO(dateString) {
+  // Parse date directly from ISO string without timezone conversion
+  // This extracts the date parts from the string itself, not from the Date object
+  if (!dateString) return null;
+  
+  // Handle ISO 8601 format with timezone (e.g., '2022-01-01T00:00:00+02:00')
+  // Extract just the date part (first 10 characters)
+  const datePart = dateString.substring(0, 10);
+  
+  // Parse the date parts
+  const parts = datePart.split('-');
+  if (parts.length !== 3) return null;
+  
+  const year = parseInt(parts[0], 10);
+  const month = parseInt(parts[1], 10) - 1; // JavaScript months are 0-indexed
+  const day = parseInt(parts[2], 10);
+  
+  // Return a Date object set to noon UTC to avoid timezone issues
+  // This ensures the date displays consistently across timezones
+  return new Date(Date.UTC(year, month, day, 12, 0, 0));
+}
