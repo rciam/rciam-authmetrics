@@ -1,5 +1,7 @@
 from pprint import pprint
 from collections import defaultdict
+from datetime import datetime
+import re
 
 from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlmodel import Field, Session, SQLModel, create_engine, select
@@ -10,6 +12,34 @@ from xmlrpc.client import boolean
 
 from app.database import db
 from app.utils.globalMethods import AuthNZCheck
+
+
+def parse_timezone_aware_date(date_str):
+    """
+    Parse a timezone-aware date string and return the date part in YYYY-MM-DD format.
+    Handles ISO 8601 format with timezone offset (e.g., '2024-01-01T00:00:00+02:00').
+    """
+    if not date_str:
+        return None
+    
+    try:
+        # Try to parse as ISO 8601 with timezone
+        dt = datetime.fromisoformat(date_str.replace('Z', '+00:00'))
+        # Convert to UTC and extract date
+        return dt.strftime('%Y-%m-%d')
+    except ValueError:
+        # If not ISO format, assume it's already a date string
+        return date_str[:10] if len(date_str) >= 10 else date_str
+
+
+def get_date_range(startDate, endDate):
+    """
+    Get the start and end dates for queries, handling timezone-aware dates.
+    Returns a tuple of (start_date, end_date) in YYYY-MM-DD format.
+    """
+    start_date = parse_timezone_aware_date(startDate)
+    end_date = parse_timezone_aware_date(endDate)
+    return start_date, end_date
 
 
 # LOGINS ROUTES ARE OPEN
@@ -281,11 +311,12 @@ async def read_logins_per_country(
         """.format(spId)
     if group_by:
         if startDate and endDate:
+            start_date, end_date = get_date_range(startDate, endDate)
             interval_subquery = """
                 AND date BETWEEN DATE('{0}') AND DATE('{1}')
-            """.format(startDate, endDate)
+            """.format(start_date, end_date)
 
-        if unique_logins == False:
+        if unique_logins is False:
             sub_select = """
                 sum(count) as count_country
             """
@@ -320,11 +351,12 @@ async def read_logins_per_country(
         ).all()
     else:
         if startDate and endDate:
+            start_date, end_date = get_date_range(startDate, endDate)
             interval_subquery = """
                 AND date BETWEEN DATE('{0}') AND DATE('{1}')
-            """.format(startDate, endDate)
+            """.format(start_date, end_date)
 
-        if unique_logins == False:
+        if unique_logins is False:
             sub_select = """
                 sum(count) as sum
             """

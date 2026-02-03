@@ -14,7 +14,7 @@ import {useQuery, useQueryClient} from "react-query";
 import {loginsPerCountryKey, minDateLoginsKey} from "../../utils/queryKeys";
 import {getLoginsPerCountry, getMinDateLogins} from "../../utils/queries";
 import {toast} from "react-toastify";
-import {convertDateByGroup, formatStartDate, formatEndDate} from "../Common/utils";
+import {convertDateByGroup, formatStartDate, formatEndDate, formatStartDateWithTimezone, formatEndDateWithTimezone} from "../Common/utils";
 
 const LoginDataTable = ({
                           startDateHandler,
@@ -45,8 +45,8 @@ const LoginDataTable = ({
   let params = {
     params: {
       'group_by': groupBy,
-      'startDate': !startDate ? null : formatStartDate(startDate),
-      'endDate': !endDate ? null : formatEndDate(endDate),
+      'startDate': !startDate ? null : formatStartDateWithTimezone(startDate),
+      'endDate': !endDate ? null : formatEndDateWithTimezone(endDate),
       'tenenv_id': tenenvId,
       'unique_logins': uniqueLogins
     },
@@ -74,8 +74,8 @@ const LoginDataTable = ({
     params = {
       params: {
         'group_by': groupBy,
-        'startDate': !startDate ? null : formatStartDate(startDate),
-        'endDate': !endDate ? null : formatEndDate(endDate),
+        'startDate': !startDate ? null : formatStartDateWithTimezone(startDate),
+        'endDate': !endDate ? null : formatEndDateWithTimezone(endDate),
         'tenenv_id': tenenvId,
         'unique_logins': uniqueLogins
       },

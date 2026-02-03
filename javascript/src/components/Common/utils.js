@@ -212,3 +212,38 @@ export function formatEndDate(date) {
   }
   return null;
 }
+
+export function formatStartDateWithTimezone(date) {
+  // Returns date in ISO format with timezone offset for timezone-aware handling
+  if (date instanceof Date && !isNaN(date.getTime())) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    // Get timezone offset in minutes and convert to +/-HH:MM format
+    const tzOffset = date.getTimezoneOffset();
+    const tzHours = Math.floor(Math.abs(tzOffset) / 60);
+    const tzMinutes = Math.abs(tzOffset) % 60;
+    const tzSign = tzOffset > 0 ? '-' : '+';
+    const tzString = `${tzSign}${String(tzHours).padStart(2, '0')}:${String(tzMinutes).padStart(2, '0')}`;
+    return `${year}-${month}-${day}T00:00:00${tzString}`;
+  }
+  return null;
+}
+
+export function formatEndDateWithTimezone(date) {
+  // Returns date in ISO format with timezone offset for timezone-aware handling
+  // Sets time to 23:59:59 to include the entire end day
+  if (date instanceof Date && !isNaN(date.getTime())) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    // Get timezone offset in minutes and convert to +/-HH:MM format
+    const tzOffset = date.getTimezoneOffset();
+    const tzHours = Math.floor(Math.abs(tzOffset) / 60);
+    const tzMinutes = Math.abs(tzOffset) % 60;
+    const tzSign = tzOffset > 0 ? '-' : '+';
+    const tzString = `${tzSign}${String(tzHours).padStart(2, '0')}:${String(tzMinutes).padStart(2, '0')}`;
+    return `${year}-${month}-${day}T23:59:59${tzString}`;
+  }
+  return null;
+}
