@@ -16,7 +16,7 @@ import {loginsPerIdpKey, minDateRegisteredUsersKey, registeredUsersPerCountryGro
 import {getMinDateRegisteredUsers, getRegisteredUsersPerCountryGroupBy} from "../../utils/queries";
 import {useCookies} from "react-cookie";
 import Spinner from "../Common/spinner";
-import {convertDateByGroup, formatStartDate, formatEndDate} from "../Common/utils";
+import {convertDateByGroup, formatStartDate, formatEndDate, parseDateFromISO} from "../Common/utils";
 
 const RegisteredUsersDataTable = ({
                                     tenenvId,
@@ -101,7 +101,7 @@ const RegisteredUsersDataTable = ({
   // Construct the data required for the datatable
   useEffect(() => {
     const perPeriod = registeredUsersPerCountryGroup?.data?.map(user => ({
-        "Date": !!user?.range_date ? (groupBy ? convertDateByGroup(new Date(user?.range_date), groupBy) : user?.range_date) : null,
+        "Date": !!user?.range_date ? (groupBy ? convertDateByGroup(parseDateFromISO(user?.range_date), groupBy) : user?.range_date) : null,
         "Number of Registered Users": user?.count,
         "Registered Users per country": user?.countries
       }))

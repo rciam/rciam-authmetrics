@@ -14,7 +14,7 @@ import {useQuery, useQueryClient} from "react-query";
 import {loginsPerCountryKey, minDateLoginsKey} from "../../utils/queryKeys";
 import {getLoginsPerCountry, getMinDateLogins} from "../../utils/queries";
 import {toast} from "react-toastify";
-import {convertDateByGroup, formatStartDate, formatEndDate, formatStartDateWithTimezone, formatEndDateWithTimezone} from "../Common/utils";
+import {convertDateByGroup, formatStartDate, formatEndDate, formatStartDateWithTimezone, formatEndDateWithTimezone, parseDateFromISO} from "../Common/utils";
 
 const LoginDataTable = ({
                           startDateHandler,
@@ -100,7 +100,7 @@ const LoginDataTable = ({
       && !loginsPerCountry.isFetching
       && loginsPerCountry.isSuccess
       && loginsPerCountry?.data?.map(element => ({
-        "Date": !!element?.range_date ? convertDateByGroup(new Date(element?.range_date), groupBy) : null,
+        "Date": !!element?.range_date ? convertDateByGroup(parseDateFromISO(element?.range_date), groupBy) : null,
         "Number of Logins": element?.count,
         "Number of Logins per Country": element?.countries
       }))

@@ -3,7 +3,8 @@ import {Chart} from "react-google-charts";
 import {
   axisChartOptions,
   convertDateByGroup,
-  getWeekNumber
+  getWeekNumber,
+  parseDateFromISO
 } from "../Common/utils";
 import Select from 'react-select';
 import Row from 'react-bootstrap/Row';
@@ -74,8 +75,8 @@ const RegisteredUsersChart = ({
       && !!registeredUsersGroup.data) {
 
       const hticksArray = registeredUsersGroup?.data?.map(element => ({
-          v: new Date(element?.range_date),
-          f: selected === "week" ? getWeekNumber(new Date(element?.range_date)) : new Date(element?.range_date)
+          v: parseDateFromISO(element?.range_date),
+          f: selected === "week" ? getWeekNumber(parseDateFromISO(element?.range_date)) : parseDateFromISO(element?.range_date)
         })
       )
 
@@ -91,9 +92,9 @@ const RegisteredUsersChart = ({
       ]
 
       const charData = registeredUsersGroup?.data?.map(element => ([
-          new Date(element?.range_date),
+          parseDateFromISO(element?.range_date),
           parseInt(element['count']),
-          `<div style="padding:5px 5px 5px 5px;">${convertDateByGroup(new Date(element?.range_date), selected)}<br/>Users: ${parseInt(element['count'])}</div>`
+          `<div style="padding:5px 5px 5px 5px;">${convertDateByGroup(parseDateFromISO(element?.range_date), selected)}<br/>Users: ${parseInt(element['count'])}</div>`
         ])
       )
 

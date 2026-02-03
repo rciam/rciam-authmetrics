@@ -7,7 +7,7 @@ import Col from 'react-bootstrap/Col';
 import DatePicker from "react-datepicker";
 import Dropdown from 'react-dropdown';
 import {toast} from 'react-toastify';
-import {convertDateByGroup, formatStartDate, formatEndDate} from "../Common/utils";
+import {convertDateByGroup, formatStartDate, formatEndDate, parseDateFromISO} from "../Common/utils";
 import 'react-toastify/dist/ReactToastify.css';
 import 'react-dropdown/style.css';
 import "react-datepicker/dist/react-datepicker.css";
@@ -90,7 +90,7 @@ const CommunitiesDataTable = ({tenenvId}) => {
       && !communitiesGroupBy.isFetching
       && communitiesGroupBy.isSuccess
       && communitiesGroupBy?.data?.map(element => ({
-        "Date": convertDateByGroup(new Date(element?.range_date), groupBy),
+        "Date": convertDateByGroup(parseDateFromISO(element?.range_date), groupBy),
         "Number of Communities": element?.count,
         "Names": element?.names
       }))
