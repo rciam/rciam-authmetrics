@@ -1,5 +1,14 @@
 ### Changelog
 
+
+## 2026-02-17
+
+### Fixed
+- Remove timezone-aware from all the queries
+
+### Added
+- Checkbox for showing active users only
+
 ## 2025-11-20
 
 ### Fixed
