@@ -221,7 +221,9 @@ export const getCommunityMembersByStatus = async ({queryKey}) => {
 export const getCountryStatsByVo = async ({queryKey}) => {
   const [_, params] = queryKey
   try {
-    const response = await apiClient.get(`country_stats_by_vo/${params.countryId}`, params)
+    // Extract tenenv_id from the nested params structure
+    const tenenv_id = params.params?.params?.tenenv_id
+    const response = await apiClient.get(`country_stats_by_vo/${params.countryId}`, { params: { tenenv_id } })
     return response.data
   } catch (error) {
     console.error(getCountryStatsByVo.name + ' error', error)
