@@ -80,6 +80,9 @@ jobs:
           ref: 'master'
           ssh-key: ${{ secrets.DEPLOY_READ_SECRET }}
           path: 'inventory'
+      - name: Install compatible community.general collection
+        run: |
+          ansible-galaxy collection install community.general:11.5.0 --force
       - name: Run playbook (create react_config file)
         uses: dawidd6/action-ansible-playbook@v2
         with:
@@ -261,6 +264,9 @@ jobs:
           ref: 'master'
           ssh-key: ${{ secrets.DEPLOY_READ_SECRET }}
           path: 'inventory'
+      - name: Install compatible community.general collection
+        run: |
+          ansible-galaxy collection install community.general:11.5.0 --force
       - name: Run playbook (deploy rciam-metrics) with release metrics-api-${{ github.ref_name }}-${{ env.RELEASE_ID }}
         uses: dawidd6/action-ansible-playbook@v2
         with:
@@ -275,7 +281,7 @@ jobs:
             --inventory ${{ github.workspace }}/inventory/rciam-metrics-dev/hosts.ini
             --tags rciam-metrics:deploy-backend
             -u debian
-            --extra-vars "metrics_release=metrics-api-${{ github.ref_name }}-${{ env.RELEASE_ID }}"
+            --extra-vars "metrics_release=metrics-api-${{ github.ref_name }}-${{ env.RELEASE_ID}}"
   deploy_frontend:
     runs-on: ubuntu-latest
     strategy:
@@ -300,6 +306,9 @@ jobs:
           ref: 'master'
           ssh-key: ${{ secrets.DEPLOY_READ_SECRET }}
           path: 'inventory'
+      - name: Install compatible community.general collection
+        run: |
+          ansible-galaxy collection install community.general:11.5.0 --force
       - name: Run playbook (deploy rciam-metrics) with release frontend-${{matrix.tenant}}-${{ github.ref_name }}-${{ env.RELEASE_ID }}
         uses: dawidd6/action-ansible-playbook@v2
         with:
