@@ -64,7 +64,11 @@ class AuthNZCheck:
 
             self.logger.debug("""{0}.{1}: Unauthorized request to User Info endpoint""")
             self.logger.debug("""{0}.{1}: Response headers: {2}""" . format(g.tenant, g.environment, resp.headers))
-            self.logger.debug("""{0}.{1}: Response body: {2}""" . format(g.tenant, g.environment, resp.json()))
+            try:
+                response_body = resp.json()
+            except Exception:
+                response_body = resp.text if resp.text else "(empty or non-JSON response)"
+            self.logger.debug("""{0}.{1}: Response body: {2}""" . format(g.tenant, g.environment, response_body))
             raise HTTPException(
                 status_code=401,
                 detail="Authentication failed",

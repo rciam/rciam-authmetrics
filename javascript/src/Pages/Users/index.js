@@ -1,5 +1,6 @@
 import React, {useState, useContext, useEffect} from "react";
 import Container from "react-bootstrap/Container";
+import Form from "react-bootstrap/Form";
 import RegisteredUsersChart from "../../components/Users/registeredUsersChart";
 import RegisteredUsersDataTable from "../../components/Users/registeredUsersDataTable";
 import RegisteredUsersMap from "../../components/Users/registeredUsersMap";
@@ -25,6 +26,7 @@ const Users = () => {
   const [tenenvId, setTenenvId] = useState(0);
   const [startDate, setStartDate] = useState(oneYearAgo);
   const [endDate, setEndDate] = useState(today);
+  const [showActiveOnly, setShowActiveOnly] = useState(false);
   const [cookies, setCookie] = useCookies();
 
   const tenant = cookies['x-tenant']
@@ -52,18 +54,30 @@ const Users = () => {
       <Row>
         <Col className="title-container" md={12}>
           <Col md={6}><h2>Users</h2></Col>
+          <Col md={6} className="active-users">
+            <Form className="active-users-form">
+              <Form.Check type="checkbox"
+                          id="active-users"
+                          label="Show Active Users Only"
+                          checked={showActiveOnly}
+                          onChange={(e) => setShowActiveOnly(e.target.checked)}
+              />
+            </Form>
+          </Col>
         </Col>
       </Row>
-      <RegisteredUsersTiles tenenvId={tenenvId}/>
-      <RegisteredUsersChart tenenvId={tenenvId}/>
+      <RegisteredUsersTiles tenenvId={tenenvId} showActiveOnly={showActiveOnly}/>
+      <RegisteredUsersChart tenenvId={tenenvId} showActiveOnly={showActiveOnly}/>
       <RegisteredUsersDataTable tenenvId={tenenvId}
                                 setStartDate={setStartDate}
                                 setEndDate={setEndDate}
                                 startDate={startDate}
-                                endDate={endDate}/>
+                                endDate={endDate}
+                                showActiveOnly={showActiveOnly}/>
       <RegisteredUsersMap tenenvId={tenenvId}
                           startDate={startDate}
-                          endDate={endDate}/>
+                          endDate={endDate}
+                          showActiveOnly={showActiveOnly}/>
       <Footer/>
     </Container>)
 

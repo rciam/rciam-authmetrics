@@ -7,7 +7,7 @@ import Col from 'react-bootstrap/Col';
 import DatePicker from "react-datepicker";
 import Dropdown from 'react-dropdown';
 import {toast} from 'react-toastify';
-import {convertDateByGroup, formatStartDate, formatEndDate} from "../Common/utils";
+import {convertDateByGroup, formatStartDate, formatEndDate, parseDateFromISO} from "../Common/utils";
 import 'react-toastify/dist/ReactToastify.css';
 import 'react-dropdown/style.css';
 import "react-datepicker/dist/react-datepicker.css";
@@ -16,16 +16,15 @@ import {useQuery, useQueryClient} from "react-query";
 import {communitiesGroupByKey, minDateCommunitiesKey} from "../../utils/queryKeys";
 import {getCommunitiesGroupBy, getMinDateCommunities} from "../../utils/queries";
 import Spinner from "../Common/spinner";
-import {format} from "date-fns";
 
 const CommunitiesDataTable = ({tenenvId}) => {
   const oneYearAgo = new Date();
   oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
-  formatStartDate(oneYearAgo)
+  const oneYearAgoFormatted = formatStartDate(oneYearAgo)
 
   const today = new Date();
   today.setDate(today.getDate() - 1);
-  formatEndDate(today)
+  const todayFormatted = formatEndDate(today)
   const dropdownRef = useRef(null);
   const [communitiesPerPeriod, setCommunitiesPerPeriod] = useState([]);
   const [minDate, setMinDate] = useState(null);
@@ -39,8 +38,8 @@ const CommunitiesDataTable = ({tenenvId}) => {
 
   let params = {
     params: {
-      'startDate': !startDate ? oneYearAgo : format(startDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"),
-      'endDate': !endDate ? today : format(endDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"),
+      'startDate': !startDate ? oneYearAgoFormatted : formatStartDate(startDate),
+      'endDate': !endDate ? todayFormatted : formatEndDate(endDate),
       'tenenv_id': tenenvId
     }
   }
@@ -66,8 +65,8 @@ const CommunitiesDataTable = ({tenenvId}) => {
   useEffect(() => {
     params = {
       params: {
-        'startDate': !startDate ? oneYearAgo : format(startDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"),
-        'endDate': !endDate ? today : format(endDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"),
+        'startDate': !startDate ? oneYearAgoFormatted : formatStartDate(startDate),
+        'endDate': !endDate ? todayFormatted : formatEndDate(endDate),
         'tenenv_id': tenenvId
       }
     }
@@ -91,7 +90,7 @@ const CommunitiesDataTable = ({tenenvId}) => {
       && !communitiesGroupBy.isFetching
       && communitiesGroupBy.isSuccess
       && communitiesGroupBy?.data?.map(element => ({
-        "Date": convertDateByGroup(new Date(element?.range_date), groupBy),
+        "Date": convertDateByGroup(parseDateFromISO(element?.range_date), groupBy),
         "Number of Communities": element?.count,
         "Names": element?.names
       }))
@@ -123,7 +122,6 @@ const CommunitiesDataTable = ({tenenvId}) => {
     if(groupBy!=''){
       handleAddOption()
     }
-    date = formatStartDate(date);
     if(date != null) {
       if(endDate!=date){
         setGroupBy("")

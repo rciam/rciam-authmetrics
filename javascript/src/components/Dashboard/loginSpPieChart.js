@@ -6,8 +6,8 @@ import Col from 'react-bootstrap/Col';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "jquery/dist/jquery.min.js";
 import $ from "jquery";
-import {loginsPerSpKey} from "../../utils/queryKeys";
-import {getLoginsPerSP} from "../../utils/queries";
+import {loginsPerSpTotalsKey} from "../../utils/queryKeys";
+import {getLoginsPerSPTotals} from "../../utils/queries";
 import {useQuery} from "react-query";
 import {optionsPieChart} from "../../utils/helpers/enums";
 import {convertDateByGroup, formatStartDate, formatEndDate} from "../Common/utils";
@@ -44,8 +44,8 @@ const LoginSpPieChart = ({
   const permissions = cookies.permissions
 
   const loginsPerSp = useQuery(
-    [loginsPerSpKey, params],
-    getLoginsPerSP,
+    [loginsPerSpTotalsKey, params],
+    getLoginsPerSPTotals,
     {
       refetchOnWindowFocus: false,
       enabled: false

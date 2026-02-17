@@ -33,6 +33,19 @@ export const getLoginsPerSP = async ({queryKey}) => {
   }
 }
 
+export const getLoginsPerSPTotals = async ({queryKey}) => {
+  const [_, params] = queryKey
+  try {
+    const response = await apiClient.get("logins_per_sp_totals", params)
+    return response.data
+  } catch (error) {
+    console.error(getLoginsPerSPTotals.name + ' error', error)
+    console.log('queryKeys', queryKey)
+    handleError(error)
+    return error.response
+  }
+}
+
 export const getLoginsPerIdp = async ({queryKey}) => {
   const [_, params] = queryKey
   try {
@@ -208,7 +221,9 @@ export const getCommunityMembersByStatus = async ({queryKey}) => {
 export const getCountryStatsByVo = async ({queryKey}) => {
   const [_, params] = queryKey
   try {
-    const response = await apiClient.get(`country_stats_by_vo/${params.countryId}`, params)
+    // Extract tenenv_id from the nested params structure
+    const tenenv_id = params.params?.params?.tenenv_id
+    const response = await apiClient.get(`country_stats_by_vo/${params.countryId}`, { params: { tenenv_id } })
     return response.data
   } catch (error) {
     console.error(getCountryStatsByVo.name + ' error', error)
@@ -257,6 +272,20 @@ export const getRegisteredUsersGroupBy = async ({queryKey}) => {
     return response.data
   } catch (error) {
     console.error(getRegisteredUsersGroupBy.name + ' error', error)
+    console.log('queryKeys', queryKey)
+    handleError(error)
+    return error.response
+  }
+}
+
+// Countries
+export const getCountries = async ({queryKey}) => {
+  const [_, params] = queryKey
+  try {
+    const response = await apiClient.get("countries_list", params)
+    return response.data
+  } catch (error) {
+    console.error(getCountries.name + ' error', error)
     console.log('queryKeys', queryKey)
     handleError(error)
     return error.response

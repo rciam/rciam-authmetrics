@@ -2,7 +2,6 @@ import React, {useState, useEffect, useRef} from "react";
 import "jquery/dist/jquery.min.js";
 import $ from "jquery";
 import Datatable from "../datatable";
-import dateFormat from 'dateformat';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import DatePicker from "react-datepicker";
@@ -15,8 +14,7 @@ import {useQuery, useQueryClient} from "react-query";
 import {loginsPerCountryKey, minDateLoginsKey} from "../../utils/queryKeys";
 import {getLoginsPerCountry, getMinDateLogins} from "../../utils/queries";
 import {toast} from "react-toastify";
-import {format} from "date-fns";
-import {convertDateByGroup, formatStartDate, formatEndDate} from "../Common/utils";
+import {convertDateByGroup, formatStartDate, formatEndDate, formatStartDateWithTimezone, formatEndDateWithTimezone, parseDateFromISO} from "../Common/utils";
 
 const LoginDataTable = ({
                           startDateHandler,
@@ -47,8 +45,8 @@ const LoginDataTable = ({
   let params = {
     params: {
       'group_by': groupBy,
-      'startDate': !startDate ? null : format(startDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"),
-      'endDate': !endDate ? null : format(endDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"),
+      'startDate': !startDate ? null : formatStartDateWithTimezone(startDate),
+      'endDate': !endDate ? null : formatEndDateWithTimezone(endDate),
       'tenenv_id': tenenvId,
       'unique_logins': uniqueLogins
     },
@@ -76,8 +74,8 @@ const LoginDataTable = ({
     params = {
       params: {
         'group_by': groupBy,
-        'startDate': !startDate ? null : format(startDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"),
-        'endDate': !endDate ? null : format(endDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"),
+        'startDate': !startDate ? null : formatStartDateWithTimezone(startDate),
+        'endDate': !endDate ? null : formatEndDateWithTimezone(endDate),
         'tenenv_id': tenenvId,
         'unique_logins': uniqueLogins
       },
@@ -102,7 +100,7 @@ const LoginDataTable = ({
       && !loginsPerCountry.isFetching
       && loginsPerCountry.isSuccess
       && loginsPerCountry?.data?.map(element => ({
-        "Date": !!element?.range_date ? convertDateByGroup(new Date(element?.range_date), groupBy) : null,
+        "Date": !!element?.range_date ? convertDateByGroup(parseDateFromISO(element?.range_date), groupBy) : null,
         "Number of Logins": element?.count,
         "Number of Logins per Country": element?.countries
       }))
@@ -113,9 +111,11 @@ const LoginDataTable = ({
       if (minDate == undefined || minDate == "") {
         setMinDate(!!minDateLogins?.data?.min_date ? new Date(minDateLogins?.data?.min_date) : null)
         minDateHandler(!!minDateLogins?.data?.min_date ? new Date(minDateLogins?.data?.min_date) : null)
-       
       }
-      $("#table-login").DataTable().destroy()
+      const table = $("#table-login");
+      if (table.length && table.DataTable() && typeof table.DataTable().destroy === 'function') {
+        table.DataTable().destroy()
+      }
       setLoginsPerCountryPerPeriod(loginsPerCountryPerPeriodArray)
 
     }
@@ -136,7 +136,6 @@ const LoginDataTable = ({
     if(groupBy!=''){
       handleAddOption()
     }
-    date = formatStartDate(date);
     if(date != null) {
       if(endDate!=date){
         setGroupBy("")

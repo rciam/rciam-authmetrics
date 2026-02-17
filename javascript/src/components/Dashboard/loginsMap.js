@@ -9,7 +9,7 @@ import EarthMap from "../Common/earthMap";
 import DateRange from "../Common/dateRange";
 import Spinner from "../Common/spinner";
 import React from "react";
-import {format} from "date-fns";
+import {formatStartDate, formatEndDate} from "../Common/utils";
 
 const LoginsMap = ({
                      startDate,
@@ -20,8 +20,8 @@ const LoginsMap = ({
 
   let params = {
     params: {
-      'startDate': !startDate ? null : format(startDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"),
-      'endDate': !endDate ? null : format(endDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"),
+      'startDate': !startDate ? null : formatStartDate(startDate),
+      'endDate': !endDate ? null : formatEndDate(endDate),
       'tenenv_id': tenenvId,
       'unique_logins': uniqueLogins
     }
@@ -38,8 +38,8 @@ const LoginsMap = ({
   
   let paramsMinDate = {
     params: {
-      'startDate': !startDate ? null : format(startDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"),
-      'endDate': !endDate ? null : format(endDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"),
+      'startDate': !startDate ? null : formatStartDate(startDate),
+      'endDate': !endDate ? null : formatEndDate(endDate),
       'tenenv_id': tenenvId,
       'unique_logins': true
     }

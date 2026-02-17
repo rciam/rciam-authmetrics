@@ -8,7 +8,7 @@ import {useQuery, useQueryClient} from "react-query";
 import EarthMap from "../Common/earthMap";
 import Spinner from "../Common/spinner";
 import React from "react";
-import {format} from "date-fns";
+import {formatStartDate, formatEndDate} from "../Common/utils";
 
 const SpMap = ({
                  startDate,
@@ -19,8 +19,8 @@ const SpMap = ({
                }) => {
   let params = {
     params: {
-      'startDate': !startDate ? null : format(startDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"),
-      'endDate': !endDate ? null : format(endDate, "yyyy-MM-dd'T'HH:mm:ss'Z'"),
+      'startDate': !startDate ? null : formatStartDate(startDate),
+      'endDate': !endDate ? null : formatEndDate(endDate),
       'tenenv_id': tenenvId,
       'unique_logins': uniqueLogins,
       'spId': spId

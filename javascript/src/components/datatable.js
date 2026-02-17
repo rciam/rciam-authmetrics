@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { renderToString } from 'react-dom/server';
+import $ from "jquery";
 import "jquery/dist/jquery.min.js";
 import "datatables.net-dt/js/dataTables.dataTables";
 import "datatables.net-dt/css/jquery.dataTables.min.css";
@@ -11,10 +12,8 @@ import "datatables.net-buttons/js/buttons.html5.js";
 import "datatables.net-buttons/js/buttons.print.js";
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
-import $ from "jquery";
 
-//pdfMake.vfs = pdfFonts.pdfMake.vfs;
-
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 var table;
 const title = '';
@@ -151,7 +150,9 @@ class Datatable extends Component {
 
   listNames = (names, key) => {
     //console.log("listNames called with:", names.title);
-    if (this.props.columnSep && key == this.props.columnSep && typeof names === 'string') {
+    if (names && typeof names === 'object' && names.display !== undefined) {
+      return this.listNames(names.display, key);
+    } else if (this.props.columnSep && key == this.props.columnSep && typeof names === 'string') {
       return renderToString(
         <ul>
           {
@@ -183,13 +184,17 @@ class Datatable extends Component {
             className="test">
           <td className="text-xs font-weight-bold">{index + 1}</td>
           {
-            Object.keys(item).map((key, keyIndex) =>
-              (
+            Object.keys(item).map((key, keyIndex) => {
+              const value = item[key];
+              const isObjectWithSort = typeof value === 'object' && value !== null && 'sort' in value;
+              return (
                 <td key={key.toString()+keyIndex.toString()}
-                    className="text-xs font-weight-bold" dangerouslySetInnerHTML={{ __html: this.listNames(item[key], key) }}>
+                    className="text-xs font-weight-bold"
+                    data-sort={isObjectWithSort ? value.sort : undefined}
+                    dangerouslySetInnerHTML={{ __html: this.listNames(value, key) }}>
                 </td>
-              )
-            )
+              );
+            })
           }
         </tr>
       );

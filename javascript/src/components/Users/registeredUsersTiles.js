@@ -7,7 +7,7 @@ import { getRegisteredUsersCountby } from "../../utils/queries";
 
 
 
-const RegisteredUsersTiles = (parameters) => {
+const RegisteredUsersTiles = ({ tenenvId, showActiveOnly }) => {
   const [tiles, setTiles] = useState({});
 
   const generateQueryKey = (params) => {
@@ -15,22 +15,22 @@ const RegisteredUsersTiles = (parameters) => {
   };
 
   const { refetch: getAllRegisteredUsersCount } = useQuery(
-    generateQueryKey({ tenenv_id: parameters['tenenvId'] }),
+    generateQueryKey({ tenenv_id: tenenvId, ...(showActiveOnly && { status: 'A' }) }),
     getRegisteredUsersCountby,
     { enabled: false, refetchOnWindowFocus: false }
   );
   const { refetch: getLastYearRegisteredUsersCount } = useQuery(
-    generateQueryKey({ interval: 'year', count_interval: '1', tenenv_id: parameters['tenenvId'] }),
+    generateQueryKey({ interval: 'year', count_interval: '1', tenenv_id: tenenvId, ...(showActiveOnly && { status: 'A' }) }),
     getRegisteredUsersCountby,
     { enabled: false, refetchOnWindowFocus: false }
   );
   const { refetch: getLastMonthRegisteredUsersCount } = useQuery(
-    generateQueryKey({ interval: 'days', count_interval: '30', tenenv_id: parameters['tenenvId'] }),
+    generateQueryKey({ interval: 'days', count_interval: '30', tenenv_id: tenenvId, ...(showActiveOnly && { status: 'A' }) }),
     getRegisteredUsersCountby,
     { enabled: false, refetchOnWindowFocus: false }
   );
   const { refetch: getLastWeekRegisteredUsersCount } = useQuery(
-    generateQueryKey({ interval: 'days', count_interval: '7', tenenv_id: parameters['tenenvId'] }),
+    generateQueryKey({ interval: 'days', count_interval: '7', tenenv_id: tenenvId, ...(showActiveOnly && { status: 'A' }) }),
     getRegisteredUsersCountby,
     { enabled: false, refetchOnWindowFocus: false }
   );
@@ -41,16 +41,16 @@ const RegisteredUsersTiles = (parameters) => {
       const results = await Promise.all([
         getAllRegisteredUsersCount()
           .then((response) => 
-            ({ response, params: { tenenv_id: parameters['tenenvId'] } })),
+            ({ response, params: { tenenv_id: tenenvId, ...(showActiveOnly && { status: 'A' }) } })),
         getLastYearRegisteredUsersCount()
           .then((response) => 
-            ({ response, params: { interval: 'year', count_interval: '1', tenenv_id: parameters['tenenvId'] } })),
+            ({ response, params: { interval: 'year', count_interval: '1', tenenv_id: tenenvId, ...(showActiveOnly && { status: 'A' }) } })),
         getLastMonthRegisteredUsersCount()
           .then((response) => 
-            ({ response, params: { interval: 'days', count_interval: '30', tenenv_id: parameters['tenenvId'] } })),
+            ({ response, params: { interval: 'days', count_interval: '30', tenenv_id: tenenvId, ...(showActiveOnly && { status: 'A' }) } })),
         getLastWeekRegisteredUsersCount()
           .then((response) => 
-            ({ response, params: { interval: 'days', count_interval: '7', tenenv_id: parameters['tenenvId'] } })),
+            ({ response, params: { interval: 'days', count_interval: '7', tenenv_id: tenenvId, ...(showActiveOnly && { status: 'A' }) } })),
       ])
 
       var tilesArray = {}
@@ -71,7 +71,7 @@ const RegisteredUsersTiles = (parameters) => {
       setTiles(tilesArray)
     }
     handleRefetch();
-  }, [])
+  }, [tenenvId, showActiveOnly])
 
   return (
 

@@ -1,4 +1,7 @@
 from pprint import pprint
+from collections import defaultdict
+from datetime import datetime
+import re
 
 from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlmodel import Field, Session, SQLModel, create_engine, select
@@ -9,6 +12,34 @@ from xmlrpc.client import boolean
 
 from app.database import db
 from app.utils.globalMethods import AuthNZCheck
+
+
+def parse_timezone_aware_date(date_str):
+    """
+    Parse a timezone-aware date string and return the date part in YYYY-MM-DD format.
+    Handles ISO 8601 format with timezone offset (e.g., '2024-01-01T00:00:00+02:00').
+    """
+    if not date_str:
+        return None
+    
+    try:
+        # Try to parse as ISO 8601 with timezone
+        dt = datetime.fromisoformat(date_str.replace('Z', '+00:00'))
+        # Convert to UTC and extract date
+        return dt.strftime('%Y-%m-%d')
+    except ValueError:
+        # If not ISO format, assume it's already a date string
+        return date_str[:10] if len(date_str) >= 10 else date_str
+
+
+def get_date_range(startDate, endDate):
+    """
+    Get the start and end dates for queries, handling timezone-aware dates.
+    Returns a tuple of (start_date, end_date) in YYYY-MM-DD format.
+    """
+    start_date = parse_timezone_aware_date(startDate)
+    end_date = parse_timezone_aware_date(endDate)
+    return start_date, end_date
 
 
 # LOGINS ROUTES ARE OPEN
@@ -68,7 +99,7 @@ async def read_logins_per_idp(
  
     if startDate and endDate:
         interval_subquery = """
-            AND date BETWEEN '{0}' AND '{1}'
+            AND date BETWEEN DATE('{0}') AND DATE('{1}')
         """.format(startDate, endDate)
     if unique_logins == False:
         sub_select = """
@@ -78,7 +109,6 @@ async def read_logins_per_idp(
         sub_select = """
             count(DISTINCT hasheduserid) as count
         """
-   
     logins = session.exec("""
         select identityprovidersmap.id, identityprovidersmap.name, entityid, sourceidpid, {0}
         from statistics_country_hashed
@@ -97,8 +127,8 @@ async def read_logins_per_idp(
     return logins
 
 
-@router.get("/logins_per_sp")
-async def read_logins_per_sp(
+@router.get("/logins_per_sp_totals")
+async def read_logins_per_sp_totals(
         *,
         session: Session = Depends(db.get_session),
         request: Request,
@@ -112,7 +142,7 @@ async def read_logins_per_sp(
     unique_logins_subquery = ""
     if unique_logins:
         unique_logins_subquery = "AND hasheduserid != 'unknown'"
-      
+
     interval_subquery = ""
     idp_subquery_join = ""
     if idp:
@@ -131,7 +161,7 @@ async def read_logins_per_sp(
 
     if startDate and endDate:
         interval_subquery = """
-            AND date BETWEEN '{0}' AND '{1}'
+            AND date BETWEEN DATE('{0}') AND DATE('{1}')
         """.format(startDate, endDate)
 
     if unique_logins == False:
@@ -143,10 +173,10 @@ async def read_logins_per_sp(
             count(DISTINCT hasheduserid) as count
         """
 
-    logins = session.exec("""    
+    logins = session.exec("""
             select serviceprovidersmap.id, serviceprovidersmap.name, identifier, serviceid, {0}
             from statistics_country_hashed
-            join serviceprovidersmap ON serviceprovidersmap.id=serviceid 
+            join serviceprovidersmap ON serviceprovidersmap.id=serviceid
                 AND serviceprovidersmap.tenenv_id=statistics_country_hashed.tenenv_id
             {1}
             WHERE statistics_country_hashed.tenenv_id = {2}
@@ -157,7 +187,98 @@ async def read_logins_per_sp(
         sub_select, idp_subquery_join, tenenv_id, interval_subquery, unique_logins_subquery
     )
     ).all()
-    return logins
+
+    return [{"id": row[0], "name": row[1], "identifier": row[2], "count": row[4]} for row in logins]
+
+
+@router.get("/logins_per_sp")
+async def read_logins_per_sp(
+        *,
+        session: Session = Depends(db.get_session),
+        request: Request,
+        offset: int = 0,
+        idp: str = None,
+        startDate: str = None,
+        endDate: str = None,
+        tenenv_id: int,
+        unique_logins: Union[boolean, None] = False,
+        countries: Union[str, None] = None,
+):
+    unique_logins_subquery = ""
+    if unique_logins:
+        unique_logins_subquery = "AND hasheduserid != 'unknown'"
+
+    interval_subquery = ""
+    idp_subquery_join = ""
+    if idp:
+        # Is the user authenticated?
+        AuthNZCheck("logins", False)
+
+        # Fetch the data
+        idp_subquery_join = """
+              JOIN identityprovidersmap ON identityprovidersmap.id=sourceidpid
+              AND identityprovidersmap.tenenv_id=statistics_country_hashed.tenenv_id
+              AND identityprovidersmap.tenenv_id={1}
+              AND identityprovidersmap.id = '{0}'
+              """.format(
+            idp, tenenv_id
+        )
+
+    if startDate and endDate:
+        interval_subquery = """
+            AND date BETWEEN DATE('{0}') AND DATE('{1}')
+        """.format(startDate, endDate)
+
+    if unique_logins == False:
+        sub_select = """
+            sum(count) as count
+        """
+    else:
+        sub_select = """
+            count(DISTINCT hasheduserid) as count
+        """
+
+    logins = session.exec("""
+            select serviceprovidersmap.id, serviceprovidersmap.name, identifier, serviceid,
+                   country_codes.country, country_codes.countrycode, {0}
+            from statistics_country_hashed
+            join serviceprovidersmap ON serviceprovidersmap.id=serviceid
+                AND serviceprovidersmap.tenenv_id=statistics_country_hashed.tenenv_id
+            join country_codes ON countryid=country_codes.id
+            {1}
+            WHERE statistics_country_hashed.tenenv_id = {2}
+            {3} {4}
+            GROUP BY serviceprovidersmap.id, serviceid, serviceprovidersmap.name, identifier,
+                     country_codes.country, country_codes.countrycode
+            ORDER BY serviceprovidersmap.id, count DESC
+        """.format(
+        sub_select, idp_subquery_join, tenenv_id, interval_subquery, unique_logins_subquery
+    )
+    ).all()
+
+    # Process results to group by SP
+    sp_data = defaultdict(lambda: {
+        'id': None,
+        'name': None,
+        'identifier': None,
+        'countries': []
+    })
+
+    for row in logins:
+        sp_id = row[3]  # serviceid
+        if sp_data[sp_id]['id'] is None:
+            sp_data[sp_id]['id'] = row[0]
+            sp_data[sp_id]['name'] = row[1]
+            sp_data[sp_id]['identifier'] = row[2]
+        sp_data[sp_id]['countries'].append({
+            'country': row[4],
+            'countrycode': row[5],
+            'count': row[6]
+        })
+
+    # Convert to list
+    result = list(sp_data.values())
+    return result
 
 
 @router.get("/logins_per_country")
@@ -190,11 +311,12 @@ async def read_logins_per_country(
         """.format(spId)
     if group_by:
         if startDate and endDate:
+            start_date, end_date = get_date_range(startDate, endDate)
             interval_subquery = """
-                AND date BETWEEN '{0}' AND '{1}'
-            """.format(startDate, endDate)
+                AND date BETWEEN DATE('{0}') AND DATE('{1}')
+            """.format(start_date, end_date)
 
-        if unique_logins == False:
+        if unique_logins is False:
             sub_select = """
                 sum(count) as count_country
             """
@@ -229,11 +351,12 @@ async def read_logins_per_country(
         ).all()
     else:
         if startDate and endDate:
+            start_date, end_date = get_date_range(startDate, endDate)
             interval_subquery = """
-                AND date BETWEEN '{0}' AND '{1}'
-            """.format(startDate, endDate)
+                AND date BETWEEN DATE('{0}') AND DATE('{1}')
+            """.format(start_date, end_date)
 
-        if unique_logins == False:
+        if unique_logins is False:
             sub_select = """
                 sum(count) as sum
             """
