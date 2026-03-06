@@ -1,5 +1,9 @@
 ### Changelog
 
+## 2026-03-06
+
+### Changed
+- Change entitlement for administrator at Einfra Devel instance (ansible)
 
 ## 2026-02-17
 
