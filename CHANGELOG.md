@@ -2,8 +2,8 @@
 
 ## 2026-04-02
 
-### Changed
-- Deploy ENVRI-ID tenant
+### Added
+- Deploy ENVRI-ID tenant at metrics production
 
 ## 2026-03-06
 
