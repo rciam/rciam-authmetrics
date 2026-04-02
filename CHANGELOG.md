@@ -1,5 +1,10 @@
 ### Changelog
 
+## 2026-04-02
+
+### Changed
+- Deploy ENVRI-ID tenant
+
 ## 2026-03-06
 
 ### Changed
