@@ -30,12 +30,14 @@ class AuthNZCheck:
         self.logger.debug("""{0}.{1}: Authorize Config File Name: {2}""".format(g.tenant, g.environment, authorize_file))
         self.logger.debug("""{0}.{1}: Config File Name: {2}""".format(g.tenant, g.environment, config_file))
 
+        entitlement_claim = oidc_config.get('entitlement_claim', 'eduperson_entitlement')
+        scopes = oidc_config.get('scopes', 'openid profile email voperson_id eduperson_entitlement')
         self.oauth.register(
             g.tenant + '_' + g.environment + '_rciam',
             client_id=oidc_config['client_id'],
             client_secret=oidc_config['client_secret'],
             server_metadata_url=oidc_config['issuer'] + "/.well-known/openid-configuration",
-            client_kwargs={'scope': 'openid profile email voperson_id eduperson_entitlement'}
+            client_kwargs={'scope': scopes}
         )
 
         response.headers["Access-Control-Expose-Headers"] = "X-Permissions, X-Authenticated, X-Redirect"
@@ -54,7 +56,7 @@ class AuthNZCheck:
         if resp.status_code == 401:
             # For now we skip logins and dashboard routes
             if (self.tag == 'logins' or self.tag == 'dashboard') and self.skip:
-                permissions = permissionsCalculation(self.logger, authorize_file)
+                permissions = permissionsCalculation(self.logger, authorize_file, entitlement_claim=entitlement_claim)
                 permissions_json = json.dumps(permissions).replace(" ", "").replace("\n", "")
                 # pprint(permissions_json)
                 response.headers["X-Permissions"] = permissions_json
@@ -89,7 +91,7 @@ class AuthNZCheck:
 
         self.logger.debug("""{0}.{1}: User Info Response: {2}""" . format(g.tenant, g.environment, data))
         # Authorization
-        permissions = permissionsCalculation(self.logger, authorize_file, data)
+        permissions = permissionsCalculation(self.logger, authorize_file, data, entitlement_claim)
         self.logger.debug("""{0}.{1}:  permissions: {2}""".format(g.tenant, g.environment, permissions))
         permissions_json = json.dumps(permissions).replace(" ", "").replace("\n", "")
 
@@ -103,11 +105,11 @@ class AuthNZCheck:
                 HTTPException(status_code=403)
 
 
-def permissionsCalculation(logger, authorize_file, user_info=None):
+def permissionsCalculation(logger, authorize_file, user_info=None, entitlement_claim='eduperson_entitlement'):
     entitlements_config = configParser.getConfig('entitlements', authorize_file)
     user_entitlements = {}
     if user_info is not None:
-        user_entitlements = user_info.get('eduperson_entitlement')
+        user_entitlements = user_info.get(entitlement_claim)
 
     roles = {
         'anonymous': True,
