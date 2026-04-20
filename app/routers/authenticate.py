@@ -21,9 +21,12 @@ router = APIRouter(
 
 logger = log.get_logger("authenticate")
 
-def initializeAuthOb():
+def getOidcConfig():
     config_file = 'config.' + g.tenant + '.' + g.environment + '.py'
-    oidc_config = configParser.getConfig('oidc_client', config_file)
+    return configParser.getConfig('oidc_client', config_file)
+
+def initializeAuthOb(oidc_config=Depends(getOidcConfig)):
+    scopes = oidc_config.get('scopes', 'openid profile email voperson_id eduperson_entitlement')
     oauth = OAuth()
 
     oauth.register(
@@ -31,7 +34,7 @@ def initializeAuthOb():
         client_id=oidc_config['client_id'],
         client_secret=oidc_config['client_secret'],
         server_metadata_url=oidc_config['issuer'] + "/.well-known/openid-configuration",
-        client_kwargs={'scope': 'openid profile email voperson_id eduperson_entitlement'}
+        client_kwargs={'scope': scopes}
     )
     return oauth
 
@@ -56,8 +59,9 @@ async def login_endpoint(
             response_class=RedirectResponse)
 async def authorize_rciam(
         request: Request,
-        oauth_ob= Depends(initializeAuthOb),
-        server_config=Depends(getServerConfig)
+        oauth_ob=Depends(initializeAuthOb),
+        server_config=Depends(getServerConfig),
+        oidc_config=Depends(getOidcConfig)
 ):
     login_start_url = request.cookies.get("login_start")
     # pprint(request.cookies.get("login_start"))
@@ -90,13 +94,15 @@ async def authorize_rciam(
         user_info = await rciam.get(metadata['userinfo_endpoint'], token=token)
         user_info.raise_for_status()
         user_info_data = user_info.json()
+        entitlement_claim = oidc_config.get('entitlement_claim', 'eduperson_entitlement')
+        sub_claim = oidc_config.get('sub_claim', 'voperson_id')
         # Encode the data to jwt
         # todo: the key could become configurable and per tenenv
         # Extract only the needed fields
         filtered_user_data = {
             "name": user_info_data.get("name"),
             "email": user_info_data.get("email"),
-            "voperson_id": user_info_data.get("voperson_id")
+            "voperson_id": user_info_data.get(sub_claim)
         }
         jwt_user = jwt.encode(payload=filtered_user_data,
                               key="a custom key",
@@ -128,7 +134,7 @@ async def authorize_rciam(
 
         # Authorization
         authorize_file = 'authorize.' + g.tenant + '.' + g.environment + '.py'
-        permissions = permissionsCalculation(logger, authorize_file, user_info_data)
+        permissions = permissionsCalculation(logger, authorize_file, user_info_data, entitlement_claim)
         permissions_json = json.dumps(permissions).replace(" ", "").replace("\n", "")
 
         # Set the permissions cookie.
