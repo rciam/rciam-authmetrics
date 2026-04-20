@@ -1,5 +1,10 @@
 ### Changelog
 
+## 2026-04-20
+
+### Added
+- Add scopes configuration (EGI devel OIDC client)
+
 ## 2026-04-02
 
 ### Changed
