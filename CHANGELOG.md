@@ -1,6 +1,14 @@
 ### Changelog
 
-## 2026-04-02
+## 2026-05-07
+
+### Added
+- Add userid at exclusion list for metrics production (ansible)
+
+## 2026-04-22
+
+### Added
+- Add scopes configuration
 
 ### Added
 - Deploy ENVRI-ID tenant at metrics production
