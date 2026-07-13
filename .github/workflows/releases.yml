@@ -182,13 +182,14 @@ jobs:
         # The frontend release is only the javascript/build
         # We need to include all the files and directories since
         # the action is not smart enough to under asterisk (*)
+        # Vite's build output (index.html + assets/) replaces CRA's
+        # (index.html + asset-manifest.json + static/)
         with:
           command: c
           cwd: ./metrics-app-${{matrix.tenant}}/javascript/build
           files: |
-                   asset-manifest.json
                    index.html
-                   static
+                   assets
           outPath: frontend-${{matrix.tenant}}-release-build.tar.gz
       # Upload as an artifact of the current workflow
       - name: Upload frontend build zip artifact
