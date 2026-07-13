@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from app.database import db
-from sqlmodel import Field, Session, SQLModel, create_engine, select
+from sqlmodel import Field, Session, SQLModel, create_engine, select, text
 from typing import Union
 
 from app.models.country_model import *
@@ -48,7 +48,7 @@ async def read_country_stats_by_vo(
         community_id: Union[None, int] = None,
         tenenv_id: int
 ):
-    stats_country = session.exec("""
+    stats_country = session.exec(text("""
     WITH users_countries AS (
         SELECT statistics_country_hashed.hasheduserid as userid, status, country, countrycode, count(*) as sum_count
         FROM statistics_country_hashed
@@ -72,8 +72,8 @@ async def read_country_stats_by_vo(
         AND users_countries.sum_count=max_count_users_countries_no_duplicates.max_sum_count
     GROUP BY country,countrycode
     ORDER BY country;
-          """.format(community_id)).all()
-    status_per_country = session.exec("""
+          """.format(community_id))).mappings().all()
+    status_per_country = session.exec(text("""
     WITH users_countries AS (
         SELECT statistics_country_hashed.hasheduserid as userid, status, country, countrycode, count(*) as sum_count
         FROM statistics_country_hashed
@@ -97,7 +97,7 @@ async def read_country_stats_by_vo(
         AND users_countries.sum_count=max_count_users_countries_no_duplicates.max_sum_count
     GROUP BY country,countrycode, users_countries.status
     ORDER BY country;
-        """.format(community_id)).all()
+        """.format(community_id))).mappings().all()
 
     return {
         'stats': stats_country,

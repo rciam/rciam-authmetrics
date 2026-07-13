@@ -1,5 +1,6 @@
 from app.logger import log
 from datetime import timedelta, date
+from sqlalchemy import text
 from sqlalchemy.exc import NoResultFound
 
 
@@ -10,9 +11,9 @@ class utilsIngester:
     def getDatesNotMapped(cls, table: str, column, tenenvId, session):
         # Logins
 
-        maxDate = session.exec("""
+        maxDate = session.exec(text("""
           SELECT max({0}::date) FROM {1} WHERE tenenv_id={2}
-        """.format(column, table, tenenvId)).one()
+        """.format(column, table, tenenvId))).one()
 
         dayFrom = None
         dayTo = None
@@ -29,12 +30,12 @@ class utilsIngester:
     def validateTenenv(cls, tenenvId, session):
         try:
             tenenvId = session.exec(
-                """
+                text("""
                 SELECT tenenv_info.id FROM tenenv_info
                 WHERE id={0}
                 """.format(
                     tenenvId
-                )
+                ))
             ).one()
         except NoResultFound:
             # if tenenv_id doesn't exist return a relevant message
@@ -48,24 +49,24 @@ class utilsIngester:
         # Check if userid exists
         try:
             session.exec(
-                """
+                text("""
                   SELECT hasheduserid FROM users WHERE hasheduserid='{0}'
                   AND tenenv_id={1}
                 """.format(
                       # hashlib.md5(data["userid"]).hexdigest() #TypeError:
                       # Strings must be encoded before hashing
                       hashedUser, tenenvId
-                    )
+                    ))
             ).one()
         except NoResultFound:
             cls.logger.warning("""User {0} not found, we are going to create it
                             with default values.""".format(hashedUser))
             now = date.today().strftime('%Y-%m-%d %H:%M:%S')
-            session.exec("""INSERT INTO users(hasheduserid, created, updated,
+            session.exec(text("""INSERT INTO users(hasheduserid, created, updated,
                          status, tenenv_id)
                 VALUES ('{0}','{1}','{1}', '{2}', {3})
                 """. format(
                 hashedUser, now, 'A',
-                tenenvId))
+                tenenvId)))
             session.commit()
         return True

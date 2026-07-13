@@ -42,7 +42,7 @@ services:
       - web
     image: metricsrciam:latest
     container_name: metrics.rciam.reactjs
-    command: bash -c "npm start"
+    command: bash -c "npm run dev"
     ports:
       - "3300:3000"
     volumes:

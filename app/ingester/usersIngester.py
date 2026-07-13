@@ -1,6 +1,7 @@
 from app.logger import log
 from app.utils import configParser
 from .utilsIngester import utilsIngester
+from sqlalchemy import text
 import hashlib
 
 class UserDataIngester:
@@ -36,9 +37,9 @@ class UserDataIngester:
                 datesNotMapped[1]
             )
         cls.logger.info("""between {0}""".format(between))
-        usersNotMapped = session.exec("""
+        usersNotMapped = session.exec(text("""
             SELECT jsondata FROM statistics_raw WHERE (type='registration' OR type='user_status') AND tenenv_id={0} {1}
-        """.format(tenenvId, between)).all()
+        """.format(tenenvId, between))).all()
         userMappedItems = 0
         for user in usersNotMapped:
             cls.logger.info("""hasheduserid {0}""".format(user[0]))
@@ -55,12 +56,12 @@ class UserDataIngester:
                 cls.logger.info("""Ignore this user with
                     hash {0} as he is at the blacklist""". format(user[0]['voPersonId']))
                 continue
-            session.exec("""INSERT INTO users(hasheduserid, created, updated, status, tenenv_id)
+            session.exec(text("""INSERT INTO users(hasheduserid, created, updated, status, tenenv_id)
                 VALUES ('{0}','{1}','{1}', '{2}', {3})
                 ON CONFLICT(hasheduserid, tenenv_id)
                 DO UPDATE SET status='{2}', updated='{1}'""". format(
                 user[0]['voPersonId'], user[0]['date'],  user[0]['status'],
-                user[0]['tenenvId']))
+                user[0]['tenenvId'])))
             session.commit()
             userMappedItems += 1
 
@@ -69,13 +70,13 @@ class UserDataIngester:
 
     @classmethod
     def ingestUserData(cls, session):
-        tenenvIds = session.exec("""SELECT tenenv_info.id,
+        tenenvIds = session.exec(text("""SELECT tenenv_info.id,
                                   tenant_info.name AS tenant_name,
                                   environment_info.name AS environment_name
-                                 FROM tenenv_info 
+                                 FROM tenenv_info
                                  JOIN tenant_info ON tenant_id=tenant_info.id
                                  JOIN environment_info ON env_id=environment_info.id
-                                 """).all()
+                                 """)).mappings().all()
         # for each tenenv on database try to ingest UserData
         # from statistics_raw table
         for tenenv in tenenvIds:

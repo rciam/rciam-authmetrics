@@ -63,12 +63,8 @@ async def get_tenacy(request: Request, call_next):
     response = await call_next(request)
     return response
 
-CommunityReadwithInfo.update_forward_refs(
-    Community_InfoRead=Community_InfoRead)
-Statistics_Country_HashedwithInfo.update_forward_refs(
-    IdentityprovidersmapRead=IdentityprovidersmapRead,
-    ServiceprovidersmapRead=ServiceprovidersmapRead,
-    Country_CodesRead=Country_CodesRead)
+CommunityReadwithInfo.model_rebuild()
+Statistics_Country_HashedwithInfo.model_rebuild()
 
 app.include_router(authenticate.router)
 app.include_router(users.router)
