@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
-from sqlmodel import Field, Session, SQLModel, create_engine, select
+from sqlmodel import Field, Session, SQLModel, create_engine, select, text
 from typing import Union
 
 from app.database import db
@@ -9,8 +9,7 @@ from app.models.member_model import MembersReadWithCommunityInfo
 from app.utils.globalMethods import AuthNZCheck
 
 
-MembersReadWithCommunityInfo.update_forward_refs(
-    Community_InfoRead=Community_InfoRead)
+MembersReadWithCommunityInfo.model_rebuild()
 
 router = APIRouter(
     tags=["communities"],
@@ -37,11 +36,11 @@ async def read_min_date_communities(
         offset: int = 0,
         tenenv_id: int,
 ):
-    min_date = session.exec("""
-             SELECT min(created) as min_date 
+    min_date = session.exec(text("""
+             SELECT min(created) as min_date
              FROM community
              WHERE tenenv_id={0}
-          """.format(tenenv_id)).one()
+          """.format(tenenv_id))).mappings().one()
     return min_date
 @router.get("/members_bystatus")
 async def read_members_bystatus(
@@ -55,11 +54,11 @@ async def read_members_bystatus(
         members = session.exec(select(Members).offset(offset)).all()
     else:
         # members = session.exec(select(Members).offset(offset)).all()
-        members = session.exec("""
-             SELECT count(*) as count, community_id, status FROM members 
+        members = session.exec(text("""
+             SELECT count(*) as count, community_id, status FROM members
              WHERE community_id={0} AND tenenv_id={1}
              GROUP BY community_id, status
-          """.format(community_id, tenenv_id)).all()
+          """.format(community_id, tenenv_id))).mappings().all()
         # members = session.exec(""" SELECT community_id FROM members """)
     return members
 
@@ -93,17 +92,17 @@ async def read_communities(
             interval_subquery += """ AND community.tenenv_id={0} 
             """.format(tenenv_id)
 
-        communities = session.exec("""
-        select count(*) as count, date_trunc( '{0}', created ) as range_date, 
-            min(created) as min_date , string_agg(name,'|| ') as names, 
-            string_agg(to_char(created, 'YYYY-MM-DD'),', ') as created_date, 
+        communities = session.exec(text("""
+        select count(*) as count, date_trunc( '{0}', created ) as range_date,
+            min(created) as min_date , string_agg(name,'|| ') as names,
+            string_agg(to_char(created, 'YYYY-MM-DD'),', ') as created_date,
             string_agg(description,'|| ') as description
         from community
         join community_info on community.community_id=community_info.id
         {1}
         group by range_date
         ORDER BY range_date ASC
-        """.format(group_by, interval_subquery)).all()
+        """.format(group_by, interval_subquery))).mappings().all()
     return communities
 
 
@@ -116,9 +115,9 @@ async def read_community(
     sql_subquery = ''
     if community_id:
         sql_subquery = 'id={0} and'.format(community_id)
-    community = session.exec("""
+    community = session.exec(text("""
         SELECT * FROM community_info WHERE {0} tenenv_id={1} ORDER BY name ASC
-    """.format(sql_subquery, tenenv_id)).all()
+    """.format(sql_subquery, tenenv_id))).mappings().all()
     # statement = select(Community).options(selectinload(Community.community_info))
     # result = session.exec(statement)
     # community = result.one()

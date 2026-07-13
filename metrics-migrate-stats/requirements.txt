@@ -1,2 +1,2 @@
-psycopg2-binary==2.8.6
-geoip2
+psycopg2-binary==2.9.12
+geoip2==5.1.0

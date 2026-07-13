@@ -1,5 +1,5 @@
 ARG PYTHON_IMAGE_REPO=python
-FROM ${PYTHON_IMAGE_REPO}:3.11-trixie
+FROM ${PYTHON_IMAGE_REPO}:3.13-trixie
 RUN curl -sL https://deb.nodesource.com/setup_22.x | sed "s/exec_cmd 'apt-get update'/exec_cmd 'apt-get --allow-releaseinfo-change update'/" | bash -
 RUN apt-get update && apt-get install -y curl gnupg2 lsb-release
 RUN curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor -o /usr/share/keyrings/postgresql-keyring.gpg

@@ -1,5 +1,6 @@
 from app.logger import log
 from app.utils import configParser
+from sqlalchemy import text
 from sqlalchemy.exc import NoResultFound
 from .utilsIngester import utilsIngester
 import hashlib
@@ -13,12 +14,12 @@ class MembershipDataIngester:
         # Check if IdP exists
         try:
             communityId = session.exec(
-              """
+              text("""
               SELECT id FROM community_info
               WHERE name = '{0}' AND tenenv_id={1}
               """.format(
                   communityName, tenenvId
-              )
+              ))
             ).one()
         except NoResultFound:
             cls.logger.error("""Community with name {0}
@@ -57,10 +58,10 @@ class MembershipDataIngester:
             between = " AND date <= '{0}'".format(
                 datesNotMapped[1]
             )
-        membershipsNotMapped = session.exec("""
+        membershipsNotMapped = session.exec(text("""
             SELECT jsondata FROM statistics_raw WHERE (type='membership')
             AND tenenv_id={0} {1}
-        """.format(tenenvId, between)).all()
+        """.format(tenenvId, between))).all()
         membershipMappedItems = 0
         for membership in membershipsNotMapped:
             communityId = MembershipDataIngester.getCommunityId(
@@ -78,14 +79,14 @@ class MembershipDataIngester:
                 cls.logger.info("""Ignore this user with
                     hash {0} as he is at the blacklist""". format(membership[0]['voPersonId']))
                 continue
-            session.exec("""INSERT INTO members(community_id,
+            session.exec(text("""INSERT INTO members(community_id,
                 hasheduserid, status, tenenv_id, created, updated)
                 VALUES ('{0}','{1}','{2}', {3}, '{4}', '{4}')
                 ON CONFLICT(community_id, hasheduserid, tenenv_id)
                 DO UPDATE
                 set status='{2}', updated='{4}'""". format(
                 communityId[0], membership[0]['voPersonId'], membership[0]['status'],
-                tenenvId, membership[0]['date']))
+                tenenvId, membership[0]['date'])))
             session.commit()
             membershipMappedItems += 1
         cls.logger.info("""{0} memberships ingested or updated""".
@@ -93,13 +94,13 @@ class MembershipDataIngester:
 
     @classmethod
     def ingestMembershipData(cls, session):
-        tenenvIds = session.exec("""SELECT tenenv_info.id,
+        tenenvIds = session.exec(text("""SELECT tenenv_info.id,
                                   tenant_info.name AS tenant_name,
                                   environment_info.name AS environment_name
-                                 FROM tenenv_info 
+                                 FROM tenenv_info
                                  JOIN tenant_info ON tenant_id=tenant_info.id
                                  JOIN environment_info ON env_id=environment_info.id
-                                 """).all()
+                                 """)).mappings().all()
         # for each tenenv on database try to ingest UserData
         # from statistics_raw table
         for tenenv in tenenvIds:
