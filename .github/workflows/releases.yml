@@ -6,7 +6,7 @@ on:
       - develop
 env:
   RELEASE_ID: rc-${{ github.ref_name }}-${{ github.run_id }}
-  NODE_VERSION: 16.x
+  NODE_VERSION: 22.x
 jobs:
   configure:
     runs-on: ubuntu-latest
