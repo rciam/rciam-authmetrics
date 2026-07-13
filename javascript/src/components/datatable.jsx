@@ -13,7 +13,7 @@ import "datatables.net-buttons/js/buttons.print.js";
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 
-pdfMake.vfs = pdfFonts.pdfMake.vfs;
+pdfMake.vfs = pdfFonts;
 
 var table;
 const title = '';
@@ -91,6 +91,8 @@ class Datatable extends Component {
                   {
                     extend: 'pdfHtml5',
                     title: title,
+                    orientation: 'landscape',
+                    pageSize: 'A4',
                     exportOptions: {
                       stripHtml: false,
                       format: {
@@ -100,6 +102,19 @@ class Datatable extends Component {
                           else
                             return data.replace(/(<([^>]+)>)/ig, "");
                         }
+                      }
+                    },
+                    customize: function (doc) {
+                      // pdfmake's default 'auto' column widths silently drop
+                      // trailing columns that don't fit the page instead of
+                      // shrinking them, so give it explicit point widths that
+                      // fit within landscape A4's usable width (~800pt).
+                      var tableBlock = doc.content.find(function (item) {
+                        return item && item.table;
+                      });
+                      if (tableBlock) {
+                        var columnCount = tableBlock.table.body[0].length;
+                        tableBlock.table.widths = Array(columnCount).fill(Math.floor(760 / columnCount));
                       }
                     }
                   },
