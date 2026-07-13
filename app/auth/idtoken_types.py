@@ -2,7 +2,7 @@ from typing import List
 from typing import Union
 
 from pydantic import BaseModel
-from pydantic import Extra
+from pydantic import ConfigDict
 
 
 class IDToken(BaseModel):
@@ -25,8 +25,7 @@ class IDToken(BaseModel):
     exp: int
     iat: int
 
-    class Config:
-        extra = Extra.allow
+    model_config = ConfigDict(extra="allow")
 
 
 class OktaIDToken(IDToken):

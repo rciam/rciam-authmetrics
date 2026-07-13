@@ -1,5 +1,6 @@
 from app.logger import log
 
+from sqlalchemy import text
 from sqlalchemy.exc import NoResultFound
 from .utilsIngester import utilsIngester
 
@@ -12,12 +13,12 @@ class CommunityDataIngester:
         # Check if community exists
         try:
             communityId = session.exec(
-              """
+              text("""
               SELECT id FROM community_info
               WHERE name = '{0}' AND tenenv_id={1}
               """.format(
                   communityName, tenenvId
-              )
+              ))
             ).one()
         except NoResultFound:
             cls.logger.error("""Community with name {0}
@@ -43,14 +44,14 @@ class CommunityDataIngester:
             between = " AND date <= '{0}'".format(
                 datesNotMapped[1]
             )
-        communitiesNotMapped = session.exec("""
+        communitiesNotMapped = session.exec(text("""
             SELECT jsondata FROM statistics_raw WHERE (type='vo')
             AND tenenv_id={0} {1}
-        """.format(tenenvId, between)).all()
+        """.format(tenenvId, between))).all()
         communityMappedItems = 0
         for community in communitiesNotMapped:
             print(community[0])
-            communityId = session.exec("""INSERT INTO community_info(
+            communityId = session.exec(text("""INSERT INTO community_info(
                 name, description, source, tenenv_id)
                 VALUES ('{0}','{1}','{2}', {3})
                 ON CONFLICT(name, tenenv_id)
@@ -59,18 +60,18 @@ class CommunityDataIngester:
                 RETURNING id;""".format(community[0]['voName'],
                                         community[0].get('voDescription', ''),
                                         community[0]['source'],
-                                        tenenvId)).one()
+                                        tenenvId))).one()
             session.commit()
             print(communityId)
             if (communityId[0] is not None):
-                session.exec("""INSERT INTO community(community_id, created, updated, status,
+                session.exec(text("""INSERT INTO community(community_id, created, updated, status,
                 tenenv_id)
                 VALUES ({0},'{1}','{1}','{2}',{3})
                 ON CONFLICT(community_id, tenenv_id)
                 DO UPDATE
                 set status='{2}', updated='{1}'
                 """.format(communityId[0],
-                           community[0]['date'], community[0]['status'], tenenvId))
+                           community[0]['date'], community[0]['status'], tenenvId)))
                 session.commit()
             communityMappedItems += 1
         cls.logger.info("""{0} communities ingested or updated""".
@@ -79,7 +80,7 @@ class CommunityDataIngester:
     @classmethod
     def ingestCommunityData(cls, session):
 
-        tenenvIds = session.exec("""SELECT id FROM tenenv_info""").all()
+        tenenvIds = session.exec(text("""SELECT id FROM tenenv_info""")).all()
         # for each tenenv on database try to ingest CommunityData
         # from statistics_raw table
         for tenenvId in tenenvIds:

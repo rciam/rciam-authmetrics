@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, Request
-from sqlmodel import Field, Session, SQLModel, create_engine, select
+from sqlmodel import Field, Session, SQLModel, create_engine, select, text
 from typing import Union
 from xmlrpc.client import boolean
 
@@ -21,13 +21,13 @@ async def read_tenenv_byname(
 ):
     tenenv = None
     if tenant_name and environment_name:
-        tenenv = session.exec("""
-            SELECT tenenv_info.* FROM tenenv_info 
+        tenenv = session.exec(text("""
+            SELECT tenenv_info.* FROM tenenv_info
             JOIN tenant_info ON tenant_info.id=tenant_id
                 AND LOWER(tenant_info.name)=LOWER('{0}')
             JOIN environment_info ON environment_info.id=env_id
                 AND LOWER(environment_info.name)=LOWER('{1}')
-        """.format(tenant_name, environment_name)).all()
+        """.format(tenant_name, environment_name))).mappings().all()
     return tenenv
 
 
@@ -40,10 +40,10 @@ async def read_environment_byname(
 ):
     environment = None
     if environment_name:
-        environment = session.exec("""
-            SELECT * FROM environment_info 
+        environment = session.exec(text("""
+            SELECT * FROM environment_info
             WHERE name='{0}' LIMIT 1
-        """.format(environment_name)).all()
+        """.format(environment_name))).mappings().all()
     return environment
 
 
@@ -59,10 +59,10 @@ async def read_idps(
         idpId_subquery = """
             AND id = {0}
         """.format(idpId)
-    idps = session.exec("""
-            SELECT * FROM identityprovidersmap 
+    idps = session.exec(text("""
+            SELECT * FROM identityprovidersmap
             WHERE tenenv_id='{0}' {1}
-        """.format(tenenv_id, idpId_subquery)).all()
+        """.format(tenenv_id, idpId_subquery))).mappings().all()
     return idps
 
 
@@ -78,8 +78,8 @@ async def read_sps(
         spId_subquery = """
             AND id = {0}
         """.format(spId)
-    sps = session.exec("""
-            SELECT * FROM serviceprovidersmap 
+    sps = session.exec(text("""
+            SELECT * FROM serviceprovidersmap
             WHERE tenenv_id='{0}' {1}
-        """.format(tenenv_id, spId_subquery)).all()
+        """.format(tenenv_id, spId_subquery))).mappings().all()
     return sps

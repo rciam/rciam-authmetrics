@@ -2,7 +2,7 @@ import base64
 import json
 import hashlib
 from fastapi import APIRouter, Depends, HTTPException, Response, Request, Body, Header, Security
-from sqlmodel import Field, Session, SQLModel, create_engine, select
+from sqlmodel import Field, Session, SQLModel, create_engine, select, text
 from typing import Union
 from app.utils import configParser, globalMethods
 from app.database import db
@@ -112,7 +112,7 @@ def process_data(data, session):
         data["voPersonId"] = hashlib.md5(data['voPersonId'].encode()).hexdigest()
     print(data)
     session.exec(
-        """
+        text("""
         INSERT INTO statistics_raw(date, type, event_identifier, source,
         tenenv_id, jsondata)
         VALUES ('{0}', '{1}', '{2}', '{3}', '{4}','{5}')
@@ -125,7 +125,7 @@ def process_data(data, session):
             data['source'],
             data['tenenvId'],
             json.dumps(data)
-        )
+        ))
     )
     session.commit()
     
