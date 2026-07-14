@@ -83,8 +83,6 @@ async def authorize_rciam(
     user = token.get('userinfo')
     pprint(token)
 
-    if user:
-        request.session['user'] = dict(user)
     # Fetch the userinfo data
     if user.get("email") is None:
         metadata = await rciam.load_server_metadata()
@@ -166,8 +164,6 @@ async def logout(
     redirect_uri = server_config['protocol'] + "://" + server_config['client'] +"/metrics"
     logout_endpoint = metadata['end_session_endpoint'] + "?post_logout_redirect_uri=" + urllib.parse.unquote(
         redirect_uri) + "&id_token_hint=" + request.cookies.get("idtoken")
-
-    request.session.pop('user', None)
 
     # Set cookies when returning a RedirectResponse
     # https://github.com/tiangolo/fastapi/issues/2452
