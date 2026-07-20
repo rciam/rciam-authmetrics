@@ -6,7 +6,7 @@ on:
       - main
 env:
   RELEASE_ID: rc-${{ github.ref_name }}-${{ github.run_id }}
-  NODE_VERSION: 16.x
+  NODE_VERSION: 22.x
 jobs:
   configure:
     runs-on: ubuntu-latest
@@ -93,6 +93,7 @@ jobs:
           options: |
             --inventory ${{ github.workspace }}/inventory/rciam-metrics/hosts.ini
             --tags rciam-metrics:config-local
+            --limit metrics2.rciam.grnet.gr
             -u debian
       - name: List files in the repository
         # The tenant specific config file, i.e. config.tenant.environment.json, becomes plain config.json
@@ -181,13 +182,14 @@ jobs:
         # The frontend release is only the javascript/build
         # We need to include all the files and directories since
         # the action is not smart enough to under asterisk (*)
+        # Vite's build output (index.html + assets/) replaces CRA's
+        # (index.html + asset-manifest.json + static/)
         with:
           command: c
           cwd: ./metrics-app-${{matrix.tenant}}/javascript/build
           files: |
-                   asset-manifest.json
                    index.html
-                   static
+                   assets
           outPath: frontend-${{matrix.tenant}}-release-build.tar.gz
       # Upload as an artifact of the current workflow
       - name: Upload frontend build zip artifact
@@ -274,6 +276,7 @@ jobs:
           options: |
             --inventory ${{ github.workspace }}/inventory/rciam-metrics/hosts.ini
             --tags rciam-metrics:deploy-backend
+            --limit metrics2.rciam.grnet.gr
             -u debian
             --extra-vars "metrics_release=metrics-api-${{ github.ref_name }}-${{ env.RELEASE_ID }}"
   deploy_frontend:
@@ -313,5 +316,6 @@ jobs:
           options: |
             --inventory ${{ github.workspace }}/inventory/rciam-metrics/hosts.ini
             --tags rciam-metrics:deploy-frontend
+            --limit metrics2.rciam.grnet.gr
             -u debian
             --extra-vars "metrics_release=frontend-${{matrix.tenant}}-${{ github.ref_name }}-${{ env.RELEASE_ID }} tenant_environment=${{matrix.tenant}}"
