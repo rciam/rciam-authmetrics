@@ -1,5 +1,10 @@
 ### Changelog
 
+## 2026-07-20
+
+### Changed
+- Vite migration and python update
+
 ## 2026-05-07
 
 ### Added
