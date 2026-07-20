@@ -4,7 +4,7 @@ from datetime import datetime
 import re
 
 from fastapi import APIRouter, Depends, HTTPException, Request
-from sqlmodel import Field, Session, SQLModel, create_engine, select
+from sqlmodel import Field, Session, SQLModel, create_engine, select, text
 from starlette.responses import JSONResponse
 from sqlalchemy.exc import NoResultFound
 from typing import Union
@@ -61,9 +61,9 @@ async def read_min_date_logins(
     if unique_logins:
         unique_logins_subquery = "AND hasheduserid != 'unknown'"
 
-    min_date = session.exec("""SELECT min(date) as min_date, max(date) as max_date 
-                            FROM statistics_country_hashed 
-                            WHERE tenenv_id={0} {1}""".format(tenenv_id, unique_logins_subquery)).one()
+    min_date = session.exec(text("""SELECT min(date) as min_date, max(date) as max_date
+                            FROM statistics_country_hashed
+                            WHERE tenenv_id={0} {1}""".format(tenenv_id, unique_logins_subquery))).mappings().one()
     return min_date
 
 @router.get("/logins_per_idp")
@@ -109,10 +109,10 @@ async def read_logins_per_idp(
         sub_select = """
             count(DISTINCT hasheduserid) as count
         """
-    logins = session.exec("""
+    logins = session.exec(text("""
         select identityprovidersmap.id, identityprovidersmap.name, entityid, sourceidpid, {0}
         from statistics_country_hashed
-        join identityprovidersmap ON identityprovidersmap.id=sourceidpid  
+        join identityprovidersmap ON identityprovidersmap.id=sourceidpid
             AND identityprovidersmap.tenenv_id=statistics_country_hashed.tenenv_id
         {1}
         WHERE statistics_country_hashed.tenenv_id = {2}
@@ -122,7 +122,7 @@ async def read_logins_per_idp(
         """.format(
         sub_select, sp_subquery_join, tenenv_id, interval_subquery, unique_logins_subquery
     )
-    ).all()
+    )).mappings().all()
 
     return logins
 
@@ -173,7 +173,7 @@ async def read_logins_per_sp_totals(
             count(DISTINCT hasheduserid) as count
         """
 
-    logins = session.exec("""
+    logins = session.exec(text("""
             select serviceprovidersmap.id, serviceprovidersmap.name, identifier, serviceid, {0}
             from statistics_country_hashed
             join serviceprovidersmap ON serviceprovidersmap.id=serviceid
@@ -186,7 +186,7 @@ async def read_logins_per_sp_totals(
         """.format(
         sub_select, idp_subquery_join, tenenv_id, interval_subquery, unique_logins_subquery
     )
-    ).all()
+    )).all()
 
     return [{"id": row[0], "name": row[1], "identifier": row[2], "count": row[4]} for row in logins]
 
@@ -238,7 +238,7 @@ async def read_logins_per_sp(
             count(DISTINCT hasheduserid) as count
         """
 
-    logins = session.exec("""
+    logins = session.exec(text("""
             select serviceprovidersmap.id, serviceprovidersmap.name, identifier, serviceid,
                    country_codes.country, country_codes.countrycode, {0}
             from statistics_country_hashed
@@ -254,7 +254,7 @@ async def read_logins_per_sp(
         """.format(
         sub_select, idp_subquery_join, tenenv_id, interval_subquery, unique_logins_subquery
     )
-    ).all()
+    )).all()
 
     # Process results to group by SP
     sp_data = defaultdict(lambda: {
@@ -326,8 +326,8 @@ async def read_logins_per_country(
                 count(DISTINCT hasheduserid) as count_country
             """
             sum = "count(DISTINCT hasheduserid)"
-        logins = session.exec("""
-        SELECT range_date, sum(count_country) as count, min(min_login_date) as min_date, STRING_AGG(country, '|| ') as countries 
+        logins = session.exec(text("""
+        SELECT range_date, sum(count_country) as count, min(min_login_date) as min_date, STRING_AGG(country, '|| ') as countries
         FROM (
             SELECT date_trunc('{0}', date) as range_date, min(date) as min_login_date, {1}, CONCAT(country,': ',{2}) as country
             from statistics_country_hashed
@@ -348,7 +348,7 @@ async def read_logins_per_country(
             sp_subquery,
             unique_logins_subquery
         )
-        ).all()
+        )).mappings().all()
     else:
         if startDate and endDate:
             start_date, end_date = get_date_range(startDate, endDate)
@@ -364,7 +364,7 @@ async def read_logins_per_country(
             sub_select = """
                 count(DISTINCT hasheduserid) as sum
             """
-        logins = session.exec(""" 
+        logins = session.exec(text("""
                 SELECT country, countrycode, {0}
                 FROM statistics_country_hashed
                 JOIN country_codes ON countryid=country_codes.id
@@ -374,7 +374,7 @@ async def read_logins_per_country(
             """.format(
             sub_select, tenenv_id, interval_subquery, entity_subquery, sp_subquery
         )
-        ).all()
+        )).mappings().all()
     return logins
 
 
@@ -406,23 +406,23 @@ async def read_logins_countby(
             AND serviceid = '{0}'
         """.format(spId)
     if unique_logins == False:
-        logins = session.exec("""
+        logins = session.exec(text("""
             select sum(count) as count
-            from statistics_country_hashed WHERE tenenv_id={0} 
+            from statistics_country_hashed WHERE tenenv_id={0}
             {1} {2} {3}
         """.format(
             tenenv_id, interval_subquery, idp_subquery, sp_subquery
         )
-        ).all()
+        )).mappings().all()
     else:
-        logins = session.exec("""
+        logins = session.exec(text("""
             select count(DISTINCT hasheduserid) as count
             from statistics_country_hashed WHERE tenenv_id={0} AND hasheduserid != 'unknown'
             {1} {2} {3}
         """.format(
             tenenv_id, interval_subquery, idp_subquery, sp_subquery
         )
-        ).all()
+        )).mappings().all()
     return logins
 
 @router.get("/logins_groupby/{group_by}")
@@ -505,11 +505,11 @@ async def read_logins_groupby(
     #         ORDER BY date ASC;
     # """.format(days_seq_table, logins_count_raw))
 
-    logins = session.exec("""
+    logins = session.exec(text("""
             {0},
             logins_count as ({1})
             select days.day as date, logins_count.count as count
             from days left join logins_count on logins_count.date = days.day
             ORDER BY date ASC;
-    """.format(days_seq_table, logins_count_raw)).all()
+    """.format(days_seq_table, logins_count_raw))).mappings().all()
     return logins

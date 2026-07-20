@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
-from sqlmodel import Field, Session, SQLModel, create_engine, select
+from sqlmodel import Field, Session, SQLModel, create_engine, select, text
 from typing import Union
 from datetime import datetime
 
@@ -49,10 +49,10 @@ async def read_min_date_registered_users(
         session: Session = Depends(db.get_session),
         tenenv_id: int
 ):
-    min_date = session.exec("""
-      SELECT min(created) as min_date 
+    min_date = session.exec(text("""
+      SELECT min(created) as min_date
                             FROM users
-    """).one()
+    """)).mappings().one()
     return min_date
 
 @router.get("/registered_users_country")
@@ -79,7 +79,7 @@ async def read_users_country(
         status_filter = ""
 
     users_countries = session.exec(
-        """WITH user_country_logins AS (
+        text("""WITH user_country_logins AS (
         SELECT
             sch.hasheduserid,
             sch.countryid,
@@ -111,7 +111,7 @@ async def read_users_country(
         {2}
         GROUP BY country, countrycode
         ORDER BY country, countrycode
-        """.format(date_filter, tenenv_id, status_filter)).all()
+        """.format(date_filter, tenenv_id, status_filter))).mappings().all()
     return users_countries
 
 
@@ -148,7 +148,7 @@ async def read_users_country_groupby_no_groupby(
         total_users_filter += " AND status = '{0}'".format(status)
 
     users_countries = session.exec(
-        """WITH user_country_logins AS (
+        text("""WITH user_country_logins AS (
         SELECT
             sch.hasheduserid,
             sch.countryid,
@@ -212,7 +212,7 @@ async def read_users_country_groupby_no_groupby(
         ) all_countries
         """.format(date_filter, tenenv_id, status_filter,
                    startDate if startDate else 'N/A', endDate if endDate else 'N/A',
-                   total_users_filter)).all()
+                   total_users_filter))).mappings().all()
     return users_countries
 
 
@@ -249,7 +249,7 @@ async def read_users_country_groupby(
         total_users_filter += " AND status = '{0}'".format(status)
 
     users = session.exec(
-        """WITH user_country_logins AS (
+        text("""WITH user_country_logins AS (
         SELECT
             sch.hasheduserid,
             sch.countryid,
@@ -319,7 +319,7 @@ async def read_users_country_groupby(
         ) user_country_group_by
     GROUP BY range_date
     ORDER BY range_date ASC
-    """.format(group_by, tenenv_id, date_filter, status_filter, total_users_filter)).all()
+    """.format(group_by, tenenv_id, date_filter, status_filter, total_users_filter))).mappings().all()
     return users
 
 
@@ -352,7 +352,7 @@ async def read_users_groupby(
             interval_subquery = """
                 AND created BETWEEN DATE('{0}') AND DATE('{1}')
             """.format(startDate, endDate)
-        users = session.exec("""
+        users = session.exec(text("""
         select count(*) as count, date_trunc( '{0}', created ) as range_date,
             min(created) as min_date
         from users
@@ -361,7 +361,7 @@ async def read_users_groupby(
         {2}
         group by range_date
         ORDER BY range_date ASC
-        """.format(group_by, tenenv_id, interval_subquery, status_filter)).all()
+        """.format(group_by, tenenv_id, interval_subquery, status_filter))).mappings().all()
     return users
 
 
@@ -387,10 +387,10 @@ async def read_users_countby(
         interval_subquery = """AND created >
         CURRENT_DATE - INTERVAL '{0} {1}'""".format(count_interval, interval)
 
-    users = session.exec("""
+    users = session.exec(text("""
     select count(*) as count
     from users
     WHERE tenenv_id = {1}
     {2}
-    {0}""".format(interval_subquery, tenenv_id, status_filter)).all()
+    {0}""".format(interval_subquery, tenenv_id, status_filter))).mappings().all()
     return users

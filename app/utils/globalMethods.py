@@ -22,6 +22,18 @@ class AuthNZCheck:
         self.logger.debug("""{0}.{1}: Request Url: {2}""" . format(g.tenant, g.environment, request.url))
         self.logger.debug("""{0}.{1}: Request Headers: {2}""" . format(g.tenant, g.environment, request.headers))
 
+        if not g.tenant or not g.environment:
+            self.logger.debug("""Request is missing tenant/environment context""")
+            raise HTTPException(
+                status_code=401,
+                detail="Missing tenant/environment context",
+                headers={
+                    "X-Authenticated": "false",
+                    "X-Redirect": "false",
+                    "Access-Control-Expose-Headers": "X-Permissions, X-Authenticated, X-Redirect"
+                }
+            )
+
         # config
         authorize_file = 'authorize.' + g.tenant + '.' + g.environment + '.py'
         config_file = 'config.' + g.tenant + '.' + g.environment + '.py'
