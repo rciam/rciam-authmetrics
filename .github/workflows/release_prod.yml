@@ -93,7 +93,6 @@ jobs:
           options: |
             --inventory ${{ github.workspace }}/inventory/rciam-metrics/hosts.ini
             --tags rciam-metrics:config-local
-            --limit metrics2.rciam.grnet.gr
             -u debian
       - name: List files in the repository
         # The tenant specific config file, i.e. config.tenant.environment.json, becomes plain config.json
@@ -276,7 +275,6 @@ jobs:
           options: |
             --inventory ${{ github.workspace }}/inventory/rciam-metrics/hosts.ini
             --tags rciam-metrics:deploy-backend
-            --limit metrics2.rciam.grnet.gr
             -u debian
             --extra-vars "metrics_release=metrics-api-${{ github.ref_name }}-${{ env.RELEASE_ID }}"
   deploy_frontend:
@@ -316,6 +314,5 @@ jobs:
           options: |
             --inventory ${{ github.workspace }}/inventory/rciam-metrics/hosts.ini
             --tags rciam-metrics:deploy-frontend
-            --limit metrics2.rciam.grnet.gr
             -u debian
             --extra-vars "metrics_release=frontend-${{matrix.tenant}}-${{ github.ref_name }}-${{ env.RELEASE_ID }} tenant_environment=${{matrix.tenant}}"
